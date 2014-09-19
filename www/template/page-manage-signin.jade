@@ -1,0 +1,13 @@
+div(id="signin" flex layout="vertical" layout-fill)
+  h2.text-center 登录餐厅管理系统
+
+  div.text-unselectable(layout="horizontal" layout-align="center" layout-padding)
+    .rcs-pane.material-whiteframe-z3
+      h4.text-center 请输入登录信息
+      material-input-group.material-input-group-theme-light
+        label(for="0") 用户邮箱
+        material-input(id="0" type="text" ng-model="signIn.email" ng-required="true")
+      material-input-group.material-input-group-theme-light
+        label(for="1") 密码
+        material-input(id="1" type="password" ng-model="signIn.password" ng-required="true")
+      material-button.material-button-raised.material-theme-light(ng-click="clickSignIn()") 登录

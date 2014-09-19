@@ -1,0 +1,47 @@
+#page material-button.nav-entry {
+  cursor: pointer;
+  line-height: 40px;
+  max-height: 40px;
+  text-align: left;
+  width: 100%;
+  padding-left: 40px;
+}
+
+#page material-button.nav-entry span,
+#page material-button.nav-entry b {
+  font-size: 18px;
+}
+
+#page .active material-button.nav-entry {
+  font-weight: bold;
+}
+
+#page material-content.background,
+#page ion-content.background {
+  background-color: #f8f4ee;
+}
+
+#page material-toolbar.material-theme-light,
+#page ion-header-bar.bar-light {
+  background-color: #E5E0D8 !important;
+  color: #606060 !important;
+}
+
+#page material-toolbar.material-theme-dark,
+#page ion-header-bar.bar-dark {
+  background-color: #D3CFCA !important;
+  color: #606060 !important;
+}
+
+#page .bar.bar-dark .title {
+  color: #606060 !important;
+}
+
+#page material-sidenav {
+  min-width: 220px;
+  max-width: 220px;
+}
+
+#page material-toolbar.material-theme-dark {
+  padding-right: 5px;
+}
