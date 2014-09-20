@@ -1,1 +1,10 @@
-h2.text-center 选择餐桌进行关联
+div(id="table" flex layout="vertical" layout-fill)
+  h2.text-center.title 选择餐桌进行关联
+
+  div(layout="horizontal" layout-align="center")
+
+    .rcs-pane.material-whiteframe-z3(layout="vertical" layout-align="center")
+
+      .text-center(ng-show="tables == null")
+        i.fa.fa-spin.fa-refresh.fa-4x
+        p 同步数据...

@@ -6,6 +6,7 @@ angular.module('rcs', [
 .config([
   '$urlRouterProvider',
   '$stateProvider',
+  '$httpProvider',
   config
 ])
 .run(function($ionicPlatform) {
@@ -21,14 +22,19 @@ angular.module('rcs', [
   });
 })
 
-function config ($urlRouterProvider, $stateProvider) {
+function config ($urlRouterProvider, $stateProvider, $httpProvider) {
+  // to make "credentialed" requests that are cognizant of HTTP Cookies and HTTP Authentication information
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Requests_with_credentials
+  // http://stackoverflow.com/questions/22372377/angularjs-http-post-withcredentials-fails-with-data-in-request-body
+  $httpProvider.defaults.withCredentials = true;
+
   // default route
-  $urlRouterProvider.otherwise('/');
+  $urlRouterProvider.otherwise('/about');
 
   // states
   $stateProvider
     .state('page', {
-      url: '/',
+      abstract: true,
       templateUrl: 'template/page.html',
       controller: 'pageCtrl',
       resolve: {
@@ -50,24 +56,24 @@ function config ($urlRouterProvider, $stateProvider) {
 
     // children of manage
     .state('page.manage.signin', {
-      url: 'manage/signin',
+      url: '/manage/signin',
       templateUrl: 'template/page-manage-signin.html',
       controller: 'signInCtrl',
     })
     .state('page.manage.restaurant', {
-      url: 'manage/restaurant',
+      url: '/manage/restaurant',
       templateUrl: 'template/page-manage-restaurant.html',
       controller: 'restaurantCtrl',
     })
     .state('page.manage.table', {
-      url: 'manage/table',
+      url: '/manage/table',
       templateUrl: 'template/page-manage-table.html',
       controller: 'tableCtrl',
     })
 
     // children of use
     .state('page.use.about', {
-      url: 'about',
+      url: '/about',
       templateUrl: 'template/page-use-about.html',
       controller: 'aboutCtrl'
     });

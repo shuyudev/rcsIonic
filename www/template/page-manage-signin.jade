@@ -1,8 +1,15 @@
 div(id="signin" flex layout="vertical" layout-fill)
-  h2.text-center 登录餐厅管理系统
+  .text-center.title(ng-if="ifSignedIn() == false")
+    h2 登录餐厅管理系统
+
+  .text-center.title(ng-if="ifSignedIn() == true")
+    h2 已登录 <b>{{getSignedInUser().Name}}</b>
+    h3
+      material-button.material-button-colored(ng-click="clickSignOut()")
+        u 退出登录
 
   div.text-unselectable(layout="horizontal" layout-align="center" layout-padding)
-    .rcs-pane.material-whiteframe-z3
+    .rcs-pane.material-whiteframe-z3(ng-if="ifSignedIn() == false" layout="vertical")
       h4.text-center 请输入登录信息
       material-input-group.material-input-group-theme-light
         label(for="0") 用户邮箱
@@ -11,3 +18,24 @@ div(id="signin" flex layout="vertical" layout-fill)
         label(for="1") 密码
         material-input(id="1" type="password" ng-model="signIn.password" ng-required="true")
       material-button.material-button-raised.material-theme-light(ng-click="clickSignIn()") 登录
+
+    .rcs-pane.material-whiteframe-z3(ng-if="ifSignedIn() == true")
+      h4.text-center 用户信息
+      material-list
+        material-item
+          .material-tile-left
+            b 邮箱
+          .material-tile-content
+            h3 {{getSignedInUser().Email}}
+        material-item
+          .material-tile-left
+            b 权限
+          .material-tile-content(ng-switch="getSignedInUser().Role")
+            h3(ng-switch-when="admin") 餐厅管理员
+            h3(ng-switch-when="manager") 餐厅经理
+        material-item
+          .material-tile-left
+            b 名称
+          .material-tile-content
+            h3 {{getSignedInUser().Name}}
+      material-button.material-button-raised.material-theme-light(ng-click="clickGoToRestaurants()") 前往关联餐桌

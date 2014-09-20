@@ -24,6 +24,15 @@ body *
   user-select: none;
 }
 
+#rcs a {
+  color: #606060;
+}
+
+#rcs a:hover {
+  color: #8A1717;
+  font-weight: bold;
+}
+
 #rcs .material-tile-content {
   margin-right: 0px;
 }
@@ -72,11 +81,10 @@ body *
   color: #f1f1f1;
 }
 
-#rcs a {
-  color: #606060;
+#rcs material-radio-group:focus {
+  border-color: transparent;
 }
 
-#rcs a:hover {
-  color: #8A1717;
-  font-weight: bold;
+#rcs material-button .material-button-inner[disabled] {
+  z-index: -1;
 }
