@@ -1,0 +1,16 @@
+#rcs material-dialog {
+  font-family: "Microsoft YaHei", Helvetica, Arial, sans-serif;
+  font-size: 18px;
+}
+
+#rcs .dialog-actions {
+  justify-content: center;
+}
+
+#rcs .dialog-actions material-button {
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 15px;
+  height: 60px;
+  line-height: 48px;
+}

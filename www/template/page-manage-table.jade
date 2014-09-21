@@ -1,10 +1,39 @@
 div(id="table" flex layout="vertical" layout-fill)
-  h2.text-center.title 选择餐桌进行关联
+  h2.text-center.title(ng-show="tables == null") 选择餐桌
 
-  div(layout="horizontal" layout-align="center")
+  .text-center(ng-show="tables == null")
+    i.fa.fa-spin.fa-refresh.fa-4x
+    p 同步数据...
 
-    .rcs-pane.material-whiteframe-z3(layout="vertical" layout-align="center")
+  h3.text-center(ng-show="tables != null && tables.length == 0")
+    | 餐厅尚未添加餐桌，请前往管理员页面操作
 
-      .text-center(ng-show="tables == null")
-        i.fa.fa-spin.fa-refresh.fa-4x
-        p 同步数据...
+  div(ng-show="tables != null && tables.length != 0" layout="horizontal" layout-align="center")
+
+    .rcs-pane.list.material-whiteframe-z3(layout="vertical")
+      .pane-header 选择餐桌进行关联
+      material-content(flex scroll-y)
+        material-radio-group(ng-model="selectedIndex")
+          material-list(ng-repeat="table in tables")
+            material-item(ng-click="clickTable($index)")
+              .material-tile-left
+                material-radio-button(ng-class="{'material-checked':selectedIndex==$index}" noink)
+              .material-tile-content(ng-class="{'selected':selectedIndex==$index}")
+                h2 {{table.TableName}} ({{table.TableType}})
+
+    .rcs-pane.info.material-whiteframe-z3(layout="vertical")
+      .pane-header 关联信息
+      material-list
+        material-item
+          .material-tile-left
+            | 设备编码
+          .material-tile-content
+            h2 {{deviceId}}
+        material-item(ng-show="ifDisableCickLink() == false")
+          .material-tile-left
+            | 目标餐桌
+          .material-tile-content
+            h2 {{getLinkingTable().TableName}} ({{getLinkingTable().TableType}})
+      .action(layout="horizontal" layout-align="center")
+        material-button.material-button-raised.material-theme-light(
+          flex ng-hide="ifDisableCickLink() == true" ng-click="clickLink($event)") 关联

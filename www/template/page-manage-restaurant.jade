@@ -1,26 +1,28 @@
 div(id="restaurant" flex layout="vertical" layout-fill)
   h2.text-center.title 选择餐厅
 
-  div(layout="horizontal" layout-align="center")
+  .text-center(ng-show="restaurants == null")
+    i.fa.fa-spin.fa-refresh.fa-4x
+    p 同步数据...
+
+  h3.text-center(ng-show="restaurants != null && restaurants.length == 0")
+    | 未找到可管理餐厅，请联系餐厅经理
+
+  div(ng-show="restaurants != null && restaurants.length != 0" layout="horizontal" layout-align="center")
 
     .rcs-pane.material-whiteframe-z3(layout="vertical" layout-align="center")
-
-      .text-center(ng-show="restaurants == null")
-        i.fa.fa-spin.fa-refresh.fa-4x
-        p 同步数据...
-
-      h3.text-center(ng-show="restaurants != null && restaurants.length == 0")
-        | 未找到可管理餐厅，请联系餐厅经理
-
-      div(ng-show="restaurants != null && restaurants.length != 0")
+      //- div
         material-button.material-button-fab.material-theme-light.material-whiteframe-z5.right-conner(
           ng-disabled="selectedIndex==-1" ng-click="clickGoTo()")
           i.fa.fa-arrow-right.fa-2x
-        material-radio-group(ng-model="selectedIndex")
-          material-list(ng-repeat="restaurant in restaurants")
-            material-item(ng-click="clickRestaurant($index)")
-              .material-tile-left
-                material-radio-button(ng-class="{'material-checked':selectedIndex==$index}" noink)
-              .material-tile-content
-                h2 {{restaurant.RestaurantName}}
-                h3 {{restaurant.Description}}
+      material-radio-group(ng-model="selectedIndex")
+        material-list(ng-repeat="restaurant in restaurants")
+          material-item(ng-click="clickRestaurant($index)")
+            .material-tile-left
+              material-radio-button(ng-class="{'material-checked':selectedIndex==$index}" noink)
+            .material-tile-content(ng-class="{'selected':selectedIndex==$index}")
+              h2 {{restaurant.RestaurantName}}
+              h3 {{restaurant.Description}}
+      .action(layout="horizontal" layout-align="center")
+        material-button.material-button-raised.material-theme-light(
+          flex="70" ng-hide="ifDisableCickGoto() == true" ng-click="clickGoTo()") 继续

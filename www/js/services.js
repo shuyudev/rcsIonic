@@ -154,11 +154,19 @@ function rcsHttp ($http, $log) {
     }
   }
 
-  rcsHttp.Table = {
-    link: function (tableId, deviceId) {
+  httpService.Table = {
+    list: function (restaurantId) {
       return $http
-        .post('Table/link/' + tableId, {
-          tabletId: deviceId
+        .post(baseUrl + 'Table/list', {
+          RestaurantId: restaurantId
+        })
+        .error(errorAction);
+    },
+    link: function (restaurantId, tableId, deviceId) {
+      return $http
+        .post(baseUrl + 'Table/link/' + tableId, {
+          RestaurantId: restaurantId,
+          LinkedTabletId: deviceId
         })
         .error(errorAction);
     }

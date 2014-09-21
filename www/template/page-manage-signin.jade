@@ -1,12 +1,9 @@
 div(id="signin" flex layout="vertical" layout-fill)
   .text-center.title(ng-if="ifSignedIn() == false")
-    h2 登录餐厅管理系统
+    h2 餐厅员工登录
 
   .text-center.title(ng-if="ifSignedIn() == true")
     h2 已登录 <b>{{getSignedInUser().Name}}</b>
-    h3
-      material-button.material-button-colored(ng-click="clickSignOut()")
-        u 退出登录
 
   div.text-unselectable(layout="horizontal" layout-align="center" layout-padding)
     .rcs-pane.material-whiteframe-z3(ng-if="ifSignedIn() == false" layout="vertical")
@@ -17,7 +14,9 @@ div(id="signin" flex layout="vertical" layout-fill)
       material-input-group.material-input-group-theme-light
         label(for="1") 密码
         material-input(id="1" type="password" ng-model="signIn.password" ng-required="true")
-      material-button.material-button-raised.material-theme-light(ng-click="clickSignIn()") 登录
+      .action(layout="horizontal" layout-align="center")
+        material-button.material-button-raised.material-theme-light(
+          flex="70" ng-click="clickSignIn()") 登录
 
     .rcs-pane.material-whiteframe-z3(ng-if="ifSignedIn() == true")
       h4.text-center 用户信息
@@ -38,4 +37,8 @@ div(id="signin" flex layout="vertical" layout-fill)
             b 名称
           .material-tile-content
             h3 {{getSignedInUser().Name}}
-      material-button.material-button-raised.material-theme-light(ng-click="clickGoToRestaurants()") 前往关联餐桌
+      .action(layout="horizontal" layout-align="center")
+        material-button.material-button-raised.material-theme-light(
+          flex="70" ng-click="clickGoToRestaurants()") 前往关联餐桌
+        material-button.material-button-raised(
+          flex="30" ng-click="clickSignOut()") 退出登录

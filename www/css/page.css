@@ -36,3 +36,12 @@
   text-align: center;
   width: 30px;
 }
+
+#page-manage .rcs-pane .action material-button {
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  height: 60px;
+  line-height: 48px;
+}

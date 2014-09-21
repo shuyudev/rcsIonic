@@ -4,8 +4,6 @@
 }
 
 #table .rcs-pane {
-  width: 500px;
-  min-height: 250px;
   padding-left: 20px;
   padding-right: 20px;
   padding-top: 10px;
@@ -15,4 +13,37 @@
   font-size: 18px;
   display: inherit;
   background-color: #ffffff;
+}
+
+#table .rcs-pane.list {
+  width: 300px;
+}
+
+#table .rcs-pane.info {
+  width: 250px;
+  margin-left: 20px;
+}
+
+#table .pane-header {
+  font-size: 22px;
+  font-weight: bold;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #8A1717;
+}
+
+#table .rcs-pane.list material-item:hover .material-tile-content,
+#table .rcs-pane.list .material-tile-content.selected {
+  color: #8a1717;
+}
+
+#table .rcs-pane.list material-item:hover .material-tile-content > h2,
+#table .rcs-pane.list .material-tile-content.selected > h2 {
+  font-weight: bold;
+  color: inherit;
+}
+
+#table .rcs-pane.info .material-tile-left {
+  min-width: 40px;
+  width: 40px;
+  margin-right: 5px;
 }

@@ -7,10 +7,10 @@ div(id="page-manage" flex layout="vertical" layout-fill)
       div(flex)
       material-button.hover(ng-if="getCurrentRestaurant()" ng-click="clickRestaurant()")
         i.fa.fa-cutlery
-        b{{getCurrentRestaurant()}}
+        b {{getCurrentRestaurant()}}
       material-button.hover(ng-if="getCurrentUser()" ng-click="clickUser()")
         i.fa.fa-user
-        b{{getCurrentUser()}}
+        b {{getCurrentUser()}}
   material-content.background(layout="vertical" layout-fill scroll-y)
     //- nested ui-view is not working well in jade
     <div ui-view layout="vertical" layout-fill></div>
