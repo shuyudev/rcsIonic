@@ -130,6 +130,7 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
   $scope.refreshing = false;
   $scope.tables = null;
   $scope.selectedIndex = -1;
+  $scope.selectedTable = null;
   $scope.deviceModel = null;
   $scope.deviceSystemVersion = null;
   $scope.deviceId = null;
@@ -145,7 +146,6 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
   $scope.clickLink = clickLink;
   $scope.clickRefreshTable = clickRefreshTable;
   $scope.clickTable = clickTable;
-  $scope.getLinkingTable = getLinkingTable;
   $scope.ifDisableCickLink = ifDisableCickLink;
   $scope.ifNotLinked = ifNotLinked;
 
@@ -168,13 +168,14 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
         $scope.refreshing = false;
         $scope.tables = res.Tables
         $scope.selectedIndex = -1;
+        $scope.selectedTable = null;
       });
   }
 
   function clickLink (event) {
     if ($scope.ifDisableCickLink()) return;
 
-    var table = $scope.tables[$scope.selectedIndex];
+    var table = $scope.selectedTable;
 
     rcsSession.linkTable(table.id, $scope.deviceId,
       function success () {
@@ -204,14 +205,9 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
       });
   }
 
-  function clickTable (index) {
+  function clickTable (index, table) {
     $scope.selectedIndex = index;
-  }
-
-  function getLinkingTable () {
-    if ($scope.selectedIndex == -1) return null;
-
-    return $scope.tables[$scope.selectedIndex];
+    $scope.selectedTable = table;
   }
 
   function ifDisableCickLink () {

@@ -18,7 +18,7 @@ div(id="table" flex layout="vertical" layout-fill)
       material-content(flex scroll-y)
         material-radio-group(ng-model="selectedIndex")
           material-list(ng-repeat="table in tables | filter:ifNotLinked")
-            material-item(ng-click="clickTable($index)")
+            material-item(ng-click="clickTable($index, table)")
               .material-tile-left
                 material-radio-button(ng-class="{'material-checked':selectedIndex==$index}" noink)
               .material-tile-content(ng-class="{'selected':selectedIndex==$index}")
@@ -49,7 +49,7 @@ div(id="table" flex layout="vertical" layout-fill)
           .material-tile-left
             | 选择餐桌
           .material-tile-content
-            h2 {{getLinkingTable().TableName}} ({{getLinkingTable().TableType}})
+            h2 {{selectedTable.TableName}} ({{selectedTable.TableType}})
       .action(layout="horizontal" layout-align="center")
         material-button.material-button-raised.material-theme-light(
           flex ng-disabled="ifDisableCickLink() == true" ng-click="clickLink($event)") 关联

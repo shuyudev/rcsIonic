@@ -24,21 +24,21 @@ function rcsSession (rcsLocalstorage, rcsHttp, STORAGE_KEY) {
   var selectedRestaurant = null;
   var linkedTableId = null;
   var linkedTableToken = null;
-  var LinkedTableRestaurantId = null;
+  var linkedTableRestaurantId = null;
 
   // defines
   function handshake () {
     // load info from storage to session
     linkedTableId = rcsLocalstorage.get(STORAGE_KEY.tableId, null);
     linkedTableToken = rcsLocalstorage.get(STORAGE_KEY.tableToken, null);
-    LinkedTableRestaurantId = rcsLocalstorage.get(STORAGE_KEY.tableRestaurantId, null);
+    linkedTableRestaurantId = rcsLocalstorage.get(STORAGE_KEY.tableRestaurantId, null);
 
-    if (linkedTableId && linkedTableToken && LinkedTableRestaurantId) {
+    if (linkedTableId && linkedTableToken && linkedTableRestaurantId) {
       // validate token, doing so will sign out current user
-      return rcsHttp.Table.validateToken(LinkedTableRestaurantId, linkedTableId, linkedTableToken)
+      return rcsHttp.Table.validateToken(linkedTableRestaurantId, linkedTableId, linkedTableToken)
         .error(function (argument) {
           // clear session & storage
-          LinkedTableRestaurantId = null;
+          linkedTableRestaurantId = null;
           linkedTableId = null;
           linkedTableToken = null;
           rcsLocalstorage.clear(STORAGE_KEY.tableId);
@@ -47,7 +47,7 @@ function rcsSession (rcsLocalstorage, rcsHttp, STORAGE_KEY) {
         });
     } else {
       // clear session & storage
-      LinkedTableRestaurantId = null;
+      linkedTableRestaurantId = null;
       linkedTableId = null;
       linkedTableToken = null;
       rcsLocalstorage.clear(STORAGE_KEY.tableId);
@@ -76,12 +76,12 @@ function rcsSession (rcsLocalstorage, rcsHttp, STORAGE_KEY) {
         // save to session
         linkedTableId = res.id;
         linkedTableToken = res.Token;
-        LinkedTableRestaurantId = selectedRestaurant.id;
+        linkedTableRestaurantId = selectedRestaurant.id;
 
         // save to storage
         rcsLocalstorage.set(STORAGE_KEY.tableId, linkedTableId);
         rcsLocalstorage.set(STORAGE_KEY.tableToken, linkedTableToken);
-        rcsLocalstorage.set(STORAGE_KEY.tableRestaurantId, LinkedTableRestaurantId);
+        rcsLocalstorage.set(STORAGE_KEY.tableRestaurantId, linkedTableRestaurantId);
 
         successAction();
       })
@@ -101,7 +101,7 @@ function rcsSession (rcsLocalstorage, rcsHttp, STORAGE_KEY) {
   }
 
   function getMode () {
-    if (linkedTableId && linkedTableToken && LinkedTableRestaurantId) {
+    if (linkedTableId && linkedTableToken && linkedTableRestaurantId) {
       // already linked to service
       return 'use';
      } else {
