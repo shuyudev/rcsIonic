@@ -26,14 +26,27 @@ div(id="table" flex layout="vertical" layout-fill)
       material-list
         material-item
           .material-tile-left
-            | 设备编码
+            | 设备型号
           .material-tile-content
-            h2 {{deviceId}}
-        material-item(ng-show="ifDisableCickLink() == false")
+            h2(ng-show="deviceModel != null") {{deviceModel}}
+            h2.error(ng-show="deviceModel == null") 无法获取设备
+        material-item
+          .material-tile-left
+            | 系统版本
+          .material-tile-content
+            h2(ng-show="deviceSystemVersion != null") {{deviceSystemVersion}}
+            h2.error(ng-show="deviceSystemVersion == null") 无法获取设备
+        material-item.delimiter
+          .material-tile-left
+            | 设备ID
+          .material-tile-content
+            h2(ng-show="deviceId != null") {{deviceId}}
+            h2.error(ng-show="deviceId == null") 无法获取设备
+        material-item(ng-show="selectedIndex != -1")
           .material-tile-left
             | 目标餐桌
           .material-tile-content
             h2 {{getLinkingTable().TableName}} ({{getLinkingTable().TableType}})
       .action(layout="horizontal" layout-align="center")
         material-button.material-button-raised.material-theme-light(
-          flex ng-hide="ifDisableCickLink() == true" ng-click="clickLink($event)") 关联
+          flex ng-disabled="ifDisableCickLink() == true" ng-click="clickLink($event)") 关联

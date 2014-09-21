@@ -1,15 +1,18 @@
 angular
   .module('rcs')
+  .factory('rcsLocalstorage', ['$window', rcsLocalstorage])
   .factory('rcsHttp', ['$http', '$log', rcsHttp])
-  .factory('rcsSession', ['rcsHttp', rcsSession]);
+  .factory('rcsSession', ['rcsLocalstorage', 'rcsHttp', 'STORAGE_KEY', rcsSession]);
+;
 
-function rcsSession (rcsHttp) {
+function rcsSession (rcsLocalstorage, rcsHttp, STORAGE_KEY) {
   var sessionService = {
     getMode: getMode,
     getSelectedRestaurant: getSelectedRestaurant,
     getSignedInUser: getSignedInUser,
     getTableStatus: getTableStatus,
     handshake: handshake,
+    linkTable: linkTable,
     selectRestaurant: selectRestaurant,
     signIn: signIn,
     signOut: signOut,
@@ -17,20 +20,72 @@ function rcsSession (rcsHttp) {
   }
 
   // locals
-  var selectedRestaurant = null;
   var signedInUser = null;
-  var table = null;
-  var token = null;
+  var selectedRestaurant = null;
+  var linkedTableId = null;
+  var linkedTableToken = null;
+  var LinkedTableRestaurantId = null;
 
   // defines
   function handshake () {
-    return rcsHttp.User.handshake()
+    // load info from storage to session
+    linkedTableId = rcsLocalstorage.get(STORAGE_KEY.tableId, null);
+    linkedTableToken = rcsLocalstorage.get(STORAGE_KEY.tableToken, null);
+    LinkedTableRestaurantId = rcsLocalstorage.get(STORAGE_KEY.tableRestaurantId, null);
+
+    if (linkedTableId && linkedTableToken && LinkedTableRestaurantId) {
+      // validate token, doing so will sign out current user
+      return rcsHttp.Table.validateToken(LinkedTableRestaurantId, linkedTableId, linkedTableToken)
+        .error(function (argument) {
+          // clear session & storage
+          LinkedTableRestaurantId = null;
+          linkedTableId = null;
+          linkedTableToken = null;
+          rcsLocalstorage.clear(STORAGE_KEY.tableId);
+          rcsLocalstorage.clear(STORAGE_KEY.tableToken);
+          rcsLocalstorage.clear(STORAGE_KEY.tableRestaurantId);
+        });
+    } else {
+      // clear session & storage
+      LinkedTableRestaurantId = null;
+      linkedTableId = null;
+      linkedTableToken = null;
+      rcsLocalstorage.clear(STORAGE_KEY.tableId);
+      rcsLocalstorage.clear(STORAGE_KEY.tableToken);
+      rcsLocalstorage.clear(STORAGE_KEY.tableRestaurantId);
+
+      // sign out on start to secure user session
+      return rcsHttp.User.signOut()
+        .success(function (res) {
+          signedInUser = null;
+        });
+    }
+  }
+
+  function linkTable (tableId, deviceId, successAction, errorAction) {
+    if (!angular.isFunction(successAction)) {
+      successAction = function () {};
+    }
+
+    if (!angular.isFunction(errorAction)) {
+      errorAction = function () {};
+    }
+
+    rcsHttp.Table.link(selectedRestaurant.id, tableId, deviceId)
       .success(function (res) {
-        signedInUser = null;
-        if (res) {
-          signedInUser = res;
-        }
-      });
+        // save to session
+        linkedTableId = res.id;
+        linkedTableToken = res.Token;
+        LinkedTableRestaurantId = selectedRestaurant.id;
+
+        // save to storage
+        rcsLocalstorage.set(STORAGE_KEY.tableId, linkedTableId);
+        rcsLocalstorage.set(STORAGE_KEY.tableToken, linkedTableToken);
+        rcsLocalstorage.set(STORAGE_KEY.tableRestaurantId, LinkedTableRestaurantId);
+
+        successAction();
+      })
+      .error(errorAction);
   }
 
   function getSelectedRestaurant () {
@@ -46,9 +101,11 @@ function rcsSession (rcsHttp) {
   }
 
   function getMode () {
-    if (token) {
+    if (linkedTableId && linkedTableToken && LinkedTableRestaurantId) {
+      // already linked to service
       return 'use';
      } else {
+      // not linked to service yet
       return 'manage'
      }
   }
@@ -117,7 +174,7 @@ function rcsHttp ($http, $log) {
 
   var errorAction = function (data, status) {
     $log.debug(data || 'request failed');
-    alert(data || 'request failed');
+    // alert(data || 'request failed');
     if (status == 403) {
       // $rootScope.$emit(RCS_EVENT.forbidden);
       // $state.go('page.signin');
@@ -156,6 +213,7 @@ function rcsHttp ($http, $log) {
 
   httpService.Table = {
     list: function (restaurantId) {
+      restaurantId = parseInt(restaurantId);
       return $http
         .post(baseUrl + 'Table/list', {
           RestaurantId: restaurantId
@@ -163,14 +221,47 @@ function rcsHttp ($http, $log) {
         .error(errorAction);
     },
     link: function (restaurantId, tableId, deviceId) {
+      restaurantId = parseInt(restaurantId);
+      tableId = parseInt(tableId);
       return $http
         .post(baseUrl + 'Table/link/' + tableId, {
           RestaurantId: restaurantId,
           LinkedTabletId: deviceId
         })
         .error(errorAction);
+    },
+    validateToken: function (restaurantId, tableId, token) {
+      restaurantId = parseInt(restaurantId);
+      tableId = parseInt(tableId);
+      return $http
+        .post(baseUrl + 'Table/validateToken', {
+          RestaurantId: restaurantId,
+          TableId: tableId,
+          Token: token
+        })
+        .error(errorAction);
     }
   }
 
   return httpService;
+}
+
+function rcsLocalstorage ($window) {
+  return {
+    set: function(key, value) {
+      $window.localStorage[key] = value;
+    },
+    get: function(key, defaultValue) {
+      return $window.localStorage[key] || defaultValue;
+    },
+    clear: function(key) {
+      delete $window.localStorage[key];
+    },
+    setObject: function(key, value) {
+      $window.localStorage[key] = JSON.stringify(value);
+    },
+    getObject: function(key) {
+      return JSON.parse($window.localStorage[key] || '{}');
+    }
+  }
 }

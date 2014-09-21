@@ -3,7 +3,7 @@ angular
   .controller('pageCtrl', ['$scope', '$state', 'rcsSession', pageCtrl])
   .controller('signInCtrl', ['$scope', '$state', 'rcsSession', signInCtrl])
   .controller('restaurantCtrl', ['$scope', '$state', 'rcsHttp', 'rcsSession', restaurantCtrl])
-  .controller('tableCtrl', ['$scope', '$state', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
+  .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
   .controller('aboutCtrl', ['$scope', '$state', 'rcsSession', 'TABLE_STATUS', aboutCtrl]);
 
 function pageCtrl ($scope, $state, rcsSession) {
@@ -125,11 +125,20 @@ function restaurantCtrl ($scope, $state, rcsHttp, rcsSession) {
   }
 }
 
-function tableCtrl ($scope, $state, $materialDialog, rcsHttp, rcsSession) {
+function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rcsSession) {
   // scope fields
   $scope.tables = null;
   $scope.selectedIndex = -1;
-  $scope.deviceId = 'A91283HA129'
+  $scope.deviceModel = null;
+  $scope.deviceSystemVersion = null;
+  $scope.deviceId = null;
+
+  try {
+    // there will be exception when app is not running on real device
+    $scope.deviceModel = $cordovaDevice.getModel();
+    $scope.deviceSystemVersion = $cordovaDevice.getVersion();
+    $scope.deviceId = $cordovaDevice.getUUID();
+  } catch (ex) { }
 
   // scope methods
   $scope.clickLink = clickLink;
@@ -159,11 +168,9 @@ function tableCtrl ($scope, $state, $materialDialog, rcsHttp, rcsSession) {
     if ($scope.ifDisableCickLink()) return;
 
     var table = $scope.tables[$scope.selectedIndex];
-    rcsHttp.Table.link(restaurantId, table.id, $scope.deviceId)
-      .success(function success (res) {
 
-        // TODO: add local storage
-
+    rcsSession.linkTable(table.id, $scope.deviceId,
+      function success () {
         var dialogEditMenuItemType = {
           templateUrl: 'template/dialog-linkSuccess.html',
           clickOutsideToClose: false,
@@ -184,8 +191,8 @@ function tableCtrl ($scope, $state, $materialDialog, rcsHttp, rcsSession) {
         }
 
         $materialDialog(dialogEditMenuItemType);
-      })
-      .error(function error (res) {
+      },
+      function error (argument) {
         // TODO: show link error
       });
   }
@@ -195,13 +202,13 @@ function tableCtrl ($scope, $state, $materialDialog, rcsHttp, rcsSession) {
   }
 
   function getLinkingTable () {
-    if ($scope.ifDisableCickLink()) return null;
+    if ($scope.selectedIndex == -1) return null;
 
     return $scope.tables[$scope.selectedIndex];
   }
 
   function ifDisableCickLink () {
-    return $scope.selectedIndex == -1;
+    return $scope.selectedIndex == -1 || !$scope.deviceId;
   }
 }
 

@@ -25,4 +25,4 @@ div(id="restaurant" flex layout="vertical" layout-fill)
               h3 {{restaurant.Description}}
       .action(layout="horizontal" layout-align="center")
         material-button.material-button-raised.material-theme-light(
-          flex="70" ng-hide="ifDisableCickGoto() == true" ng-click="clickGoTo()") 继续
+          flex="70" ng-disabled="ifDisableCickGoto() == true" ng-click="clickGoTo()") 继续

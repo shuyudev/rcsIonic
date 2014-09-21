@@ -7,7 +7,6 @@ div(id="signin" flex layout="vertical" layout-fill)
 
   div.text-unselectable(layout="horizontal" layout-align="center" layout-padding)
     .rcs-pane.material-whiteframe-z3(ng-if="ifSignedIn() == false" layout="vertical")
-      h4.text-center 请输入登录信息
       material-input-group.material-input-group-theme-light
         label(for="0") 用户邮箱
         material-input(id="0" type="text" ng-model="signIn.email" ng-required="true")
@@ -19,7 +18,6 @@ div(id="signin" flex layout="vertical" layout-fill)
           flex="70" ng-click="clickSignIn()") 登录
 
     .rcs-pane.material-whiteframe-z3(ng-if="ifSignedIn() == true")
-      h4.text-center 用户信息
       material-list
         material-item
           .material-tile-left

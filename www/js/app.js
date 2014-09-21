@@ -1,5 +1,6 @@
 angular.module('rcs', [
   'ionic',
+  'ngCordova',
   'ngMaterial',
   'ui.router'
 ])
@@ -39,7 +40,9 @@ function config ($urlRouterProvider, $stateProvider, $httpProvider) {
       controller: 'pageCtrl',
       resolve: {
         handshake: function (rcsSession) {
-          return rcsSession.handshake();
+          return rcsSession.handshake().then(null, function handleError () {
+            // just to make a promise
+          });
         }
       }
     })
