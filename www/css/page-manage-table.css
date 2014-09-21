@@ -42,6 +42,10 @@
   color: inherit;
 }
 
+#table .rcs-pane.list material-content material-radio-group {
+  overflow: hidden;
+}
+
 #table .rcs-pane.info .material-tile-left {
   text-align: center;
   min-width: 50px;

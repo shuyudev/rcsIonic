@@ -6,15 +6,18 @@ div(id="table" flex layout="vertical" layout-fill)
     p 同步数据...
 
   h3.text-center(ng-show="tables != null && tables.length == 0")
-    | 餐厅尚未添加餐桌，请前往管理员页面操作
+    p 餐厅尚未添加餐桌，请前往管理员页面操作
+    i.fa.fa-refresh.fa-4x(ng-click="clickRefreshTable()" ng-class="{'fa-spin':refreshing == true}")
 
   div(ng-show="tables != null && tables.length != 0" layout="horizontal" layout-align="center")
 
     .rcs-pane.list.material-whiteframe-z3(layout="vertical")
-      .pane-header 选择餐桌进行关联
+      .pane-header(layout="horizontal" layout-align="space-between" ng-click="clickRefreshTable()")
+        | 选择餐桌进行关联
+        i.fa.fa-refresh(ng-class="{'fa-spin':refreshing == true}")
       material-content(flex scroll-y)
         material-radio-group(ng-model="selectedIndex")
-          material-list(ng-repeat="table in tables")
+          material-list(ng-repeat="table in tables | filter:ifNotLinked")
             material-item(ng-click="clickTable($index)")
               .material-tile-left
                 material-radio-button(ng-class="{'material-checked':selectedIndex==$index}" noink)
@@ -44,7 +47,7 @@ div(id="table" flex layout="vertical" layout-fill)
             h2.error(ng-show="deviceId == null") 无法获取设备
         material-item(ng-show="selectedIndex != -1")
           .material-tile-left
-            | 目标餐桌
+            | 选择餐桌
           .material-tile-content
             h2 {{getLinkingTable().TableName}} ({{getLinkingTable().TableType}})
       .action(layout="horizontal" layout-align="center")

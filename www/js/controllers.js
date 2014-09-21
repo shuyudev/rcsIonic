@@ -127,6 +127,7 @@ function restaurantCtrl ($scope, $state, rcsHttp, rcsSession) {
 
 function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rcsSession) {
   // scope fields
+  $scope.refreshing = false;
   $scope.tables = null;
   $scope.selectedIndex = -1;
   $scope.deviceModel = null;
@@ -142,9 +143,11 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
 
   // scope methods
   $scope.clickLink = clickLink;
+  $scope.clickRefreshTable = clickRefreshTable;
   $scope.clickTable = clickTable;
   $scope.getLinkingTable = getLinkingTable;
   $scope.ifDisableCickLink = ifDisableCickLink;
+  $scope.ifNotLinked = ifNotLinked;
 
   // locals
   // initialize
@@ -154,13 +157,17 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
 
   var restaurantId = rcsSession.getSelectedRestaurant().id;
 
-  initializeTables();
+  clickRefreshTable();
 
   // defines
-  function initializeTables () {
+  function clickRefreshTable () {
+    $scope.refreshing = true;
+
     return rcsHttp.Table.list(restaurantId)
       .success(function (res) {
+        $scope.refreshing = false;
         $scope.tables = res.Tables
+        $scope.selectedIndex = -1;
       });
   }
 
@@ -209,6 +216,10 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
 
   function ifDisableCickLink () {
     return $scope.selectedIndex == -1 || !$scope.deviceId;
+  }
+
+  function ifNotLinked (table) {
+    return table.LinkedTabletId == null;
   }
 }
 
