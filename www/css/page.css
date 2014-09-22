@@ -1,43 +1,43 @@
-#page-manage .material-toolbar-tools material-button {
+.page .material-toolbar-tools material-button {
   font-size: 18px;
 }
 
-#page-manage material-content.background,
-#page-manage ion-content.background {
+.page material-content.background,
+.page ion-content.background {
   background-color: #f8f4ee;
 }
 
-#page-manage material-toolbar.material-theme-light,
-#page-manage ion-header-bar.bar-light {
+.page material-toolbar.material-theme-light,
+.page ion-header-bar.bar-light {
   background-color: #E5E0D8 !important;
   color: #606060 !important;
 }
 
-#page-manage material-toolbar.material-theme-dark,
-#page-manage ion-header-bar.bar-dark {
+.page material-toolbar.material-theme-dark,
+.page ion-header-bar.bar-dark {
   background-color: #D3CFCA !important;
   color: #606060 !important;
 }
 
-#page-manage material-toolbar h1 {
+.page material-toolbar h1 {
   color: #606060;
 }
 
-#page-manage .bar.bar-dark .title {
+.page .bar.bar-dark .title {
   color: #606060 !important;
 }
 
-#page-manage material-toolbar.material-theme-dark {
+.page material-toolbar.material-theme-dark {
   padding-right: 5px;
 }
 
-#page-manage material-toolbar .fa {
+.page material-toolbar .fa {
   font-size: 22px;
   text-align: center;
   width: 30px;
 }
 
-#page-manage .rcs-pane .action material-button {
+.page .rcs-pane .action material-button {
   margin-left: 5px;
   margin-right: 5px;
   margin-top: 30px;

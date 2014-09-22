@@ -37,7 +37,6 @@ function config ($urlRouterProvider, $stateProvider, $httpProvider) {
     .state('page', {
       abstract: true,
       templateUrl: 'template/page.html',
-      controller: 'pageCtrl',
       resolve: {
         handshake: function (rcsSession) {
           return rcsSession.handshake().then(null, function handleError () {
@@ -50,11 +49,13 @@ function config ($urlRouterProvider, $stateProvider, $httpProvider) {
     // children of page
     .state('page.manage', {
       abstract: true,
-      templateUrl: 'template/page-manage.html'
+      templateUrl: 'template/page-manage.html',
+      controller: 'pageManageCtrl'
     })
     .state('page.use', {
       abstract: true,
-      templateUrl: 'template/page-use.html'
+      templateUrl: 'template/page-use.html',
+      controller: 'pageUseCtrl'
     })
 
     // children of manage
@@ -79,5 +80,17 @@ function config ($urlRouterProvider, $stateProvider, $httpProvider) {
       url: '/about',
       templateUrl: 'template/page-use-about.html',
       controller: 'aboutCtrl'
+    })
+    .state('page.use.menu', {
+      url: '/menu',
+      templateUrl: 'template/page-use-menu.html'
+    })
+    .state('page.use.eating', {
+      url: '/eating',
+      templateUrl: 'template/page-use-eating.html'
+    })
+    .state('page.use.payment', {
+      url: '/payment',
+      templateUrl: 'template/page-use-payment.html'
     });
 }

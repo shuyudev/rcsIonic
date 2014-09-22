@@ -1,4 +1,13 @@
-h1.text-center 使用
-
-//- nested ui-view is not working well in jade
-<div ui-view layout="vertical" layout-fill></div>
+.page(id="page-use" flex layout="vertical" layout-fill)
+  material-toolbar.material-theme-dark
+    .material-toolbar-tools(layout="horizontal")
+      h1
+        i.fa.fa-cutlery
+        span(ng-show="table != null") {{table.Restaurant.RestaurantName}} \ <b>{{table.TableName}}</b> ({{table.TableType}})
+      div(flex)
+      material-button.hover
+        //- i.fa.fa-cutlery
+        b 已点菜品
+  material-content.background(layout="vertical" layout-fill scroll-y)
+    //- nested ui-view is not working well in jade
+    <div ui-view layout="vertical" layout-fill></div>

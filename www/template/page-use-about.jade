@@ -1,2 +1,6 @@
 div(id="about" flex layout="vertical" layout-fill)
   h2.text-center 餐厅管理系统可以帮你吃的更多！
+
+  div(layout="horizontal" layout-align="center")
+    material-button.material-button-raised.material-theme-light.action(ng-hide="ifHideClickStartOrder()" ng-click="clickStartOrder()") 开始使用
+    h2(ng-show="ifHideClickStartOrder()") 欢迎再次光临！

@@ -1,12 +1,13 @@
 angular
   .module('rcs')
-  .controller('pageCtrl', ['$scope', '$state', 'rcsSession', pageCtrl])
+  .controller('pageManageCtrl', ['$scope', '$state', 'rcsSession', pageManageCtrl])
+  .controller('pageUseCtrl', ['$scope', '$state', 'rcsSession', pageUseCtrl])
   .controller('signInCtrl', ['$scope', '$state', 'rcsSession', signInCtrl])
   .controller('restaurantCtrl', ['$scope', '$state', 'rcsHttp', 'rcsSession', restaurantCtrl])
   .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
   .controller('aboutCtrl', ['$scope', '$state', 'rcsSession', 'TABLE_STATUS', aboutCtrl]);
 
-function pageCtrl ($scope, $state, rcsSession) {
+function pageManageCtrl ($scope, $state, rcsSession) {
   // scope fields
   // scope methods
   $scope.clickRestaurant = clickRestaurant;
@@ -34,6 +35,16 @@ function pageCtrl ($scope, $state, rcsSession) {
     var user = rcsSession.getSignedInUser();
     return user ? user.Name : null;
   }
+}
+
+function pageUseCtrl ($scope, $state, rcsSession) {
+  // scope fields
+  $scope.table = rcsSession.getSelectedTable();
+
+  // scope methods
+  // locals
+  // initialize
+  // defines
 }
 
 function signInCtrl ($scope, $state, rcsSession) {
@@ -221,24 +232,33 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
 
 function aboutCtrl ($scope, $state, rcsSession, TABLE_STATUS) {
   // scope fields
+  $scope.table = rcsSession.getSelectedTable();
+
   // scope methods
+  $scope.clickStartOrder = clickStartOrder;
+  $scope.ifHideClickStartOrder = ifHideClickStartOrder;
+
   // locals
   // initialize
-  clickStartToUse();
+  if (!$scope.table) {
+    return $state.go('page.manage.signin', {location: 'replace'});
+  }
+
+  switch($scope.table.Status) {
+    case TABLE_STATUS.ordering:
+      return $state.go('page.use.menu', {location: 'replace'});
+    case TABLE_STATUS.ordered:
+      return $state.go('page.use.eating', {location: 'replace'});
+    case TABLE_STATUS.paying:
+      return $state.go('page.use.payment', {location: 'replace'});
+  }
 
   // defines
-  function clickStartToUse () {
-    if (rcsSession.getMode() == 'manage') {
-      return $state.go('page.manage.signin', {location: 'replace'});
-    }
+  function clickStartOrder () {
+    return $state.go('page.use.menu', {location: 'replace'});
+  }
 
-    switch(rcsSession.getTableStatus()) {
-      case TABLE_STATUS.ordering:
-        return $state.go('page.use.menu', {location: 'replace'});
-      case TABLE_STATUS.ordered:
-        return $state.go('page.use.eating', {location: 'replace'});
-      case TABLE_STATUS.paying:
-        return $state.go('page.use.payment', {location: 'replace'});
-    }
+  function ifHideClickStartOrder () {
+    return !$scope.table || $scope.table.Status == TABLE_STATUS.paid;
   }
 }
