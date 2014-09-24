@@ -3,8 +3,11 @@
     .material-toolbar-tools(layout="horizontal")
       h1
         i.fa.fa-cutlery
-        span(ng-show="table != null") {{table.Restaurant.RestaurantName}} \ <b>{{table.TableName}}</b> ({{table.TableType}})
+        span(ng-show="table != null") <b>{{table.TableName}}</b> ({{table.TableType}})
       div(flex)
+      material-button.hover
+        //- i.fa.fa-cutlery
+        b 呼叫服务
       material-button.hover
         //- i.fa.fa-cutlery
         b 已点菜品

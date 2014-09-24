@@ -5,7 +5,8 @@ angular
   .controller('signInCtrl', ['$scope', '$state', 'rcsSession', signInCtrl])
   .controller('restaurantCtrl', ['$scope', '$state', 'rcsHttp', 'rcsSession', restaurantCtrl])
   .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
-  .controller('aboutCtrl', ['$scope', '$state', 'rcsSession', 'TABLE_STATUS', aboutCtrl]);
+  .controller('aboutCtrl', ['$scope', '$state', 'rcsSession', 'TABLE_STATUS', aboutCtrl])
+  .controller('menuCtrl', ['$rootScope', '$scope', '$state', 'rcsSession', 'RCS_EVENT', menuCtrl]);
 
 function pageManageCtrl ($scope, $state, rcsSession) {
   // scope fields
@@ -260,5 +261,122 @@ function aboutCtrl ($scope, $state, rcsSession, TABLE_STATUS) {
 
   function ifHideClickStartOrder () {
     return !$scope.table || $scope.table.Status == TABLE_STATUS.paid;
+  }
+}
+
+function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT) {
+  // scope fields
+  $scope.menuItems = null;
+  $scope.orderingGroup = null;
+  $scope.menuTypes = null;
+  $scope.selectedIndex = null;
+  $scope.menuItemsRows = null;
+
+  // scope methods
+  $scope.clickConfirm = clickConfirm;
+  $scope.clickOrderingMinus = clickOrderingMinus;
+  $scope.clickOrderingPlus = clickOrderingPlus;
+  $scope.clickRefreshMenu = clickRefreshMenu;
+  $scope.getMenuItemRows = getMenuItemRows;
+  $scope.onTabSelected = onTabSelected;
+
+  // locals
+  var makeOrderGroupFilter = makeOrderGroup();
+  var ordering = null;
+
+  // events
+  $rootScope.$on(RCS_EVENT.orderingUpdate, updateOrdering);
+
+  // initialize
+  initializeMenu();
+
+  // defines
+  function initializeMenu () {
+    $scope.menuItems = rcsSession.getMenuItems();
+    $scope.menuTypes = [];
+
+    for (var i = 0 ; i < $scope.menuItems.length; i++) {
+      var type = $scope.menuItems[i].Type;
+      if ($scope.menuTypes.indexOf(type) == -1) {
+        $scope.menuTypes.push(type);
+      }
+    }
+
+    updateOrdering();
+
+    $scope.selectedIndex = 0;
+    onTabSelected($scope.selectedIndex);
+  }
+
+  function clickConfirm () {
+    rcsSession.requestOrder(function success () {
+      $state.go('page.use.eating');
+    });
+  }
+
+  function clickOrderingMinus (ordering) {
+    rcsSession.decreaseMenuItemSelection(ordering.id);
+  }
+
+  function clickOrderingPlus (ordering) {
+    rcsSession.increaseMenuItemSelection(ordering.id);
+  }
+
+  function clickRefreshMenu () {
+    rcsSession.downloadMenu(function success () {
+      initializeMenu();
+    })
+  }
+
+  function getMenuItemRows () {
+
+  }
+
+  function onTabSelected (index) {
+    $scope.selectedIndex = index;
+
+    var menuItemsRows = [];
+    var row = 0;
+    var rowItemLimit = 2;
+    var rowItemCount = 0;
+
+    for (var i = $scope.menuItems.length - 1; i >= 0; i--) {
+      if (!menuItemsRows[row]) {
+        menuItemsRows[row] = [];
+      }
+
+      var menuItem = $scope.menuItems[i];
+      if (menuItem.Type != $scope.menuTypes[$scope.selectedIndex]) {
+        continue;
+      }
+
+      menuItemsRows[row].push(menuItem);
+      if (++rowItemCount == rowItemLimit) {
+        row++;
+        rowItemCount = 0;
+      }
+    };
+
+    $scope.menuItemsRows = menuItemsRows;
+  }
+
+  function updateOrdering () {
+    ordering = rcsSession.getOrdering();
+
+    // group the order to show count
+    $scope.orderingGroup = makeOrderGroupFilter(
+      ordering,
+      $scope.menuItems);
+
+    // mark if menuItem is selected
+    for (var i = 0 ; i < $scope.menuItems.length; i++) {
+      var menuItem = $scope.menuItems[i];
+      if (ordering.indexOf(menuItem.id) != -1) {
+        menuItem.selected = true;
+      } else {
+        menuItem.selected = false;
+      }
+    }
+
   }
 }

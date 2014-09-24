@@ -2,23 +2,31 @@ angular
   .module('rcs')
   .factory('rcsLocalstorage', ['$window', rcsLocalstorage])
   .factory('rcsHttp', ['$http', '$log', rcsHttp])
-  .factory('rcsSession', ['rcsLocalstorage', 'rcsHttp', 'STORAGE_KEY', rcsSession]);
+  .factory('rcsSession', ['$rootScope', 'rcsLocalstorage', 'rcsHttp', 'RCS_EVENT', 'STORAGE_KEY', rcsSession]);
 ;
 
-function rcsSession (rcsLocalstorage, rcsHttp, STORAGE_KEY) {
+function rcsSession ($rootScope, rcsLocalstorage, rcsHttp, RCS_EVENT, STORAGE_KEY) {
   var sessionService = {
+    downloadMenu: downloadMenu,
+    getMenuItems: getMenuItems,
+    getOrdering: getOrdering,
     getSelectedRestaurant: getSelectedRestaurant,
     getSelectedTable: getSelectedTable,
     getSignedInUser: getSignedInUser,
     handshake: handshake,
     linkTable: linkTable,
+    increaseMenuItemSelection: increaseMenuItemSelection,
+    decreaseMenuItemSelection: decreaseMenuItemSelection,
     selectRestaurant: selectRestaurant,
     signIn: signIn,
     signOut: signOut,
-    unselectRestaurant: unselectRestaurant
+    unselectRestaurant: unselectRestaurant,
+    requestOrder: requestOrder
   }
 
   // locals
+  var ordering = [];
+  var menuItems = null;
   var signedInUser = null;
   var selectedRestaurant = null;
   var selectedTable = null;
@@ -38,6 +46,7 @@ function rcsSession (rcsLocalstorage, rcsHttp, STORAGE_KEY) {
       return rcsHttp.Table.validateToken(linkedTableRestaurantId, linkedTableId, linkedTableToken)
         .success(function (res) {
           selectedTable = res.Table;
+          menuItems = res.Menu;
         })
         .error(function () {
           // clear session & storage
@@ -64,6 +73,24 @@ function rcsSession (rcsLocalstorage, rcsHttp, STORAGE_KEY) {
           signedInUser = null;
         });
     }
+  }
+
+  function downloadMenu (successAction, errorAction) {
+    if (!angular.isFunction(successAction)) {
+      successAction = function () {};
+    }
+
+    if (!angular.isFunction(errorAction)) {
+      errorAction = function () {};
+    }
+
+    rcsHttp.Restaurant.downloadMenu(linkedTableRestaurantId, linkedTableId, linkedTableToken)
+      .success(function (res) {
+        var menuItems = res.Menu;
+
+        successAction();
+      })
+      .error(errorAction);
   }
 
   function linkTable (tableId, deviceId, successAction, errorAction) {
@@ -97,6 +124,14 @@ function rcsSession (rcsLocalstorage, rcsHttp, STORAGE_KEY) {
       .error(errorAction);
   }
 
+  function getMenuItems () {
+    return angular.copy(menuItems);
+  }
+
+  function getOrdering () {
+    return angular.copy(ordering);
+  }
+
   function getSelectedRestaurant () {
     return selectedRestaurant;
   }
@@ -113,6 +148,21 @@ function rcsSession (rcsLocalstorage, rcsHttp, STORAGE_KEY) {
     selectedRestaurant = restaurant;
 
     successAction();
+  }
+
+  function increaseMenuItemSelection (menuItemId) {
+    ordering.push(menuItemId);
+    $rootScope.$emit(RCS_EVENT.orderingUpdate);
+  }
+
+  function decreaseMenuItemSelection (menuItemId) {
+    for (var i = ordering.length - 1; i >= 0; i--) {
+      if (ordering[i] == menuItemId) {
+        ordering.splice(i, 1);
+        break;
+      }
+    }
+    $rootScope.$emit(RCS_EVENT.orderingUpdate);
   }
 
   function getSelectedTable () {
@@ -163,6 +213,23 @@ function rcsSession (rcsLocalstorage, rcsHttp, STORAGE_KEY) {
     successAction();
   }
 
+  function requestOrder (successAction, errorAction) {
+    if (!angular.isFunction(successAction)) {
+      successAction = function () {};
+    }
+
+    if (!angular.isFunction(errorAction)) {
+      errorAction = function () {};
+    }
+
+    rcsHttp.Request.createOrder(linkedTableRestaurantId, linkedTableId, linkedTableToken, ordering)
+      .success(function (res) {
+        ordering = [];
+        successAction();
+      })
+      .error(errorAction);
+  }
+
   return sessionService;
 }
 
@@ -206,6 +273,15 @@ function rcsHttp ($http, $log) {
       return $http
         .post(baseUrl + 'Restaurant/list')
         .error(errorAction);
+    },
+    downloadMenu: function (restaurantId, tableId, token) {
+      return $http
+        .post(baseUrl + 'Restaurant/downloadMenu', {
+          RestaurantId: restaurantId,
+          TableId: tableId,
+          Token: token
+        })
+        .error(errorAction);
     }
   }
 
@@ -238,6 +314,19 @@ function rcsHttp ($http, $log) {
           Token: token
         })
         .error(errorAction);
+    }
+  }
+
+  httpService.Request = {
+    createOrder: function (restaurantId, tableId, token, orderItems) {
+      return $http
+        .post(baseUrl + 'Request/create', {
+          RestaurantId: restaurantId,
+          TableId: tableId,
+          Token: token,
+          Type: 'order',
+          OrderItems: orderItems
+        })
     }
   }
 

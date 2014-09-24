@@ -11,4 +11,7 @@ angular
     tableToken: 'rcs-table-token',
     tableId: 'rcs-table-id',
     tableRestaurantId: 'rcs-table-restaurantId'
+  })
+  .constant('RCS_EVENT', {
+    orderingUpdate: 'ordering-update'
   });

@@ -83,7 +83,8 @@ function config ($urlRouterProvider, $stateProvider, $httpProvider) {
     })
     .state('page.use.menu', {
       url: '/menu',
-      templateUrl: 'template/page-use-menu.html'
+      templateUrl: 'template/page-use-menu.html',
+      controller: 'menuCtrl'
     })
     .state('page.use.eating', {
       url: '/eating',

@@ -1,0 +1,13 @@
+-var menuItemClass = "{"
+-menuItemClass += "'selected':menuItem.selected == true"
+-menuItemClass += "}"
+
+material-button.material-button-raised.rcs-menu-item(
+  noink
+  ng-class=menuItemClass
+  ng-click="clickMenuItem()")
+  .content(layout="vertical" layout-fill layout-align="start start")
+    b(flex="100") {{menuItem.Name}}
+    .price(flex="100" layout="horizontal" layout-fill layout-align="start start")
+      span.normal {{menuItem.Price}}元
+      span.premium(ng-if="menuItem.PremiumPrice != null") {{menuItem.PremiumPrice}}元 <i>(会员价)</i>
