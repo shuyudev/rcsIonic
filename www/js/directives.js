@@ -6,7 +6,7 @@ function rcsMenuItem (rcsSession) {
   return {
     link: link,
     restrict: 'E',
-    templateUrl: '/template/directive-rcsMenuItem.html',
+    templateUrl: 'template/directive-rcsMenuItem.html',
     replace: false
   };
 

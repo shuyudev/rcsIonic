@@ -15,7 +15,7 @@
 }
 
 #menu .rcs-pane.list {
-  /*width: 300px;*/
+  height: 400px;
 }
 
 #menu .rcs-pane.info {
@@ -24,7 +24,7 @@
 }
 
 #menu .pane-header {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
   padding-bottom: 8px;
   border-bottom: 2px solid #8A1717;
@@ -36,7 +36,7 @@
 }
 
 #menu .pane-header > material-button {
-  width: 50%;
+  width: 45%;
   height: 40px;
   line-height: 30px;
 }
@@ -52,6 +52,10 @@
 #menu material-tab {
   background-color: #fff;
   /*border-right: 3px solid #f1f1f1;*/
+}
+
+#menu .tabs-header {
+  background-color: #8A1717;
 }
 
 #menu .tabs-header-items {
@@ -75,6 +79,22 @@
   position: absolute;
   margin-top: -5px;
   /*width: 50% !important;*/
+}
+
+#menu material-content {
+  padding-bottom: 10px;
+}
+
+#menu .page-footer {
+  height: 40px;
+  line-height: 30px;
+  font-size: 22px;
+}
+
+#menu .page-footer material-button {
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 20%;
 }
 
 #menu rcs-menu-item {

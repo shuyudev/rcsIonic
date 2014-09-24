@@ -267,22 +267,29 @@ function aboutCtrl ($scope, $state, rcsSession, TABLE_STATUS) {
 function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT) {
   // scope fields
   $scope.menuItems = null;
+  $scope.ordering = null;
   $scope.orderingGroup = null;
   $scope.menuTypes = null;
   $scope.selectedIndex = null;
+  $scope.currentPage = null;
+  $scope.maxPage = null;
   $scope.menuItemsRows = null;
 
   // scope methods
   $scope.clickConfirm = clickConfirm;
   $scope.clickOrderingMinus = clickOrderingMinus;
   $scope.clickOrderingPlus = clickOrderingPlus;
+  $scope.clickPageNext = clickPageNext;
+  $scope.clickPagePrevious = clickPagePrevious;
   $scope.clickRefreshMenu = clickRefreshMenu;
-  $scope.getMenuItemRows = getMenuItemRows;
   $scope.onTabSelected = onTabSelected;
 
   // locals
+  var loadPage = loadPage;
   var makeOrderGroupFilter = makeOrderGroup();
-  var ordering = null;
+  var menuItemsRowsAll = null;
+
+  var pageRowLimit = 3;
 
   // events
   $rootScope.$on(RCS_EVENT.orderingUpdate, updateOrdering);
@@ -294,6 +301,8 @@ function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT) {
   function initializeMenu () {
     $scope.menuItems = rcsSession.getMenuItems();
     $scope.menuTypes = [];
+
+    if (!$scope.menuItems) return;
 
     for (var i = 0 ; i < $scope.menuItems.length; i++) {
       var type = $scope.menuItems[i].Type;
@@ -322,27 +331,42 @@ function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT) {
     rcsSession.increaseMenuItemSelection(ordering.id);
   }
 
+  function clickPageNext () {
+    if ($scope.currentPage == $scope.maxPage) return;
+    $scope.currentPage++;
+    loadPage();
+  }
+
+  function clickPagePrevious () {
+    if ($scope.currentPage == 1) return;
+    $scope.currentPage--;
+    loadPage();
+  }
+
+
+  function loadPage () {
+    var start = ($scope.currentPage - 1) * pageRowLimit;
+    $scope.menuItemsRows = menuItemsRowsAll.slice(start, start + pageRowLimit);
+  }
+
   function clickRefreshMenu () {
     rcsSession.downloadMenu(function success () {
       initializeMenu();
     })
   }
 
-  function getMenuItemRows () {
-
-  }
-
   function onTabSelected (index) {
     $scope.selectedIndex = index;
 
-    var menuItemsRows = [];
+    // refresh menuItemsRowsAll
     var row = 0;
     var rowItemLimit = 2;
     var rowItemCount = 0;
 
+    menuItemsRowsAll = [];
     for (var i = $scope.menuItems.length - 1; i >= 0; i--) {
-      if (!menuItemsRows[row]) {
-        menuItemsRows[row] = [];
+      if (!menuItemsRowsAll[row]) {
+        menuItemsRowsAll[row] = [];
       }
 
       var menuItem = $scope.menuItems[i];
@@ -350,28 +374,33 @@ function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT) {
         continue;
       }
 
-      menuItemsRows[row].push(menuItem);
+      menuItemsRowsAll[row].push(menuItem);
       if (++rowItemCount == rowItemLimit) {
         row++;
         rowItemCount = 0;
       }
     };
 
-    $scope.menuItemsRows = menuItemsRows;
+    // refresh page count
+    $scope.currentPage = 1;
+    $scope.maxPage = Math.floor(menuItemsRowsAll.length / pageRowLimit);
+
+    // load page
+    loadPage();
   }
 
   function updateOrdering () {
-    ordering = rcsSession.getOrdering();
+    $scope.ordering = rcsSession.getOrdering();
 
     // group the order to show count
     $scope.orderingGroup = makeOrderGroupFilter(
-      ordering,
+      $scope.ordering,
       $scope.menuItems);
 
     // mark if menuItem is selected
     for (var i = 0 ; i < $scope.menuItems.length; i++) {
       var menuItem = $scope.menuItems[i];
-      if (ordering.indexOf(menuItem.id) != -1) {
+      if ($scope.ordering.indexOf(menuItem.id) != -1) {
         menuItem.selected = true;
       } else {
         menuItem.selected = false;
