@@ -1,2 +1,32 @@
-div(id="about" flex layout="vertical" layout-fill)
-  h2.text-center Enjoy eating!
+div(id="eating" flex layout="vertical" layout-fill)
+
+  .pane-area(layout="horizontal" layout-align="center")
+
+    .rcs-pane.ordered.material-whiteframe-z3(flex="60" layout="vertical")
+
+      .pane-header(layout="horizontal")
+        div(flex="40" ng-click="clickRefresh()")
+          span.colored [{{ordered.length}}]
+          span 已点菜品
+          span.fa.fa-refresh(ng-class="{'fa-spin':refreshing == true}")
+        div(flex)
+        material-button.material-button-raised.material-theme-light(
+          ng-click="clickGoToOrder()")
+          | 添加
+
+      material-content(flex scroll-y)
+        material-list
+          material-item(ng-repeat="ordered in orderedGroup | orderBy:['type'] track by $index")
+            .material-left {{ordered.type}}
+            .material-tile-content
+              h2 <b>{{ordered.name}}</b>
+            .material-tile-right x{{ordered.count}}
+
+    .rcs-pane.call.material-whiteframe-z3(flex="40" layout="vertical")
+      .pane-header(layout="horizontal")
+        span 服务
+
+      div(layout="vertical" layout-align="space-around" layout-fill)
+        h2 自助加水
+        h2 自助结帐
+        h2 呼叫服务员

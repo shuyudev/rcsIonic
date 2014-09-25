@@ -3,7 +3,6 @@ angular
   .factory('rcsLocalstorage', ['$window', rcsLocalstorage])
   .factory('rcsHttp', ['$http', '$log', rcsHttp])
   .factory('rcsSession', ['$rootScope', 'rcsLocalstorage', 'rcsHttp', 'RCS_EVENT', 'STORAGE_KEY', rcsSession]);
-;
 
 function rcsSession ($rootScope, rcsLocalstorage, rcsHttp, RCS_EVENT, STORAGE_KEY) {
   var sessionService = {
@@ -112,6 +111,7 @@ function rcsSession ($rootScope, rcsLocalstorage, rcsHttp, RCS_EVENT, STORAGE_KE
         rcsHttp.Table.validateToken(linkedTableRestaurantId, linkedTableId, linkedTableToken)
           .success(function (res) {
             selectedTable = res.Table;
+            menuItems = res.Menu;
             // save to storage
             rcsLocalstorage.set(STORAGE_KEY.tableId, linkedTableId);
             rcsLocalstorage.set(STORAGE_KEY.tableToken, linkedTableToken);
@@ -225,9 +225,12 @@ function rcsSession ($rootScope, rcsLocalstorage, rcsHttp, RCS_EVENT, STORAGE_KE
     rcsHttp.Request.createOrder(linkedTableRestaurantId, linkedTableId, linkedTableToken, ordering)
       .success(function (res) {
         ordering = [];
-        successAction();
+        selectedTable = res.setTable;
+        successAction(res);
       })
-      .error(errorAction);
+      .error(function (res) {
+        errorAction(res);
+      });
   }
 
   return sessionService;

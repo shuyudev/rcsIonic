@@ -10,18 +10,7 @@ angular.module('rcs', [
   '$httpProvider',
   config
 ])
-.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-    if(window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-    }
-    if(window.StatusBar) {
-      StatusBar.styleDefault();
-    }
-  });
-})
+.run(['$rootScope', '$state', '$stateParams', '$ionicPlatform', run]);
 
 function config ($urlRouterProvider, $stateProvider, $httpProvider) {
   // to make "credentialed" requests that are cognizant of HTTP Cookies and HTTP Authentication information
@@ -43,7 +32,8 @@ function config ($urlRouterProvider, $stateProvider, $httpProvider) {
             // just to make a promise
           });
         }
-      }
+      },
+      controller: 'pageCtrl'
     })
 
     // children of page
@@ -88,10 +78,37 @@ function config ($urlRouterProvider, $stateProvider, $httpProvider) {
     })
     .state('page.use.eating', {
       url: '/eating',
-      templateUrl: 'template/page-use-eating.html'
+      templateUrl: 'template/page-use-eating.html',
+      controller: 'eatingCtrl'
     })
     .state('page.use.payment', {
       url: '/payment',
       templateUrl: 'template/page-use-payment.html'
     });
+}
+
+function run ($rootScope, $state, $stateParams, $ionicPlatform) {
+  $ionicPlatform.ready(function() {
+    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+    // for form inputs)
+    if(window.cordova && window.cordova.plugins.Keyboard) {
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+    }
+    if(window.StatusBar) {
+      StatusBar.styleDefault();
+    }
+  });
+
+  // remember the previous state for nav purpose
+  $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+    if ($state.previous && $state.previous.state.name == toState.name) {
+      // get rid of circlular state
+      $state.previous = null;
+    } else {
+      $state.previous = {
+        state: fromState,
+        params: fromParams
+      }
+    }
+  });
 }

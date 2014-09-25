@@ -15,7 +15,11 @@ div(id="signin" flex layout="vertical" layout-fill)
         material-input(id="1" type="password" ng-model="signIn.password" ng-required="true")
       .action(layout="horizontal" layout-align="center")
         material-button.material-button-raised.material-theme-light(
-          flex="70" ng-click="clickSignIn()") 登录
+          flex="70" ng-click="clickSignIn()" ng-hide="signingIn == true") 登录
+
+        .text-center(ng-show="signingIn == true")
+          i.fa.fa-2x(ng-class="{'fa-spinner fa-spin':signingIn == true}")
+          h4 正在登录
 
     .rcs-pane.material-whiteframe-z3(ng-if="ifSignedIn() == true")
       material-list

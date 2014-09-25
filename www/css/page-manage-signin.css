@@ -28,3 +28,15 @@
 #signin .pane input {
   width: 100%;
 }
+
+#signin .action {
+  height: 110px;
+}
+
+#signin .action div {
+  margin-top: 30px;
+}
+
+#signin .action h4 {
+  font-size: 16px;
+}

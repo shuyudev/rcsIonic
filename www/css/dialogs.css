@@ -3,6 +3,10 @@
   font-size: 18px;
 }
 
+#rcs .dialog-content {
+  padding-bottom: 0px;
+}
+
 #rcs .dialog-actions {
   justify-content: center;
 }

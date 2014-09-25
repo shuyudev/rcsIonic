@@ -1,5 +1,10 @@
 .page .material-toolbar-tools material-button {
-  font-size: 18px;
+  font-size: 20px;
+  height: 64px;
+  line-height: 54px;
+  margin: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .page material-content.background,
@@ -28,7 +33,7 @@
 }
 
 .page material-toolbar.material-theme-dark {
-  padding-right: 5px;
+  /*padding-right: 5px;*/
 }
 
 .page material-toolbar .fa {
@@ -44,4 +49,35 @@
   margin-bottom: 15px;
   height: 60px;
   line-height: 48px;
+}
+
+.page .material-toolbar-tools {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+#page-use .material-toolbar-tools #return {
+  background-color: #f8f4ee;
+  height: 64px;
+  line-height: 64px;
+  margin-left: 0px;
+  width: 64px;
+  text-align: center;
+  cursor: pointer;
+}
+
+#page-use .material-toolbar-tools #return .fa {
+  /*color: #f1f1f1;*/
+  font-size: 28px;
+}
+
+#page-use .material-toolbar-tools .welcome {
+  font-size: 20px;
+  height: 64px;
+  line-height: 64px;
+  padding-right: 10px;
+}
+
+#page-use b.colored {
+  color: #8A1717;
 }

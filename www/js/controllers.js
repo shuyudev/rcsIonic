@@ -1,12 +1,48 @@
 angular
   .module('rcs')
+  .controller('pageCtrl', ['$scope', '$materialDialog', pageCtrl])
   .controller('pageManageCtrl', ['$scope', '$state', 'rcsSession', pageManageCtrl])
   .controller('pageUseCtrl', ['$scope', '$state', 'rcsSession', pageUseCtrl])
-  .controller('signInCtrl', ['$scope', '$state', 'rcsSession', signInCtrl])
+  .controller('signInCtrl', ['$scope', '$state', '$timeout', 'rcsSession', 'RCS_REQUEST_ERR', signInCtrl])
   .controller('restaurantCtrl', ['$scope', '$state', 'rcsHttp', 'rcsSession', restaurantCtrl])
   .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
   .controller('aboutCtrl', ['$scope', '$state', 'rcsSession', 'TABLE_STATUS', aboutCtrl])
-  .controller('menuCtrl', ['$rootScope', '$scope', '$state', 'rcsSession', 'RCS_EVENT', menuCtrl]);
+  .controller('menuCtrl', ['$rootScope', '$scope', '$state', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', menuCtrl])
+  .controller('eatingCtrl', ['$rootScope', '$scope', '$state', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', eatingCtrl]);
+
+function requestErrorAction (res, handler) {
+  // when the error is not defined, or when there is no handler, or when it is not handled
+  if (!res.status || !angular.isFunction(handler) || !handler()) {
+    alert('request failed');
+  }
+}
+
+function pageCtrl ($scope, $materialDialog) {
+  // scope methods
+  $scope.simpleDialog = simpleDialog;
+
+  // defines
+  function simpleDialog (textId, dissmissAction) {
+    if (!angular.isFunction(dissmissAction)) {
+      dissmissAction = function () {};
+    }
+
+    $materialDialog({
+      templateUrl: 'template/dialog-message.html',
+      clickOutsideToClose: true,
+      escapeToClose: true,
+      controller: ['$scope', '$hideDialog', function($scope, $hideDialog) {
+        $scope.textId = textId;
+        $scope.clickDismiss = clickDismiss;
+
+        function clickDismiss () {
+          dissmissAction();
+          $hideDialog();
+        }
+      }]
+    });
+  }
+}
 
 function pageManageCtrl ($scope, $state, rcsSession) {
   // scope fields
@@ -43,17 +79,71 @@ function pageUseCtrl ($scope, $state, rcsSession) {
   $scope.table = rcsSession.getSelectedTable();
 
   // scope methods
+  $scope.clickReturn = clickReturn;
+  $scope.getOrdered = getOrdered;
+  $scope.ifShowCall = ifShowCall;
+  $scope.ifShowEating = ifShowEating;
+  $scope.ifShowOrdered = ifShowOrdered;
+  $scope.ifShowReturn = ifShowReturn;
+
   // locals
   // initialize
   // defines
+  function clickReturn () {
+    return $state.go($state.previous.state.name);
+  }
+
+  function getOrdered () {
+    return rcsSession.getSelectedTable().OrderItems ? rcsSession.getSelectedTable().OrderItems : [];
+  }
+
+  function ifShowCall () {
+    // for eating page, the main content would contain it
+    if ($state.current.name == 'page.use.eating') {
+      return false;
+    }
+  }
+
+  function ifShowEating () {
+    if ($state.current.name != 'page.use.eating') {
+      return false;
+    }
+  }
+
+  function ifShowOrdered () {
+    // for eating page, the main content would contain it
+    if ($state.current.name == 'page.use.eating') {
+      return false;
+    }
+
+    if (getOrdered().length == 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  function ifShowReturn () {
+    // disable go back for about and eating page
+    if ($state.current.name == 'page.use.about' || $state.current.name == 'page.use.eating') {
+      return false;
+    }
+
+    if (!$state.previous || $state.previous.state.abstract) {
+      return false;
+    }
+
+    return true;
+  }
 }
 
-function signInCtrl ($scope, $state, rcsSession) {
+function signInCtrl ($scope, $state, $timeout, rcsSession, RCS_REQUEST_ERR) {
   // scope fields
   $scope.signIn = {
     email: '',
     password: ''
   };
+  $scope.signingIn = false;
 
   // scope methods
   $scope.clickGoToRestaurants = clickGoToRestaurants;
@@ -67,13 +157,31 @@ function signInCtrl ($scope, $state, rcsSession) {
 
   // defines
   function clickSignIn () {
-    rcsSession.signIn(
-      $scope.signIn.email,
-      $scope.signIn.password,
-      clickGoToRestaurants,
-      function () {
-        alert('login failed');
-      });
+    if ($scope.signingIn) return;
+    if (!$scope.signIn.email || !$scope.signIn.password) return;
+
+    // use timeout in order to show button ink
+    $timeout(function () {
+      $scope.signingIn = true;
+      rcsSession.signIn(
+        $scope.signIn.email,
+        $scope.signIn.password,
+        function success () {
+          clickGoToRestaurants();
+        },
+        function error (res, status) {
+          requestErrorAction(res, function () {
+            switch (res.status) {
+              case RCS_REQUEST_ERR.rcsSignInFail:
+                $scope.simpleDialog(0);
+                $scope.signingIn = false;
+                return true;
+              default:
+                return false;
+            }
+          });
+        });
+    }, 250);
   }
 
   function clickGoToRestaurants () {
@@ -247,7 +355,6 @@ function aboutCtrl ($scope, $state, rcsSession, TABLE_STATUS) {
 
   switch($scope.table.Status) {
     case TABLE_STATUS.ordering:
-      return $state.go('page.use.menu', {location: 'replace'});
     case TABLE_STATUS.ordered:
       return $state.go('page.use.eating', {location: 'replace'});
     case TABLE_STATUS.paying:
@@ -264,7 +371,7 @@ function aboutCtrl ($scope, $state, rcsSession, TABLE_STATUS) {
   }
 }
 
-function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT) {
+function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT, RCS_REQUEST_ERR) {
   // scope fields
   $scope.menuItems = null;
   $scope.ordering = null;
@@ -319,7 +426,17 @@ function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT) {
 
   function clickConfirm () {
     rcsSession.requestOrder(function success () {
-      $state.go('page.use.eating');
+      $state.go('page.use.about');
+    }, function error (res) {
+      requestErrorAction(res, function () {
+        switch (res.status) {
+          case RCS_REQUEST_ERR.rcsPendingOrder:
+            $scope.simpleDialog(1);
+            return true;
+          default:
+            return false;
+        }
+      });
     });
   }
 
@@ -407,5 +524,40 @@ function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT) {
       }
     }
 
+  }
+}
+
+function eatingCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT, RCS_REQUEST_ERR) {
+  // scope fields
+  $scope.menuItems = null;
+  $scope.ordered = [];
+  $scope.orderedGroup = null;
+  $scope.refreshing = false;
+
+  // scope methods
+  $scope.clickGoToOrder = clickGoToOrder;
+  $scope.clickRefresh = clickRefresh;
+
+  // locals
+  var makeOrderGroupFilter = makeOrderGroup();
+
+  // events
+  // initialize
+  initializeOrdered();
+
+  // defines
+  function initializeOrdered () {
+    $scope.ordered = rcsSession.getSelectedTable().OrderItems;
+
+    // group the order to show count
+    $scope.orderedGroup = makeOrderGroupFilter($scope.ordered, rcsSession.getMenuItems());
+  }
+
+  function clickGoToOrder () {
+    $state.go('page.use.menu');
+  }
+
+  function clickRefresh () {
+    $scope.refreshing = true;
   }
 }
