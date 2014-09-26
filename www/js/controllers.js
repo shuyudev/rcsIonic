@@ -2,7 +2,7 @@ angular
   .module('rcs')
   .controller('pageCtrl', ['$scope', '$materialDialog', pageCtrl])
   .controller('pageManageCtrl', ['$scope', '$state', 'rcsSession', pageManageCtrl])
-  .controller('pageUseCtrl', ['$scope', '$state', 'rcsSession', pageUseCtrl])
+  .controller('pageUseCtrl', ['$scope', '$state', '$interval', 'rcsSession', pageUseCtrl])
   .controller('signInCtrl', ['$scope', '$state', '$timeout', 'rcsSession', 'RCS_REQUEST_ERR', signInCtrl])
   .controller('restaurantCtrl', ['$scope', '$state', 'rcsHttp', 'rcsSession', restaurantCtrl])
   .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
@@ -74,9 +74,10 @@ function pageManageCtrl ($scope, $state, rcsSession) {
   }
 }
 
-function pageUseCtrl ($scope, $state, rcsSession) {
+function pageUseCtrl ($scope, $state, $interval, rcsSession) {
   // scope fields
   $scope.table = rcsSession.getSelectedTable();
+  $scope.time = new Date();
 
   // scope methods
   $scope.clickReturn = clickReturn;
@@ -87,6 +88,10 @@ function pageUseCtrl ($scope, $state, rcsSession) {
   $scope.ifShowReturn = ifShowReturn;
 
   // locals
+  var refresh = $interval(function() {
+    $scope.time = new Date();
+  }, 1000*30)
+
   // initialize
   // defines
   function clickReturn () {

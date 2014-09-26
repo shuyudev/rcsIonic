@@ -1,7 +1,7 @@
-#eating .pane-area {
-  margin-left: 25px;
-  margin-right: 25px;
-}
+/*#eating .pane-area {
+  margin-left: 45px;
+  margin-right: 45px;
+}*/
 
 #eating .rcs-pane {
   padding-left: 10px;
@@ -15,7 +15,6 @@
 }
 
 #eating .rcs-pane.call {
-  margin-left: 15px;
   height: 400px;
 }
 
@@ -50,4 +49,12 @@
 
 #eating .rcs-pane.ordered .material-left {
   margin-right: 20px;
+}
+
+#eating .rcs-pane.call material-button {
+  width: 80%;
+}
+
+#eating .rcs-pane.call material-button .fa {
+  width: 45px;
 }

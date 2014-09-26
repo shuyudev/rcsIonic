@@ -7,7 +7,6 @@
         i.fa.fa-cutlery
         span(ng-show="table != null") <b>{{table.TableName}}</b> ({{table.TableType}})
       div(flex)
-      b.welcome(ng-show="ifShowEating() == ture") 用餐愉快
       material-button.hover(ng-show="ifShowCall() == ture")
         //- i.fa.fa-cutlery
         b 呼叫服务
@@ -15,6 +14,8 @@
         //- i.fa.fa-cutlery
         b.colored [{{getOrdered().length}}]
         b 已点菜品
+      b.welcome(ng-show="ifShowEating() == ture") 用餐愉快
+      b(ng-show="ifShowEating() == ture") {{time | date:'MM/dd HH:mm'}}
   material-content.background(layout="vertical" layout-fill scroll-y)
     //- nested ui-view is not working well in jade
     <div ui-view layout="vertical" layout-fill></div>
