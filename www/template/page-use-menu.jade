@@ -46,7 +46,7 @@ div(id="menu" flex layout="vertical" layout-fill)
           ng-show="orderingGroup && orderingGroup.length != 0")
           | 确认
 
-      material-content(flex scroll-y)
+      ion-content
         material-list
           material-item(ng-repeat="ordering in orderingGroup | orderBy:['type'] track by $index")
             .material-tile-content

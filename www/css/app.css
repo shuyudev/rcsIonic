@@ -88,3 +88,41 @@ body *
 #rcs material-button .material-button-inner[disabled] {
   z-index: -1;
 }
+
+#rcs ion-content {
+  position: relative;
+  /*leave space for scroll bar*/
+  margin-right: -10px;
+  padding-right: 10px;
+}
+
+#rcs .pane-header {
+  font-size: 20px;
+  font-weight: bold;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #8A1717;
+  height: 52px;
+  padding-top: 5px;
+  min-height: 52px;
+  z-index: 10;
+}
+
+#rcs .pane-header span {
+  margin-top: 10px;
+}
+
+#rcs .pane-header span.colored {
+  color: #8A1717;
+}
+
+#rcs .pane-header span.fa {
+  text-align: center;
+  font-size: 22px;
+  width: 40px;
+}
+
+#rcs .pane-header > material-button {
+  width: 120px;
+  height: 40px;
+  line-height: 30px;
+}

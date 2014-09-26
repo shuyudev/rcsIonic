@@ -23,24 +23,6 @@
   margin-left: 10px;
 }
 
-#menu .pane-header {
-  font-size: 20px;
-  font-weight: bold;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #8A1717;
-  height: 52px;
-}
-
-#menu .pane-header > span {
-  margin-top: 10px;
-}
-
-#menu .pane-header > material-button {
-  width: 45%;
-  height: 40px;
-  line-height: 30px;
-}
-
 #menu material-tabs .material-ink-ripple {
   color: #fff;
 }

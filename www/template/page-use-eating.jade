@@ -14,7 +14,7 @@ div(id="eating" flex layout="vertical" layout-fill)
           ng-click="clickGoToOrder()")
           | 添加
 
-      material-content(flex scroll-y)
+      ion-content
         material-list
           material-item(ng-repeat="ordered in orderedGroup | orderBy:['type'] track by $index")
             .material-left {{ordered.type}}
