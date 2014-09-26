@@ -1,6 +1,6 @@
 angular
   .module('rcs')
-  .controller('pageCtrl', ['$scope', '$materialDialog', pageCtrl])
+  .controller('pageCtrl', ['$scope', '$state', '$materialDialog', pageCtrl])
   .controller('pageManageCtrl', ['$scope', '$state', 'rcsSession', pageManageCtrl])
   .controller('pageUseCtrl', ['$scope', '$state', '$interval', 'rcsSession', pageUseCtrl])
   .controller('signInCtrl', ['$scope', '$state', '$timeout', 'rcsSession', 'RCS_REQUEST_ERR', signInCtrl])
@@ -17,12 +17,33 @@ function requestErrorAction (res, handler) {
   }
 }
 
-function pageCtrl ($scope, $materialDialog) {
+function pageCtrl ($scope, $state, $materialDialog) {
   // scope methods
+  $scope.clickReturn = clickReturn;
+  $scope.ifShowReturn = ifShowReturn;
   $scope.simpleDialog = simpleDialog;
 
   // defines
-  function simpleDialog (textId, dissmissAction) {
+  function clickReturn () {
+    return $state.go($state.previous.state.name);
+  }
+
+  function ifShowReturn () {
+    // disable go back for about and eating page
+    if ($state.current.name == 'page.use.about'
+      || $state.current.name == 'page.use.eating'
+      || $state.current.name == 'page.manage.signin') {
+      return false;
+    }
+
+    if (!$state.previous || $state.previous.state.abstract) {
+      return false;
+    }
+
+    return true;
+  }
+
+  function simpleDialog (textId, dissmissAction, event) {
     if (!angular.isFunction(dissmissAction)) {
       dissmissAction = function () {};
     }
@@ -31,6 +52,7 @@ function pageCtrl ($scope, $materialDialog) {
       templateUrl: 'template/dialog-message.html',
       clickOutsideToClose: true,
       escapeToClose: true,
+      targetEvent: event,
       controller: ['$scope', '$hideDialog', function($scope, $hideDialog) {
         $scope.textId = textId;
         $scope.clickDismiss = clickDismiss;
@@ -47,7 +69,6 @@ function pageCtrl ($scope, $materialDialog) {
 function pageManageCtrl ($scope, $state, rcsSession) {
   // scope fields
   // scope methods
-  $scope.clickRestaurant = clickRestaurant;
   $scope.clickUser = clickUser;
   $scope.getCurrentRestaurant = getCurrentRestaurant;
   $scope.getCurrentUser = getCurrentUser;
@@ -55,10 +76,6 @@ function pageManageCtrl ($scope, $state, rcsSession) {
   // locals
   // initialize
   // defines
-  function clickRestaurant () {
-    return $state.go('page.manage.restaurant', {location: 'replace'});
-  }
-
   function clickUser () {
     return $state.go('page.manage.signin', {location: 'replace'});
   }
@@ -80,12 +97,10 @@ function pageUseCtrl ($scope, $state, $interval, rcsSession) {
   $scope.time = new Date();
 
   // scope methods
-  $scope.clickReturn = clickReturn;
   $scope.getOrdered = getOrdered;
   $scope.ifShowCall = ifShowCall;
   $scope.ifShowEating = ifShowEating;
   $scope.ifShowOrdered = ifShowOrdered;
-  $scope.ifShowReturn = ifShowReturn;
 
   // locals
   var refresh = $interval(function() {
@@ -94,9 +109,6 @@ function pageUseCtrl ($scope, $state, $interval, rcsSession) {
 
   // initialize
   // defines
-  function clickReturn () {
-    return $state.go($state.previous.state.name);
-  }
 
   function getOrdered () {
     return rcsSession.getSelectedTable().OrderItems ? rcsSession.getSelectedTable().OrderItems : [];
@@ -127,19 +139,6 @@ function pageUseCtrl ($scope, $state, $interval, rcsSession) {
 
     return true;
   }
-
-  function ifShowReturn () {
-    // disable go back for about and eating page
-    if ($state.current.name == 'page.use.about' || $state.current.name == 'page.use.eating') {
-      return false;
-    }
-
-    if (!$state.previous || $state.previous.state.abstract) {
-      return false;
-    }
-
-    return true;
-  }
 }
 
 function signInCtrl ($scope, $state, $timeout, rcsSession, RCS_REQUEST_ERR) {
@@ -161,7 +160,7 @@ function signInCtrl ($scope, $state, $timeout, rcsSession, RCS_REQUEST_ERR) {
   rcsSession.unselectRestaurant();
 
   // defines
-  function clickSignIn () {
+  function clickSignIn (event) {
     if ($scope.signingIn) return;
     if (!$scope.signIn.email || !$scope.signIn.password) return;
 
@@ -178,7 +177,7 @@ function signInCtrl ($scope, $state, $timeout, rcsSession, RCS_REQUEST_ERR) {
           requestErrorAction(res, function () {
             switch (res.status) {
               case RCS_REQUEST_ERR.rcsSignInFail:
-                $scope.simpleDialog(0);
+                $scope.simpleDialog(0, null, event);
                 $scope.signingIn = false;
                 return true;
               default:
@@ -253,6 +252,7 @@ function restaurantCtrl ($scope, $state, rcsHttp, rcsSession) {
 function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rcsSession) {
   // scope fields
   $scope.refreshing = false;
+  $scope.linking = false;
   $scope.tables = null;
   $scope.selectedIndex = -1;
   $scope.selectedTable = null;
@@ -299,6 +299,9 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
 
   function clickLink (event) {
     if ($scope.ifDisableCickLink()) return;
+    if ($scope.linking) return;
+
+    $scope.linking = true;
 
     var table = $scope.selectedTable;
 
@@ -325,8 +328,9 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
 
         $materialDialog(dialogEditMenuItemType);
       },
-      function error (argument) {
-        // TODO: show link error
+      function error (res) {
+        requestErrorAction(res);
+        $scope.linking = true;
       });
   }
 
@@ -429,14 +433,14 @@ function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT, RCS_REQUES
     onTabSelected($scope.selectedIndex);
   }
 
-  function clickConfirm () {
+  function clickConfirm (event) {
     rcsSession.requestOrder(function success () {
       $state.go('page.use.about');
     }, function error (res) {
       requestErrorAction(res, function () {
         switch (res.status) {
           case RCS_REQUEST_ERR.rcsPendingOrder:
-            $scope.simpleDialog(1);
+            $scope.simpleDialog(1, null, event);
             return true;
           default:
             return false;

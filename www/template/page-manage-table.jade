@@ -52,4 +52,8 @@ div(id="table" flex layout="vertical" layout-fill)
             h2 {{selectedTable.TableName}} ({{selectedTable.TableType}})
       .action(layout="horizontal" layout-align="center")
         material-button.material-button-raised.material-theme-light(
-          flex ng-disabled="ifDisableCickLink() == true" ng-click="clickLink($event)") 关联
+          flex ng-disabled="ifDisableCickLink() == true" ng-hide="linking == true"
+          ng-click="clickLink($event)") 关联
+        .text-center(ng-show="linking == true")
+          i.fa.fa-2x(ng-class="{'fa-spinner fa-spin':linking == true}")
+          h4 正在关联

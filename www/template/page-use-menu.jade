@@ -44,7 +44,7 @@ div(id="menu" flex layout="vertical" layout-fill)
         span 准备下单({{ordering.length}})
         div(flex)
         material-button.material-button-raised.material-theme-light(
-          ng-click="clickConfirm()"
+          ng-click="clickConfirm($event)"
           ng-show="orderingGroup && orderingGroup.length != 0")
           | 确认
 

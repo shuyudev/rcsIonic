@@ -101,14 +101,14 @@ function run ($rootScope, $state, $stateParams, $ionicPlatform) {
 
   // remember the previous state for nav purpose
   $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
-    if ($state.previous && $state.previous.state.name == toState.name) {
-      // get rid of circlular state
-      $state.previous = null;
-    } else {
-      $state.previous = {
-        state: fromState,
-        params: fromParams
-      }
+    // if ($state.previous && $state.previous.state.name == toState.name) {
+    //   // get rid of circlular state
+    //   $state.previous = null;
+    // } else {
+    $state.previous = {
+      state: fromState,
+      params: fromParams
     }
+    // }
   });
 }

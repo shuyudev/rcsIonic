@@ -1,11 +1,13 @@
 .page(id="page-manage" flex layout="vertical" layout-fill)
   material-toolbar.material-theme-dark
     .material-toolbar-tools(layout="horizontal")
+      material-button.hover(id="return" ng-show="ifShowReturn() == true" ng-click="clickReturn()")
+        i.fa.fa-reply
       h1
         i.fa.fa-gear
         | 配置
       div(flex)
-      material-button.hover(ng-if="getCurrentRestaurant()" ng-click="clickRestaurant()")
+      material-button.hover(ng-if="getCurrentRestaurant()")
         i.fa.fa-cutlery
         b {{getCurrentRestaurant()}}
       material-button.hover(ng-if="getCurrentUser()" ng-click="clickUser()")

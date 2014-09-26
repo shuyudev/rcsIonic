@@ -15,7 +15,7 @@
         b.colored [{{getOrdered().length}}]
         b 已点菜品
       b.welcome(ng-show="ifShowEating() == ture") 用餐愉快
-      b(ng-show="ifShowEating() == ture") {{time | date:'MM/dd HH:mm'}}
+      b(ng-show="ifShowEating() == ture") {{time | date:'HH:mm'}}
   material-content.background(layout="vertical" layout-fill scroll-y)
     //- nested ui-view is not working well in jade
     <div ui-view layout="vertical" layout-fill></div>
