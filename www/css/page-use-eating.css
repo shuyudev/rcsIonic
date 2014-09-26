@@ -1,7 +1,9 @@
-/*#eating .pane-area {
-  margin-left: 45px;
-  margin-right: 45px;
-}*/
+#eating .pane-area {
+  padding-left: 45px;
+  padding-right: 45px;
+  height: 100%;
+  overflow: hidden;
+}
 
 #eating .rcs-pane {
   padding-left: 10px;
@@ -12,39 +14,11 @@
   font-size: 18px;
   display: inherit;
   background-color: #ffffff;
+  height: 82%;
 }
 
 #eating .rcs-pane.call {
-  height: 400px;
-}
-
-#eating .pane-header {
-  font-size: 20px;
-  font-weight: bold;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #8A1717;
-  height: 52px;
-  padding-top: 5px;
-}
-
-#eating .pane-header span {
-  margin-top: 10px;
-}
-
-#eating .pane-header span.colored {
-  color: #8A1717;
-}
-
-#eating .pane-header span.fa {
-  text-align: center;
-  font-size: 22px;
-  width: 40px;
-}
-
-#eating .pane-header > material-button {
-  width: 120px;
-  height: 40px;
-  line-height: 30px;
+  margin-left: 15px;
 }
 
 #eating .rcs-pane.ordered .material-left {
