@@ -15,7 +15,7 @@ div(id="table" flex layout="vertical" layout-fill)
       .pane-header(layout="horizontal" layout-align="space-between" ng-click="clickRefreshTable()")
         | 选择餐桌进行关联
         i.fa.fa-refresh(ng-class="{'fa-spin':refreshing == true}")
-      material-content(flex scroll-y)
+      ion-content
         material-radio-group(ng-model="selectedIndex")
           material-list(ng-repeat="table in tables | filter:ifNotLinked")
             material-item(ng-click="clickTable($index, table)")
