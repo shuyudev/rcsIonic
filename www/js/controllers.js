@@ -8,7 +8,7 @@ angular
   .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
   .controller('aboutCtrl', ['$scope', '$state', 'rcsSession', 'TABLE_STATUS', aboutCtrl])
   .controller('menuCtrl', ['$rootScope', '$scope', '$state', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', menuCtrl])
-  .controller('eatingCtrl', ['$rootScope', '$scope', '$state', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', eatingCtrl]);
+  .controller('eatingCtrl', ['$rootScope', '$scope', '$state', 'rcsHttp', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', eatingCtrl]);
 
 function requestErrorAction (res, handler) {
   // when the error is not defined, or when there is no handler, or when it is not handled
@@ -36,7 +36,9 @@ function pageCtrl ($scope, $state, $materialDialog) {
       return false;
     }
 
-    if (!$state.previous || $state.previous.state.abstract) {
+    if (!$state.previous
+      || $state.previous.state.abstract
+      || $state.previous.state.name == 'page.use.about') {
       return false;
     }
 
@@ -77,7 +79,7 @@ function pageManageCtrl ($scope, $state, rcsSession) {
   // initialize
   // defines
   function clickUser () {
-    return $state.go('page.manage.signin', {location: 'replace'});
+    return $state.go('page.manage.signin');
   }
 
   function getCurrentRestaurant () {
@@ -97,6 +99,8 @@ function pageUseCtrl ($scope, $state, $interval, rcsSession) {
   $scope.time = new Date();
 
   // scope methods
+  $scope.clickCall = clickCall;
+  $scope.clickOrdered = clickOrdered;
   $scope.getOrdered = getOrdered;
   $scope.ifShowCall = ifShowCall;
   $scope.ifShowEating = ifShowEating;
@@ -109,6 +113,13 @@ function pageUseCtrl ($scope, $state, $interval, rcsSession) {
 
   // initialize
   // defines
+  function clickCall () {
+    return $state.go('page.use.eating');
+  }
+
+  function clickOrdered () {
+    return $state.go('page.use.eating');
+  }
 
   function getOrdered () {
     return rcsSession.getSelectedTable().OrderItems ? rcsSession.getSelectedTable().OrderItems : [];
@@ -189,7 +200,7 @@ function signInCtrl ($scope, $state, $timeout, rcsSession, RCS_REQUEST_ERR) {
   }
 
   function clickGoToRestaurants () {
-    $state.go('page.manage.restaurant', {location: 'replace'});
+    $state.go('page.manage.restaurant');
   }
 
   function clickSignOut () {
@@ -218,7 +229,7 @@ function restaurantCtrl ($scope, $state, rcsHttp, rcsSession) {
   // locals
   // initialize
   if (!rcsSession.getSignedInUser()) {
-    return $state.go('page.manage.signin', {location: 'replace'});
+    return $state.go('page.manage.signin');
   }
 
   rcsSession.unselectRestaurant(initializeRestaurants);
@@ -236,7 +247,7 @@ function restaurantCtrl ($scope, $state, rcsHttp, rcsSession) {
 
     rcsSession.selectRestaurant($scope.restaurants[$scope.selectedIndex],
       function success () {
-        $state.go('page.manage.table', {location: 'replace'});
+        $state.go('page.manage.table');
       });
   }
 
@@ -277,7 +288,7 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
   // locals
   // initialize
   if (!rcsSession.getSelectedRestaurant()) {
-    return $state.go('page.manage.restaurant', {location: 'replace'});
+    return $state.go('page.manage.restaurant');
   }
 
   var restaurantId = rcsSession.getSelectedRestaurant().id;
@@ -359,20 +370,20 @@ function aboutCtrl ($scope, $state, rcsSession, TABLE_STATUS) {
   // locals
   // initialize
   if (!$scope.table) {
-    return $state.go('page.manage.signin', {location: 'replace'});
+    return $state.go('page.manage.signin');
   }
 
   switch($scope.table.Status) {
     case TABLE_STATUS.ordering:
     case TABLE_STATUS.ordered:
-      return $state.go('page.use.eating', {location: 'replace'});
+      return $state.go('page.use.eating');
     case TABLE_STATUS.paying:
-      return $state.go('page.use.payment', {location: 'replace'});
+      return $state.go('page.use.payment');
   }
 
   // defines
   function clickStartOrder () {
-    return $state.go('page.use.menu', {location: 'replace'});
+    return $state.go('page.use.menu');
   }
 
   function ifHideClickStartOrder () {
@@ -536,16 +547,20 @@ function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT, RCS_REQUES
   }
 }
 
-function eatingCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT, RCS_REQUEST_ERR) {
+function eatingCtrl ($rootScope, $scope, $state, rcsHttp, rcsSession, RCS_EVENT, RCS_REQUEST_ERR) {
   // scope fields
   $scope.menuItems = null;
   $scope.ordered = [];
-  $scope.orderedGroup = null;
+  $scope.orderedGroup = [];
   $scope.refreshing = false;
+  $scope.justClicked = {};
 
   // scope methods
   $scope.clickGoToOrder = clickGoToOrder;
   $scope.clickRefresh = clickRefresh;
+  $scope.clickRequest = clickRequest;
+  $scope.clickPay = clickPay;
+  $scope.getRequestCd = getRequestCd;
 
   // locals
   var makeOrderGroupFilter = makeOrderGroup();
@@ -553,10 +568,12 @@ function eatingCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT, RCS_REQU
   // events
   // initialize
   initializeOrdered();
+  $scope.justClicked['water'] = false;
+  $scope.justClicked['call'] = false;
 
   // defines
   function initializeOrdered () {
-    $scope.ordered = rcsSession.getSelectedTable().OrderItems;
+    $scope.ordered = rcsSession.getSelectedTable().OrderItems ? rcsSession.getSelectedTable().OrderItems : [];
 
     // group the order to show count
     $scope.orderedGroup = makeOrderGroupFilter($scope.ordered, rcsSession.getMenuItems());
@@ -568,5 +585,30 @@ function eatingCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT, RCS_REQU
 
   function clickRefresh () {
     $scope.refreshing = true;
+    rcsSession.refreshTable(function success () {
+      initializeOrdered();
+      $scope.refreshing = false;
+    }, requestErrorAction)
+  }
+
+  function clickRequest (requestType, event) {
+    if ($scope.justClicked[requestType] || $scope.getRequestCd(requestType) != 0) return;
+
+    $scope.justClicked[requestType] = true;
+
+    var successAction = function () {
+      $scope.justClicked[requestType] = false;
+      $scope.simpleDialog(2, null, event);
+    }
+
+    return rcsSession.requestWithCd(requestType, successAction, requestErrorAction);
+  }
+
+  function clickPay () {
+    return $state.go('page.use.payment');
+  }
+
+  function getRequestCd (requestType) {
+    return rcsSession.getRequestCd(requestType);
   }
 }

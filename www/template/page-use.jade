@@ -7,11 +7,10 @@
         i.fa.fa-cutlery
         span(ng-show="table != null") <b>{{table.TableName}}</b> ({{table.TableType}})
       div(flex)
-      material-button.hover(ng-show="ifShowCall() == ture")
-        //- i.fa.fa-cutlery
+      material-button.hover(ng-show="ifShowCall() == ture" ng-click="clickCall()")
+        //- i.fa.fa-child
         b 呼叫服务
-      material-button.hover(ng-show="ifShowOrdered() == true")
-        //- i.fa.fa-cutlery
+      material-button.hover(ng-show="ifShowOrdered() == true" ng-click="clickOrdered()")
         b.colored [{{getOrdered().length}}]
         b 已点菜品
       b.welcome(ng-show="ifShowEating() == ture") 用餐愉快

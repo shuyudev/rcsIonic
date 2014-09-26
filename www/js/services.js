@@ -2,11 +2,12 @@ angular
   .module('rcs')
   .factory('rcsLocalstorage', ['$window', rcsLocalstorage])
   .factory('rcsHttp', ['$http', '$log', rcsHttp])
-  .factory('rcsSession', ['$rootScope', 'rcsLocalstorage', 'rcsHttp', 'RCS_EVENT', 'STORAGE_KEY', rcsSession]);
+  .factory('rcsSession', ['$rootScope', '$interval', 'rcsLocalstorage', 'rcsHttp', 'RCS_EVENT', 'STORAGE_KEY', rcsSession]);
 
-function rcsSession ($rootScope, rcsLocalstorage, rcsHttp, RCS_EVENT, STORAGE_KEY) {
+function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT, STORAGE_KEY) {
   var sessionService = {
     downloadMenu: downloadMenu,
+    refreshTable: refreshTable,
     getMenuItems: getMenuItems,
     getOrdering: getOrdering,
     getSelectedRestaurant: getSelectedRestaurant,
@@ -20,7 +21,9 @@ function rcsSession ($rootScope, rcsLocalstorage, rcsHttp, RCS_EVENT, STORAGE_KE
     signIn: signIn,
     signOut: signOut,
     unselectRestaurant: unselectRestaurant,
-    requestOrder: requestOrder
+    requestOrder: requestOrder,
+    requestWithCd: requestWithCd,
+    getRequestCd: getRequestCd
   }
 
   // locals
@@ -32,6 +35,7 @@ function rcsSession ($rootScope, rcsLocalstorage, rcsHttp, RCS_EVENT, STORAGE_KE
   var linkedTableId = null;
   var linkedTableToken = null;
   var linkedTableRestaurantId = null;
+  var requestCd = {};
 
   // defines
   function handshake () {
@@ -86,6 +90,26 @@ function rcsSession ($rootScope, rcsLocalstorage, rcsHttp, RCS_EVENT, STORAGE_KE
     rcsHttp.Restaurant.downloadMenu(linkedTableRestaurantId, linkedTableId, linkedTableToken)
       .success(function (res) {
         var menuItems = res.Menu;
+
+        successAction();
+      })
+      .error(errorAction);
+  }
+
+  function refreshTable (successAction, errorAction) {
+    if (!angular.isFunction(successAction)) {
+      successAction = function () {};
+    }
+
+    if (!angular.isFunction(errorAction)) {
+      errorAction = function () {};
+    }
+
+    rcsHttp.Table.validateToken(linkedTableRestaurantId, linkedTableId, linkedTableToken)
+      .success(function (res) {
+        // save to session
+        selectedTable = res.Table;
+        menuItems = res.Menu;
 
         successAction();
       })
@@ -228,9 +252,34 @@ function rcsSession ($rootScope, rcsLocalstorage, rcsHttp, RCS_EVENT, STORAGE_KE
         selectedTable = res.setTable;
         successAction(res);
       })
-      .error(function (res) {
-        errorAction(res);
-      });
+      .error(errorAction);
+  }
+
+  function requestWithCd (requestType, successAction, errorAction) {
+    if (!angular.isFunction(successAction)) {
+      successAction = function () {};
+    }
+
+    if (!angular.isFunction(errorAction)) {
+      errorAction = function () {};
+    }
+
+    rcsHttp.Request.createRequest(linkedTableRestaurantId, linkedTableId, linkedTableToken, requestType)
+      .success(function (res) {
+        requestCd[requestType] = 30;
+          var cd = $interval(function () {
+            if (--requestCd[requestType] == 0) {
+              $interval.cancel(cd);
+            }
+          }, 1000);
+
+          successAction();
+      })
+      .error(errorAction);
+  }
+
+  function getRequestCd (requestType) {
+    return requestCd[requestType] ? requestCd[requestType] : 0;
   }
 
   return sessionService;
@@ -330,6 +379,29 @@ function rcsHttp ($http, $log) {
           Type: 'order',
           OrderItems: orderItems
         })
+        .error(errorAction);
+    },
+    createPay: function (restaurantId, tableId, token, payType, payAmount) {
+      return $http
+        .post(baseUrl + 'Request/create', {
+          RestaurantId: restaurantId,
+          TableId: tableId,
+          Token: token,
+          Type: 'pay',
+          PayType: payType,
+          PayAmount: payAmount
+        })
+        .error(errorAction);
+    },
+    createRequest: function (restaurantId, tableId, token, requestType) {
+      return $http
+        .post(baseUrl + 'Request/create', {
+          RestaurantId: restaurantId,
+          TableId: tableId,
+          Token: token,
+          Type: requestType
+        })
+        .error(errorAction);
     }
   }
 

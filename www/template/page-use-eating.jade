@@ -3,7 +3,7 @@ div(id="eating" flex layout="vertical" layout-fill)
   .pane-area(layout="horizontal" layout-align="center")
 
     div(flex="5")
-    .rcs-pane.ordered.material-whiteframe-z3(flex="55" layout="vertical")
+    .rcs-pane.ordered.material-whiteframe-z3(flex="50" layout="vertical")
 
       .pane-header(layout="horizontal")
         div(flex="40" ng-click="clickRefresh()")
@@ -24,22 +24,26 @@ div(id="eating" flex layout="vertical" layout-fill)
             .material-tile-right x{{ordered.count}}
 
     div(flex="5")
-    .rcs-pane.call.material-whiteframe-z3(flex="30" layout="vertical")
+    .rcs-pane.call.material-whiteframe-z3(flex="35" layout="vertical")
       .pane-header(layout="horizontal")
         span 服务
 
       div(layout="vertical" layout-align="space-around center" layout-fill)
-        material-button.material-button-raised
-          h2
+        material-button.material-button-raised(ng-click="clickRequest('water', $event)"
+          ng-disabled="justClicked['water'] == true || getRequestCd('water') != 0")
+          h2(layout="vertical" layout-fill layout-align="center")
             b.fa.fa-coffee
-            | 呼叫加水
-        material-button.material-button-raised
-          h2
+            span(ng-show="getRequestCd('water') == 0") 呼叫加水
+            span(ng-show="getRequestCd('water') != 0") (剩余{{getRequestCd('water')}}秒)
+        material-button.material-button-raised(ng-click="clickRequest('call', $event)"
+          ng-disabled="justClicked['call'] == true || getRequestCd('call') != 0")
+          h2(layout="vertical" layout-fill layout-align="center")
             b.fa.fa-user
-            | 叫服务员
-        material-button.material-button-raised
-          h2
+            span(ng-show="getRequestCd('call') == 0") 叫服务员
+            span(ng-show="getRequestCd('call') != 0") (剩余{{getRequestCd('call')}}秒)
+        material-button.material-button-raised(ng-click="clickPay()")
+          h2(layout="vertical" layout-fill layout-align="center")
             b.fa.fa-cny
-            | 自助结帐
+            span 自助结帐
 
     div(flex="5")

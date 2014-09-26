@@ -17,18 +17,28 @@
   height: 82%;
 }
 
-#eating .rcs-pane.call {
-  margin-left: 15px;
-}
-
 #eating .rcs-pane.ordered .material-left {
   margin-right: 20px;
 }
 
 #eating .rcs-pane.call material-button {
   width: 80%;
+  height: 20%;
+}
+
+#eating .rcs-pane.call material-button h2 {
+  margin: 0;
+}
+
+#eating .rcs-pane.call material-button[disabled] h2 {
+  color: #999;
 }
 
 #eating .rcs-pane.call material-button .fa {
-  width: 45px;
+  font-size: 1.2em;
+  color: #8A1717;
+}
+
+#eating .rcs-pane.call material-button[disabled] .fa {
+  color: #999;
 }
