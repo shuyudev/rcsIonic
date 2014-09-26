@@ -1,6 +1,8 @@
 #eating .pane-area {
-  margin-left: 25px;
-  margin-right: 25px;
+  padding-left: 25px;
+  padding-right: 25px;
+  height: 100%;
+  overflow: hidden;
 }
 
 #eating .rcs-pane {
@@ -12,11 +14,11 @@
   font-size: 18px;
   display: inherit;
   background-color: #ffffff;
+  height: 82%;
 }
 
 #eating .rcs-pane.call {
   margin-left: 15px;
-  height: 400px;
 }
 
 #eating .rcs-pane.ordered .material-left {

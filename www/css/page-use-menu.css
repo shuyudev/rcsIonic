@@ -1,6 +1,8 @@
 #menu .pane-area {
-  margin-left: 20px;
-  margin-right: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  height: 100%;
+  overflow: hidden;
 }
 
 #menu .rcs-pane {
@@ -12,10 +14,7 @@
   font-size: 18px;
   display: inherit;
   background-color: #ffffff;
-}
-
-#menu .rcs-pane.list {
-  height: 400px;
+  height: 82%;
 }
 
 #menu .rcs-pane.info {
@@ -68,8 +67,8 @@
 }
 
 #menu .page-footer {
-  height: 40px;
-  line-height: 30px;
+  height: 45px;
+  line-height: 35px;
   font-size: 22px;
 }
 
@@ -142,6 +141,8 @@
 
 #menu .material-tile-content {
   font-size: 18px;
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 #menu .material-tile-content h2 {
@@ -152,17 +153,22 @@
   width: 60px;
 }
 
+#menu .material-tile-left,
 #menu .material-tile-right {
-  width: 85px;
+  max-width: 40px;
+  min-width: 40px;
+  width: 40px;
 }
 
+#menu .material-tile-left material-button,
 #menu .material-tile-right material-button {
-  height: 50px;
+  height: 45px;
   width: 40px;
-  line-height: 40px;
+  line-height: 35px;
   font-size: 20px;
 }
 
-#menu .material-tile-right material-button.material-theme-light {
-  margin-left: 5px;
+#menu .material-tile-left material-button,
+#menu .material-tile-right material-button {
+  /*margin-right: 5px;*/
 }

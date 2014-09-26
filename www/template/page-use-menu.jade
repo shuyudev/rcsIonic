@@ -24,10 +24,12 @@ div(id="menu" flex layout="vertical" layout-fill)
             b {{menuType}}
               span(ng-if="selectedIndex==$index && maxPage > 1") ({{currentPage}}/{{maxPage}})
 
-      material-content(scroll-y)
+      material-content
         div(ng-repeat="menuItemsRow in menuItemsRows track by $index" layout="horizontal" layout-align="start")
           div(flex="50" ng-repeat="menuItem in menuItemsRow" layout="vertical" layout-align="center center")
             rcs-menu-item
+
+      div(flex)
 
       .page-footer(ng-show="maxPage > 1" layout="horizontal" layout-fill layout-align="center")
         material-button.material-button-raised.material-theme-light(
@@ -46,16 +48,22 @@ div(id="menu" flex layout="vertical" layout-fill)
           ng-show="orderingGroup && orderingGroup.length != 0")
           | 确认
 
-      ion-content
+      //- ion-content(on-scroll-complete="safeApply()")
+      material-content
         material-list
           material-item(ng-repeat="ordering in orderingGroup | orderBy:['type'] track by $index")
+            .material-tile-left
+              //- material-button.material-button-raised(ng-click="clickOrderingMinus(ordering)")
+                i.fa.fa-minus
+              material-button.material-button-raised.material-theme-light(ng-click="clickOrderingPlus(ordering)")
+                i.fa.fa-plus
             .material-tile-content
               h2 {{ordering.name}}
-              div(layout="horizontal")
+              div(layout="horizontal" layout-align="space-between")
                 span.type {{ordering.type}}
                 b x{{ordering.count}}
             .material-tile-right
               material-button.material-button-raised(ng-click="clickOrderingMinus(ordering)")
                 i.fa.fa-minus
-              material-button.material-button-raised.material-theme-light(ng-click="clickOrderingPlus(ordering)")
+              //- material-button.material-button-raised.material-theme-light(ng-click="clickOrderingPlus(ordering)")
                 i.fa.fa-plus
