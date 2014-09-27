@@ -8,7 +8,8 @@ angular
   .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
   .controller('aboutCtrl', ['$scope', '$state', 'rcsSession', 'TABLE_STATUS', aboutCtrl])
   .controller('menuCtrl', ['$rootScope', '$scope', '$state', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', menuCtrl])
-  .controller('eatingCtrl', ['$rootScope', '$scope', '$state', 'rcsHttp', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', eatingCtrl]);
+  .controller('eatingCtrl', ['$scope', '$state', 'rcsSession', 'RCS_REQUEST_ERR', eatingCtrl])
+  .controller('paymentCtrl', ['$scope', '$state', '$materialDialog', 'rcsSession', 'RCS_REQUEST_ERR', paymentCtrl]);
 
 function requestErrorAction (res, handler) {
   // when the error is not defined, or when there is no handler, or when it is not handled
@@ -361,33 +362,50 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
 
 function aboutCtrl ($scope, $state, rcsSession, TABLE_STATUS) {
   // scope fields
-  $scope.table = rcsSession.getSelectedTable();
+  $scope.table = null;
+  $scope.justClicked = false;
 
   // scope methods
+  $scope.clickRefresh = clickRefresh;
   $scope.clickStartOrder = clickStartOrder;
-  $scope.ifHideClickStartOrder = ifHideClickStartOrder;
 
   // locals
   // initialize
-  if (!$scope.table) {
-    return $state.go('page.manage.signin');
-  }
-
-  switch($scope.table.Status) {
-    case TABLE_STATUS.ordering:
-    case TABLE_STATUS.ordered:
-      return $state.go('page.use.eating');
-    case TABLE_STATUS.paying:
-      return $state.go('page.use.payment');
-  }
+  initialize();
 
   // defines
-  function clickStartOrder () {
-    return $state.go('page.use.menu');
+  function initialize () {
+    $scope.table = rcsSession.getSelectedTable();
+
+    if (!$scope.table) {
+      return $state.go('page.manage.signin');
+    }
+
+    switch($scope.table.Status) {
+      case TABLE_STATUS.ordering:
+      case TABLE_STATUS.ordered:
+        return $state.go('page.use.eating');
+
+      case TABLE_STATUS.paying:
+      case TABLE_STATUS.paid:
+      case TABLE_STATUS.empty:
+        break;
+    }
   }
 
-  function ifHideClickStartOrder () {
-    return !$scope.table || $scope.table.Status == TABLE_STATUS.paid;
+  function clickRefresh () {
+    if ($scope.justClicked) return;
+
+    $scope.justClicked = true;
+
+    rcsSession.refreshTable(function success () {
+      initialize();
+      $scope.justClicked = false;
+    }, requestErrorAction)
+  }
+
+  function clickStartOrder () {
+    return $state.go('page.use.menu');
   }
 }
 
@@ -547,7 +565,7 @@ function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT, RCS_REQUES
   }
 }
 
-function eatingCtrl ($rootScope, $scope, $state, rcsHttp, rcsSession, RCS_EVENT, RCS_REQUEST_ERR) {
+function eatingCtrl ($scope, $state, rcsSession, RCS_REQUEST_ERR) {
   // scope fields
   $scope.menuItems = null;
   $scope.ordered = [];
@@ -584,6 +602,8 @@ function eatingCtrl ($rootScope, $scope, $state, rcsHttp, rcsSession, RCS_EVENT,
   }
 
   function clickRefresh () {
+    if ($scope.refreshing) return;
+
     $scope.refreshing = true;
     rcsSession.refreshTable(function success () {
       initializeOrdered();
@@ -605,10 +625,111 @@ function eatingCtrl ($rootScope, $scope, $state, rcsHttp, rcsSession, RCS_EVENT,
   }
 
   function clickPay () {
+    if ($scope.ordered.length == 0) return;
+
     return $state.go('page.use.payment');
   }
 
   function getRequestCd (requestType) {
     return rcsSession.getRequestCd(requestType);
+  }
+}
+
+function paymentCtrl ($scope, $state, $materialDialog, rcsSession, RCS_REQUEST_ERR) {
+  // scope fields
+  $scope.menuItems = null;
+  $scope.ordered = null;
+  $scope.orderedGroup = [];
+  $scope.grandTotal = 0;
+  $scope.grandTotalPremium = 0;
+  $scope.isPremium = false;
+  $scope.justClicked = {};
+
+  // scope methods
+  $scope.clickPay = clickPay;
+
+  // locals
+  var makeOrderGroupFilter = makeOrderGroup();
+
+  // initialize
+  $scope.justClicked['cash'] = false;
+  $scope.justClicked['card'] = false;
+
+  rcsSession.refreshTable(function success () {
+    initializeOrdered();
+  }, requestErrorAction);
+
+  // defines
+  function initializeOrdered () {
+    $scope.ordered = rcsSession.getSelectedTable().OrderItems ? rcsSession.getSelectedTable().OrderItems : [];
+
+    // group the order to show count
+    $scope.orderedGroup = makeOrderGroupFilter($scope.ordered, rcsSession.getMenuItems());
+
+    for (var i = $scope.orderedGroup.length - 1; i >= 0; i--) {
+      var item = $scope.orderedGroup[i];
+      $scope.grandTotal += item.price * item.count;
+      $scope.grandTotalPremium += item.premiumPrice * item.count;
+    };
+  }
+
+  function clickPay (payType, event) {
+    if ($scope.justClicked[payType]) return;
+
+    $scope.justClicked[payType] = true;
+
+    var successAction = function () {
+      $state.go('page.use.about');
+    }
+
+    var errorAction = function (res) {
+      $scope.justClicked[payType] = false;
+      requestErrorAction(res);
+    }
+
+    var shouldPay = $scope.isPremium ? $scope.grandTotalPremium : $scope.grandTotal;
+
+    if (payType == 'cash') {
+      // ask for cash change
+      $materialDialog({
+        templateUrl: 'template/dialog-payCash.html',
+        clickOutsideToClose: true,
+        escapeToClose: true,
+        targetEvent: event,
+        controller: ['$scope', '$hideDialog', function($scope, $hideDialog) {
+          $scope.shouldPay = shouldPay;
+          $scope.willPay = null;
+
+          $scope.clickNeedChange = clickNeedChange;
+          $scope.clickNoNeed = clickNoNeed;
+          $scope.ifValidPay = ifValidPay;
+
+          function clickNeedChange () {
+            if (!$scope.ifValidPay()) return;
+
+            rcsSession.requestPay($scope.isPremium, payType, $scope.willPay, successAction, errorAction);
+            $hideDialog();
+          }
+
+          function clickNoNeed () {
+            rcsSession.requestPay($scope.isPremium, payType, $scope.shouldPay, successAction, errorAction);
+            $hideDialog();
+          }
+
+          function ifValidPay () {
+            $scope.willPay = parseFloat($scope.willPay);
+            if (!angular.isNumber($scope.willPay) || !$scope.willPay || $scope.willPay < $scope.shouldPay) {
+              return false;
+            }
+
+            return true;
+          }
+        }]
+      });
+
+      $scope.justClicked[payType] = false;
+    } else {
+      return rcsSession.requestPay($scope.isPremium, payType, shouldPay, successAction, errorAction);
+    }
   }
 }

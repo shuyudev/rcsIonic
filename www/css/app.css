@@ -126,3 +126,8 @@ body *
   height: 40px;
   line-height: 30px;
 }
+
+#rcs material-checkbox.material-checked .material-icon {
+  border-color: #8A1717;
+  background-color: #8A1717;
+}

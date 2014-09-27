@@ -17,11 +17,11 @@ div(id="eating" flex layout="vertical" layout-fill)
 
       ion-content
         material-list
-          material-item(ng-repeat="ordered in orderedGroup | orderBy:['type'] track by $index")
-            .material-left {{ordered.type}}
+          material-item(ng-repeat="item in orderedGroup | orderBy:['type'] track by $index")
+            .material-left {{item.type}}
             .material-tile-content
-              h2 <b>{{ordered.name}}</b>
-            .material-tile-right x{{ordered.count}}
+              h2 <b>{{item.name}}</b>
+            .material-tile-right x{{item.count}}
 
     div(flex="5")
     .rcs-pane.call.material-whiteframe-z3(flex="35" layout="vertical")
@@ -41,7 +41,8 @@ div(id="eating" flex layout="vertical" layout-fill)
             b.fa.fa-user
             span(ng-show="getRequestCd('call') == 0") 叫服务员
             span(ng-show="getRequestCd('call') != 0") (剩余{{getRequestCd('call')}}秒)
-        material-button.material-button-raised(ng-click="clickPay()")
+        material-button.material-button-raised(ng-click="clickPay()"
+          ng-disabled="ordered.length == 0")
           h2(layout="vertical" layout-fill layout-align="center")
             b.fa.fa-cny
             span 自助结帐

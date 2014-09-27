@@ -8,7 +8,7 @@
         span(ng-show="table != null") <b>{{table.TableName}}</b> ({{table.TableType}})
       div(flex)
       material-button.hover(ng-show="ifShowCall() == ture" ng-click="clickCall()")
-        //- i.fa.fa-child
+        i.fa.fa-home
         b 呼叫服务
       material-button.hover(ng-show="ifShowOrdered() == true" ng-click="clickOrdered()")
         b.colored [{{getOrdered().length}}]

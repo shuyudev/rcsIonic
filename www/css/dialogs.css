@@ -18,3 +18,21 @@
   height: 60px;
   line-height: 48px;
 }
+
+#dialog-payCash material-item {
+  width: 80%;
+  left: 10%;
+}
+
+#dialog-payCash input {
+  border-color: #8A1717;
+  border-bottom-width: 2px;
+  height: 30px;
+  padding: 0;
+  font-size: 20px;
+}
+
+#dialog-payCash .material-tile-content {
+  min-height: 55px;
+  margin-left: 5px;
+}

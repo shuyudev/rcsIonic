@@ -1,6 +1,18 @@
 div(id="about" flex layout="vertical" layout-fill)
-  h2.text-center 餐厅管理系统可以帮你吃的更多！
+  br
 
-  div(layout="horizontal" layout-align="center")
-    material-button.material-button-raised.material-theme-light.action(ng-hide="ifHideClickStartOrder()" ng-click="clickStartOrder()") 开始使用
-    h2(ng-show="ifHideClickStartOrder()") 欢迎再次光临！
+  div(layout="horizontal" layout-align="center" ng-switch="table.Status")
+
+    .text-center(ng-switch-when="empty")
+      h2 餐厅管理系统可以帮你吃的更多！
+      material-button.material-button-raised.material-theme-light.action(ng-click="clickStartOrder()") 开始点菜
+
+    .text-center(ng-switch-when="paying")
+      h2 感谢您的惠顾！餐厅服务员将协助您完成支付
+      material-button.material-button-raised.material-theme-light.action(
+        ng-disabled="justClicked == true" ng-click="clickRefresh()") 支付完成
+
+    .text-center(ng-switch-when="paid")
+      h2 谢谢，欢迎再次光临！
+      material-button.material-button-raised.material-theme-light.action(
+        ng-disabled="justClicked == true" ng-click="clickRefresh()") 再见

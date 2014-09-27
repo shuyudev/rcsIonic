@@ -30,15 +30,12 @@
   margin: 0;
 }
 
-#eating .rcs-pane.call material-button[disabled] h2 {
-  color: #999;
-}
-
 #eating .rcs-pane.call material-button .fa {
   font-size: 1.2em;
   color: #8A1717;
 }
 
+#eating .rcs-pane.call material-button[disabled] h2,
 #eating .rcs-pane.call material-button[disabled] .fa {
   color: #999;
 }

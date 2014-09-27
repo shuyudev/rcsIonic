@@ -83,7 +83,8 @@ function config ($urlRouterProvider, $stateProvider, $httpProvider) {
     })
     .state('page.use.payment', {
       url: '/payment',
-      templateUrl: 'template/page-use-payment.html'
+      templateUrl: 'template/page-use-payment.html',
+      controller: 'paymentCtrl'
     });
 }
 

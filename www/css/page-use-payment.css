@@ -1,0 +1,63 @@
+#payment .pane-area {
+  padding-left: 45px;
+  padding-right: 45px;
+  height: 100%;
+  overflow: hidden;
+}
+
+#payment .rcs-pane {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 40px;
+  font-size: 18px;
+  display: inherit;
+  background-color: #ffffff;
+  height: 82%;
+}
+
+#payment .rcs-pane.ordered .material-tile-right {
+  width: 30%;
+}
+
+#payment .rcs-pane.ordered .material-left {
+  margin-right: 20px;
+}
+
+#payment .rcs-pane.pay material-button {
+  width: 80%;
+  height: 25%;
+}
+
+#payment .rcs-pane.pay material-button h2 {
+  margin: 0;
+}
+
+#payment .rcs-pane.pay material-button .fa {
+  font-size: 1.2em;
+  color: #8A1717;
+}
+
+#payment .rcs-pane.pay material-button[disabled] h2,
+#payment .rcs-pane.pay material-button[disabled] .fa {
+  color: #999;
+}
+
+#payment material-checkbox .material-container,
+#payment material-checkbox .material-icon,
+#payment material-checkbox.material-checked .material-icon {
+  height: 32px;
+  width: 32px;
+}
+
+#payment material-checkbox.material-checked .material-icon:after {
+  height: 24px;
+  width: 12px;
+  left: 8px;
+}
+
+#payment material-checkbox .material-label {
+  font-size: 25px;
+  margin-bottom: 10px;
+}

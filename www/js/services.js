@@ -23,7 +23,8 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
     unselectRestaurant: unselectRestaurant,
     requestOrder: requestOrder,
     requestWithCd: requestWithCd,
-    getRequestCd: getRequestCd
+    getRequestCd: getRequestCd,
+    requestPay: requestPay
   }
 
   // locals
@@ -248,8 +249,14 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
 
     rcsHttp.Request.createOrder(linkedTableRestaurantId, linkedTableId, linkedTableToken, ordering)
       .success(function (res) {
+        // clear ordering data in session
         ordering = [];
-        selectedTable = res.setTable;
+
+        // update table data in session
+        if (res.setTable) {
+          selectedTable = res.setTable;
+        }
+
         successAction(res);
       })
       .error(errorAction);
@@ -266,20 +273,49 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
 
     rcsHttp.Request.createRequest(linkedTableRestaurantId, linkedTableId, linkedTableToken, requestType)
       .success(function (res) {
-        requestCd[requestType] = 30;
-          var cd = $interval(function () {
-            if (--requestCd[requestType] == 0) {
-              $interval.cancel(cd);
-            }
-          }, 1000);
+        // update table data in session
+        if (res.setTable) {
+          selectedTable = res.setTable;
+        }
 
-          successAction();
+        // count down cd
+        requestCd[requestType] = 30;
+        var cd = $interval(function () {
+          if (--requestCd[requestType] == 0) {
+            $interval.cancel(cd);
+          }
+        }, 1000);
+
+        successAction();
       })
       .error(errorAction);
   }
 
   function getRequestCd (requestType) {
     return requestCd[requestType] ? requestCd[requestType] : 0;
+  }
+
+  function requestPay (isPremium, payType, payAmount, successAction, errorAction) {
+    if (!angular.isFunction(successAction)) {
+      successAction = function () {};
+    }
+
+    if (!angular.isFunction(errorAction)) {
+      errorAction = function () {};
+    }
+
+    rcsHttp.Request.createPay(
+      linkedTableRestaurantId, linkedTableId, linkedTableToken,
+      isPremium, payType, payAmount)
+      .success(function (res) {
+        // update table data in session
+        if (res.setTable) {
+          selectedTable = res.setTable;
+        }
+
+        successAction();
+      })
+      .error(errorAction);
   }
 
   return sessionService;
@@ -381,13 +417,14 @@ function rcsHttp ($http, $log) {
         })
         .error(errorAction);
     },
-    createPay: function (restaurantId, tableId, token, payType, payAmount) {
+    createPay: function (restaurantId, tableId, token, isPremium, payType, payAmount) {
       return $http
         .post(baseUrl + 'Request/create', {
           RestaurantId: restaurantId,
           TableId: tableId,
           Token: token,
           Type: 'pay',
+          IsPremium: isPremium,
           PayType: payType,
           PayAmount: payAmount
         })
