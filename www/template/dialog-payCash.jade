@@ -1,23 +1,40 @@
 material-dialog.width-md(id="dialog-payCash")
   .dialog-content
     h3.text-center 您需要找零吗？如需要，请输入准备支付金额
-    material-list
-      material-item
-        .material-tile-left
-          b 消费
-        .material-tile-content
-          span {{shouldPay}}元
-      material-item
-        .material-tile-left
-          b 支付
-        .material-tile-content
-          material-input-group.material-input-group-theme-light
-            material-input(type="text" ng-model="willPay" placeholder="准备支付金额(元)")
-      material-item
-        .material-tile-left
-          b 找零
-        .material-tile-content
-          span(ng-show="ifValidPay()") {{willPay - shouldPay}}元
+    div(layout="horizontal" layout-align="center center")
+
+      div(flex="50" layout="vertical" layout-align="center")
+        .numberRow(layout="horizontal" layout-align="center" ng-repeat="numberRow in numberRows")
+          material-button.material-button-fab(ng-repeat="number in numberRow" ng-click="clickNumber(number)")
+            b {{number}}
+        .numberRow(layout="horizontal" layout-align="center")
+          material-button.material-button-fab(ng-click="clickClear()")
+            i.fa.fa-remove
+          material-button.material-button-fab(ng-click="clickNumber(0)")
+            b 0
+          material-button.material-button-fab(ng-click="clickBackspace()")
+            i.fa.fa-arrow-left
+
+      div(flex)
+
+      material-list(flex="45")
+        material-item
+          .material-tile-left
+            b(ng-show="willPay") 支付
+          .material-tile-content
+            b.colored(ng-show="willPay") {{willPay}}元
+        br
+        br
+        material-item
+          .material-tile-left
+            b 消费
+          .material-tile-content
+            span {{shouldPay}}元
+        material-item
+          .material-tile-left
+            b 找零
+          .material-tile-content
+            span(ng-show="ifValidPay()") {{willPay - shouldPay}}元
 
   .dialog-actions(layout="horizontal" layout-align="space-around")
     material-button.material-button-raised.material-theme-light(flex="40"

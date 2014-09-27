@@ -688,6 +688,7 @@ function paymentCtrl ($scope, $state, $materialDialog, rcsSession, RCS_REQUEST_E
     }
 
     var shouldPay = $scope.isPremium ? $scope.grandTotalPremium : $scope.grandTotal;
+    var isPremium = $scope.isPremium;
 
     if (payType == 'cash') {
       // ask for cash change
@@ -697,23 +698,53 @@ function paymentCtrl ($scope, $state, $materialDialog, rcsSession, RCS_REQUEST_E
         escapeToClose: true,
         targetEvent: event,
         controller: ['$scope', '$hideDialog', function($scope, $hideDialog) {
+          // scope fields
           $scope.shouldPay = shouldPay;
-          $scope.willPay = null;
+          $scope.willPay = 0;
+          $scope.numberRows = [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]]
 
+          // scope methods
+          $scope.clickBackspace = clickBackspace;
+          $scope.clickClear = clickClear;
           $scope.clickNeedChange = clickNeedChange;
           $scope.clickNoNeed = clickNoNeed;
+          $scope.clickNumber = clickNumber;
           $scope.ifValidPay = ifValidPay;
+
+          // locals
+          var willPayText = '';
+
+          // defines
+          function clickBackspace () {
+            if (willPayText == '') return;
+
+            willPayText = willPayText.substring(0, willPayText.length - 1);
+            $scope.willPay = parseInt(willPayText);
+          }
+
+          function clickClear () {
+            willPayText = '';
+            $scope.willPay = parseInt(willPayText);
+          }
 
           function clickNeedChange () {
             if (!$scope.ifValidPay()) return;
 
-            rcsSession.requestPay($scope.isPremium, payType, $scope.willPay, successAction, errorAction);
+            rcsSession.requestPay(isPremium, payType, $scope.willPay, successAction, errorAction);
             $hideDialog();
           }
 
           function clickNoNeed () {
-            rcsSession.requestPay($scope.isPremium, payType, $scope.shouldPay, successAction, errorAction);
+            rcsSession.requestPay(isPremium, payType, $scope.shouldPay, successAction, errorAction);
             $hideDialog();
+          }
+
+          function clickNumber (number) {
+            willPayText = willPayText + number;
+            $scope.willPay = parseInt(willPayText);
           }
 
           function ifValidPay () {
