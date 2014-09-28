@@ -742,6 +742,8 @@ function paymentCtrl ($scope, $state, $materialDialog, rcsSession, RCS_REQUEST_E
           }
 
           function clickNoNeed () {
+            if ($scope.ifValidPay()) return;
+
             rcsSession.requestPay(isPremium, payType, $scope.shouldPay, successAction, errorAction);
             $hideDialog();
           }

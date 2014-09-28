@@ -3,7 +3,7 @@ material-dialog.width-md(id="dialog-payCash")
     h3.text-center 您需要找零吗？如需要，请输入准备支付金额
     div(layout="horizontal" layout-align="center center")
 
-      div(flex="50" layout="vertical" layout-align="center")
+      div(id="input" layout="vertical" layout-align="center")
         .numberRow(layout="horizontal" layout-align="center" ng-repeat="numberRow in numberRows")
           material-button.material-button-fab(ng-repeat="number in numberRow" ng-click="clickNumber(number)")
             b {{number}}
@@ -15,9 +15,7 @@ material-dialog.width-md(id="dialog-payCash")
           material-button.material-button-fab(ng-click="clickBackspace()")
             i.fa.fa-arrow-left
 
-      div(flex)
-
-      material-list(flex="45")
+      material-list
         material-item
           .material-tile-left
             b(ng-show="willPay") 支付
@@ -36,8 +34,8 @@ material-dialog.width-md(id="dialog-payCash")
           .material-tile-content
             span(ng-show="ifValidPay()") {{willPay - shouldPay}}元
 
-  .dialog-actions(layout="horizontal" layout-align="space-around")
-    material-button.material-button-raised.material-theme-light(flex="40"
-      ng-disabled="!ifValidPay()" ng-click="clickNeedChange()") 确认金额
-    material-button.material-button-raised.material-theme-light(flex="40"
-      ng-click="clickNoNeed()") 我有零钱
+  .dialog-actions(layout="horizontal" layout-align="center")
+    material-button.material-button-raised.material-theme-light(
+      ng-disabled="ifValidPay() == false" ng-click="clickNeedChange()") 确认金额
+    material-button.material-button-raised.material-theme-light(
+      ng-disabled="ifValidPay() == true" ng-click="clickNoNeed()") 我有零钱
