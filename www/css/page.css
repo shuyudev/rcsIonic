@@ -42,18 +42,37 @@
   width: 30px;
 }
 
+.page .material-toolbar-tools {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.page .pane-area {
+  padding-left: 20px;
+  padding-right: 20px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page .rcs-pane {
+  background-color: #ffffff;
+  display: inherit;
+  font-size: 18px;
+  height: 82%;
+  margin-bottom: 40px;
+  margin-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+}
+
 .page .rcs-pane .action material-button {
   margin-left: 5px;
   margin-right: 5px;
   margin-top: 30px;
-  margin-bottom: 15px;
+  margin-bottom: 25px;
   height: 60px;
   line-height: 48px;
-}
-
-.page .material-toolbar-tools {
-  padding-left: 0px;
-  padding-right: 0px;
 }
 
 #page-use .material-toolbar-tools #return {

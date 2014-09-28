@@ -9,28 +9,23 @@
 }
 
 #signin .rcs-pane {
-  width: 400px;
-  min-height: 200px;
-  padding-top: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  margin-top: 10px;
-  margin-bottom: 40px;
-  font-size: 18px;
-  background-color: #ffffff;
+  width: 40%;
 }
 
-#signin .rcs-pane h4 {
-  margin-top: 5px;
+#signin .rcs-pane {
+  height: 50%;
 }
 
-#signin .pane label,
-#signin .pane input {
-  width: 100%;
+#signin .action material-button {
+  width: 80%;
 }
 
-#signin .action {
-  height: 110px;
+#signin .rcs-pane.info .action material-button.material-theme-light {
+  width: 55%;
+}
+
+#signin .rcs-pane.info .action material-button {
+  width: 35%;
 }
 
 #signin .action div {
