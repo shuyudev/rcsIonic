@@ -75,7 +75,7 @@
   line-height: 48px;
 }
 
-#page-use .material-toolbar-tools #return {
+.page .material-toolbar-tools .return {
   background-color: #f8f4ee;
   height: 64px;
   line-height: 64px;
@@ -85,7 +85,7 @@
   cursor: pointer;
 }
 
-#page-use .material-toolbar-tools #return .fa {
+.page .material-toolbar-tools .return .fa {
   /*color: #f1f1f1;*/
   font-size: 28px;
 }
