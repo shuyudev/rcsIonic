@@ -66,6 +66,10 @@
   padding-top: 10px;
 }
 
+.page .rcs-pane .action {
+  width: 100%;
+}
+
 .page .rcs-pane .action material-button {
   margin-left: 5px;
   margin-right: 5px;
@@ -77,14 +81,25 @@
 }
 
 .page .pane-header {
+  width: 100%;
   font-size: 20px;
   font-weight: bold;
   padding-bottom: 8px;
   border-bottom: 2px solid #8A1717;
-  height: 52px;
   padding-top: 5px;
-  min-height: 52px;
+  height: 32px;
+  min-height: 32px;
   z-index: 10;
+}
+
+.page .pane-header .fa {
+  width: 19px;
+  height: 19px;
+  margin-left: 10px;
+}
+
+.page .pane-header .colored {
+  color: #8A1717;
 }
 
 .page .material-toolbar-tools .return {

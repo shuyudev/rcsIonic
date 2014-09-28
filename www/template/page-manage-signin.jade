@@ -13,7 +13,7 @@ div(id="signin" layout="vertical" layout-fill)
       material-input-group.material-input-group-theme-light
         label(for="1") 密码
         material-input(id="1" type="password" ng-model="signIn.password" ng-required="true")
-      .action(layout="horizontal" layout-align="center")
+      .action.text-center
         material-button.material-button-raised.material-theme-light(
           ng-click="clickSignIn($event)" ng-hide="signingIn == true") 登录
 
@@ -39,7 +39,7 @@ div(id="signin" layout="vertical" layout-fill)
             b 名称
           .material-tile-content
             h3 {{getSignedInUser().Name}}
-      .action(layout="horizontal" layout-align="center")
+      .action.text-center
         material-button.material-button-raised.material-theme-light(
           ng-click="clickGoToRestaurants()") 前往关联餐桌
         material-button.material-button-raised(

@@ -12,31 +12,41 @@
   margin-left: 25px;
 }
 
-#eating .pane-header .fa {
-  margin-left: 10px;
-}
-
 #eating .rcs-pane.ordered .material-left {
   margin-right: 20px;
 }
 
-#eating .rcs-pane.call material-button {
+#eating .rcs-pane.call .text-center,
+#payment .rcs-pane.pay .text-center {
+  height: 100%;
+}
+
+#eating .rcs-pane.call material-button,
+#payment .rcs-pane.pay material-button {
   width: 80%;
   height: 18%;
   margin-top: 3%;
-  margin-bottom: 3%;
+  margin-bottom: 2%;
 }
 
-#eating .rcs-pane.call material-button h2 {
+#eating .rcs-pane.call material-button h2,
+#payment .rcs-pane.pay material-button h2 {
   margin: 0;
+  height: 100%;
+  padding-top: 6%;
+  font-size: 24px;
 }
 
-#eating .rcs-pane.call material-button .fa {
-  font-size: 1.2em;
+#eating .rcs-pane.call material-button .fa,
+#payment .rcs-pane.pay material-button .fa {
+  font-size: 1.25em;
   color: #8A1717;
+  margin-bottom: 2%;
 }
 
 #eating .rcs-pane.call material-button[disabled] h2,
-#eating .rcs-pane.call material-button[disabled] .fa {
+#payment .rcs-pane.pay material-button[disabled] h2,
+#eating .rcs-pane.call material-button[disabled] .fa,
+#payment .rcs-pane.pay material-button[disabled] .fa {
   color: #999;
 }

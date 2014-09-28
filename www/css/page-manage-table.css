@@ -12,17 +12,8 @@
   margin-left: 20px;
 }
 
-#table .pane-header {
-  font-size: 22px;
-  font-weight: bold;
-  height: 32px;
-  min-height: 32px;
-}
-
-#table .pane-header .fa {
-  width: 19px;
-  height: 19px;
-  margin-left: 10px;
+#table ion-content {
+  height: 85%;
 }
 
 #table .rcs-pane.list material-item:hover .material-tile-content,

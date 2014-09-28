@@ -12,7 +12,7 @@ div(id="table" layout="vertical" layout-fill)
   .pane-area(ng-show="tables != null && tables.length != 0" layout="horizontal" layout-align="center")
 
     .rcs-pane.list.material-whiteframe-z3(layout="vertical")
-      .pane-header(layout="horizontal" ng-click="clickRefreshTable()") 选择餐桌进行关联
+      .pane-header(ng-click="clickRefreshTable()") 选择餐桌进行关联
         i.fa.fa-refresh(ng-class="{'fa-spin':refreshing == true}")
       ion-content(has-bouncing="true")
         material-radio-group(ng-model="selectedIndexUi")
@@ -49,7 +49,7 @@ div(id="table" layout="vertical" layout-fill)
             | 选择餐桌
           .material-tile-content
             h2 {{selectedTable.TableName}} ({{selectedTable.TableType}})
-      .action(layout="horizontal" layout-align="center")
+      .action.text-center
         material-button.material-button-raised.material-theme-light(
           ng-disabled="ifDisableCickLink() == true" ng-hide="linking == true"
           ng-click="clickLink($event)") 关联

@@ -4,7 +4,7 @@ div(id="eating" layout="vertical" layout-fill)
 
     .rcs-pane.ordered.material-whiteframe-z3(layout="vertical")
 
-      .pane-header(layout="horizontal")
+      .pane-header
         div(ng-click="clickRefresh()")
           span.colored [{{ordered.length}}]
           span 已点菜品
@@ -19,29 +19,33 @@ div(id="eating" layout="vertical" layout-fill)
             .material-tile-right x{{item.count}}
 
     .rcs-pane.call.material-whiteframe-z3(layout="vertical")
-      .pane-header(layout="horizontal")
+      .pane-header
         span 服务
 
-      div(layout="vertical" layout-align="center center" layout-fill)
+      .text-center
         material-button.material-button-raised(ng-click="clickRequest('water', $event)"
           ng-disabled="justClicked['water'] == true || getRequestCd('water') != 0")
-          h2(layout="vertical" layout-fill layout-align="center")
-            b.fa.fa-coffee
+          h2
+            div
+              b.fa.fa-coffee
             span(ng-show="getRequestCd('water') == 0") 呼叫加水
             span(ng-show="getRequestCd('water') != 0") (剩余{{getRequestCd('water')}}秒)
         material-button.material-button-raised(ng-click="clickRequest('call', $event)"
           ng-disabled="justClicked['call'] == true || getRequestCd('call') != 0")
-          h2(layout="vertical" layout-fill layout-align="center")
-            b.fa.fa-user
+          h2
+            div
+              b.fa.fa-user
             span(ng-show="getRequestCd('call') == 0") 叫服务员
             span(ng-show="getRequestCd('call') != 0") (剩余{{getRequestCd('call')}}秒)
         material-button.material-button-raised(ng-click="clickGoToOrder()"
           ng-disabled="refreshing == true")
-          h2(layout="vertical" layout-fill layout-align="center")
-            b.fa.fa-cutlery
-            span 添加点菜
+          h2
+            div
+              b.fa.fa-cutlery
+            span 添加菜品
         material-button.material-button-raised(ng-click="clickPay()"
           ng-disabled="ordered.length == 0")
-          h2(layout="vertical" layout-fill layout-align="center")
-            b.fa.fa-cny
+          h2
+            div
+              b.fa.fa-cny
             span 自助结帐

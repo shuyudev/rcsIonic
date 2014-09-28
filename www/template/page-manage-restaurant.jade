@@ -20,6 +20,6 @@ div(id="restaurant" layout="vertical" layout-fill)
               .material-tile-content(ng-class="{'selected':selectedIndex==$index}")
                 h2 {{restaurant.RestaurantName}}
                 h3 {{restaurant.Description}}
-      .action(layout="horizontal" layout-align="center")
+      .action.text-center
         material-button.material-button-raised.material-theme-light(
           ng-disabled="ifDisableCickGoto() == true" ng-click="clickGoTo()") 继续

@@ -7,8 +7,8 @@
   padding-bottom: 0px;
 }
 
-#rcs .dialog-actions {
-  justify-content: center;
+#rcs .dialog-actions > .text-center {
+  width: 100%;
 }
 
 #rcs .dialog-actions material-button {
@@ -19,22 +19,20 @@
   line-height: 48px;
   width: 80%;
 }
-/*
-#dialog-payCash material-item {
-  width: 80%;
-  left: 10%;
-}*/
 
 #dialog-payCash h3 {
   margin-bottom: 10px;
 }
 
-#dialog-payCash #input {
+#dialog-payCash .input {
+  float: left;
   width: 250px;
   height: 280px;
 }
 
 #dialog-payCash material-list {
+  float: right;
+  margin-top: 30px;
   width: 180px;
 }
 
@@ -55,4 +53,10 @@
   margin-right: 15px;
   background-color: #f8f4ee;
   font-size: 22px;
+}
+
+#dialog-payCash .dialog-actions material-button {
+  width: 40%;
+  margin-left: 3%;
+  margin-right: 3%;
 }

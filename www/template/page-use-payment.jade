@@ -11,11 +11,11 @@ div(id="payment" layout="vertical" layout-fill)
   .pane-area(ng-show="ordered != null && ordered.length != 0" layout="horizontal" layout-align="center")
     .rcs-pane.ordered.material-whiteframe-z3(layout="vertical")
 
-      .pane-header(layout="horizontal")
-        span.left
+      .pane-header.full-width
+        .left
           span.colored [{{ordered.length}}]
           span 已点菜品
-        span
+        .right
           span 总价&nbsp;
           span.colored(ng-show="isPremium == false") {{grandTotal}}&nbsp;
           span.colored(ng-show="isPremium == true") {{grandTotalPremium}}&nbsp;
@@ -33,19 +33,21 @@ div(id="payment" layout="vertical" layout-fill)
               span x{{item.count}}
 
     .rcs-pane.pay.material-whiteframe-z3(layout="vertical")
-      .pane-header(layout="horizontal")
+      .pane-header
         span 支付
 
-      div(layout="vertical" layout-align="start center" layout-fill)
+      .text-center
         material-checkbox(ng-model="isPremium" aria-label="我是会员" noink) 我是会员
 
         material-button.material-button-raised(ng-click="clickPay('cash', $event)"
           ng-disabled="justClicked['cash'] == true")
-          h2(layout="vertical" layout-fill layout-align="center")
-            b.fa.fa-cny
+          h2
+            div
+              b.fa.fa-cny
             span 现金支付
         material-button.material-button-raised(ng-click="clickPay('card', $event)"
           ng-disabled="justClicked['card'] == true")
-          h2(layout="vertical" layout-fill layout-align="center")
-            b.fa.fa-credit-card
+          h2
+            div
+              b.fa.fa-credit-card
             span 刷卡支付

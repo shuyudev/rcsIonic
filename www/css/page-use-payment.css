@@ -13,22 +13,13 @@
 }
 
 /*header*/
-#payment .pane-header span {
-  margin-top: 10px;
+#payment .pane-header .left {
+  float: left;
 }
 
-#payment .pane-header span.left {
-  width: 70%;
-}
-
-#payment .pane-header span.colored {
-  color: #8A1717;
-}
-
-#payment .pane-header span.fa {
-  text-align: center;
-  font-size: 22px;
-  width: 40px;
+#payment .pane-header .right {
+  float: right;
+  width: 30%;
 }
 
 /*ordered*/
@@ -47,27 +38,6 @@
 /*pay*/
 #payment .rcs-pane.pay material-checkbox {
   padding-top: 5%;
-}
-
-#payment .rcs-pane.pay material-button {
-  width: 80%;
-  height: 20%;
-  margin-top: 3%;
-  margin-bottom: 3%;
-}
-
-#payment .rcs-pane.pay material-button h2 {
-  margin: 0;
-}
-
-#payment .rcs-pane.pay material-button .fa {
-  font-size: 1.2em;
-  color: #8A1717;
-}
-
-#payment .rcs-pane.pay material-button[disabled] h2,
-#payment .rcs-pane.pay material-button[disabled] .fa {
-  color: #999;
 }
 
 #payment material-checkbox .material-container,

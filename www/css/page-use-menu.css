@@ -53,7 +53,8 @@
 #menu .rcs-pane.list material-content,
 #menu .rcs-pane.list ion-content {
   padding-bottom: 10px;
-  margin-bottom: 75px;
+  display: table;
+  width: 100%;
 }
 
 /*footer*/
@@ -66,23 +67,28 @@
   font-size: 22px;
   position: absolute;
   bottom: 0;
+  width: 95%;
 }
 
 #menu .page-footer material-button {
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-left: 2%;
+  margin-right: 2%;
   width: 20%;
 }
 
 /*rcs-menu-item*/
-#menu rcs-menu-item {
-  height: 80px;
-  width: 45%;
+#menu .menu-row {
   margin-top: 20px;
   margin-left: 3%;
+  width: 100%;
 }
 
-#menu rcs-menu-item.right {
+#menu .menu-col {
+  height: 80px;
+  width: 45%;
+}
+
+#menu .menu-col.right {
   position: absolute;
   right: 0;
   margin-right: 3%;
@@ -106,29 +112,37 @@
   margin-left: 15px;
 }
 
+#menu .rcs-menu-item.selected .content {
+  margin-left: 7px;
+}
+
 #menu .rcs-menu-item .price {
   /*background-color: blue;*/
   width: 100%;
-}
-
-#menu .rcs-menu-item .price span {
   text-align: left;
 }
 
 #menu .rcs-menu-item .price span {
   text-align: left;
+  font-size: 0.95em;
 }
 
-#menu .rcs-menu-item .price span.normal {
-  width: 80px;
+#menu .rcs-menu-item .price .normal {
+  float: left;
 }
 
-#menu .rcs-menu-item .price span.premium {
+#menu .rcs-menu-item .price .premium {
+  float: right;
+  margin-right: 20px;
   color: #8A1717;
 }
 
-#menu .rcs-menu-item .price span.premium > i{
-  font-size: 16px;
+#menu .rcs-menu-item.selected .price .premium {
+  margin-right: 12px;
+}
+
+#menu .rcs-menu-item .price .premium i{
+  font-size: 0.8em;
 }
 
 #menu .rcs-menu-item.selected {
@@ -139,21 +153,26 @@
   color: #8A1717;
 }
 
-#menu .rcs-menu-item.selected .content {
-  margin-left: 7px;
+/*info*/
+#menu .pane-header {
+  height: 55px;
+  min-height: 55px;
 }
 
-/*info*/
-#menu .pane-header span {
+#menu .pane-header .left {
+  float: left;
   margin-top: 3%;
   margin-bottom: 2%;
+}
+
+#menu .pane-header .right {
+  float: right;
   width: 50%;
 }
 
-#menu .pane-header > material-button {
-  width: 50%;
-  height: 100%;
-  line-height: 30px;
+#menu .pane-header material-button {
+  width: 100%;
+  line-height: 35px;
 }
 
 #menu .material-tile-content {

@@ -7,7 +7,7 @@ angular
   .controller('restaurantCtrl', ['$scope', '$state', 'rcsHttp', 'rcsSession', restaurantCtrl])
   .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
   .controller('aboutCtrl', ['$scope', '$state', '$interval', 'rcsSession', 'TABLE_STATUS', aboutCtrl])
-  .controller('menuCtrl', ['$rootScope', '$scope', '$state', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', menuCtrl])
+  .controller('menuCtrl', ['$rootScope', '$scope', '$state', '$window', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', menuCtrl])
   .controller('eatingCtrl', ['$scope', '$state', 'rcsSession', 'RCS_REQUEST_ERR', eatingCtrl])
   .controller('paymentCtrl', ['$scope', '$state', '$materialDialog', 'rcsSession', 'RCS_REQUEST_ERR', paymentCtrl]);
 
@@ -413,7 +413,7 @@ function aboutCtrl ($scope, $state, $interval, rcsSession, TABLE_STATUS) {
   }
 }
 
-function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT, RCS_REQUEST_ERR) {
+function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, RCS_REQUEST_ERR) {
   // scope fields
   $scope.menuItems = null;
   $scope.ordering = null;
@@ -438,7 +438,7 @@ function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT, RCS_REQUES
   var makeOrderGroupFilter = makeOrderGroup();
   var menuItemsRowsAll = null;
 
-  var pageRowLimit = 4;
+  var pageRowLimit = Math.floor((($window.innerHeight -64)*.82 - 50 - 60) / (100));
 
   // events
   $rootScope.$on(RCS_EVENT.orderingUpdate, updateOrdering);
