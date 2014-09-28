@@ -6,7 +6,7 @@ angular
   .controller('signInCtrl', ['$scope', '$state', '$timeout', 'rcsSession', 'RCS_REQUEST_ERR', signInCtrl])
   .controller('restaurantCtrl', ['$scope', '$state', 'rcsHttp', 'rcsSession', restaurantCtrl])
   .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
-  .controller('aboutCtrl', ['$scope', '$state', 'rcsSession', 'TABLE_STATUS', aboutCtrl])
+  .controller('aboutCtrl', ['$scope', '$state', '$interval', 'rcsSession', 'TABLE_STATUS', aboutCtrl])
   .controller('menuCtrl', ['$rootScope', '$scope', '$state', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', menuCtrl])
   .controller('eatingCtrl', ['$scope', '$state', 'rcsSession', 'RCS_REQUEST_ERR', eatingCtrl])
   .controller('paymentCtrl', ['$scope', '$state', '$materialDialog', 'rcsSession', 'RCS_REQUEST_ERR', paymentCtrl]);
@@ -221,6 +221,7 @@ function restaurantCtrl ($scope, $state, rcsHttp, rcsSession) {
   // scope fields
   $scope.restaurants = null;
   $scope.selectedIndex = 0;
+  $scope.selectedIndexUi = 0;
 
   // scope methods
   $scope.clickGoTo = clickGoTo;
@@ -267,6 +268,7 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
   $scope.linking = false;
   $scope.tables = null;
   $scope.selectedIndex = -1;
+  $scope.selectedIndexUi = -1;
   $scope.selectedTable = null;
   $scope.deviceModel = null;
   $scope.deviceSystemVersion = null;
@@ -360,7 +362,7 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
   }
 }
 
-function aboutCtrl ($scope, $state, rcsSession, TABLE_STATUS) {
+function aboutCtrl ($scope, $state, $interval, rcsSession, TABLE_STATUS) {
   // scope fields
   $scope.table = null;
   $scope.justClicked = false;
@@ -387,6 +389,8 @@ function aboutCtrl ($scope, $state, rcsSession, TABLE_STATUS) {
         return $state.go('page.use.eating');
 
       case TABLE_STATUS.paying:
+        // TODO: $interval to check is pay complete
+        break;
       case TABLE_STATUS.paid:
       case TABLE_STATUS.empty:
         break;

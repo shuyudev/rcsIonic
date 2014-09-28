@@ -71,6 +71,12 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
       rcsLocalstorage.clear(STORAGE_KEY.tableToken);
       rcsLocalstorage.clear(STORAGE_KEY.tableRestaurantId);
 
+      // keep session for testing purpose
+      // return rcsHttp.User.handshake()
+      //   .success(function (res) {
+      //     signedInUser = res;
+      //   });
+
       // sign out on start to secure user session
       return rcsHttp.User.signOut()
         .success(function (res) {

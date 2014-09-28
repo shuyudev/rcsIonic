@@ -3,24 +3,12 @@
   margin-bottom: 0px;
 }
 
-#table .rcs-pane {
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  margin-top: 10px;
-  margin-bottom: 40px;
-  font-size: 18px;
-  display: inherit;
-  background-color: #ffffff;
-}
-
 #table .rcs-pane.list {
-  width: 300px;
+  width: 40%;
 }
 
 #table .rcs-pane.info {
-  width: 250px;
+  width: 35%;
   margin-left: 20px;
 }
 
@@ -36,6 +24,7 @@
 #table .pane-header .fa {
   width: 19px;
   height: 19px;
+  margin-left: 10px;
 }
 
 #table .rcs-pane.list material-item:hover .material-tile-content,
@@ -54,9 +43,9 @@
 }
 
 #table .rcs-pane.info .material-tile-left {
-  text-align: center;
-  min-width: 50px;
-  width: 50px;
+  text-align: left;
+  min-width: 90px;
+  width: 90px;
   margin-right: 5px;
 }
 
@@ -64,6 +53,6 @@
   color: #8A1717;
 }
 
-#table material-item.delimiter {
+#table material-item.devider {
   border-bottom: 1px solid #8A1717;
 }

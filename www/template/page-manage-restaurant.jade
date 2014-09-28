@@ -12,11 +12,11 @@ div(id="restaurant" layout="vertical" layout-fill)
 
     .rcs-pane.material-whiteframe-z3(layout="vertical" layout-align="center")
       ion-content(has-bouncing="true")
-        material-radio-group(ng-model="selectedIndex")
+        material-radio-group(ng-model="selectedIndexUi")
           material-list(ng-repeat="restaurant in restaurants")
             material-item(ng-click="clickRestaurant($index)")
               .material-tile-left
-                material-radio-button(ng-class="{'material-checked':selectedIndex==$index}" noink)
+                material-radio-button(ng-class="{'material-checked':selectedIndex=={{$index}}}" value="{{$index}}" noink)
               .material-tile-content(ng-class="{'selected':selectedIndex==$index}")
                 h2 {{restaurant.RestaurantName}}
                 h3 {{restaurant.Description}}
