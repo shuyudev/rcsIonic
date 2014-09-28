@@ -1,33 +1,21 @@
-#menu .pane-area {
-  padding-left: 20px;
-  padding-right: 20px;
-  height: 100%;
-  overflow: hidden;
-}
-
-#menu .rcs-pane {
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-bottom: 10px;
-  margin-top: 10px;
-  margin-bottom: 40px;
-  font-size: 18px;
-  display: inherit;
-  background-color: #ffffff;
-  height: 82%;
+#menu .rcs-pane.list {
+  width: 65%;
 }
 
 #menu .rcs-pane.info {
+  width: 35%;
   padding-top: 5px;
-  margin-left: 10px;
+  margin-left: 15px;
 }
 
+/*tab*/
 #menu material-tabs .material-ink-ripple {
   color: #fff;
 }
 
 #menu material-tabs {
   border-bottom: 1px solid #8A1717;
+  z-index: 10;
 }
 
 #menu material-tab {
@@ -59,17 +47,25 @@
   background: #8A1717;
   position: absolute;
   margin-top: -5px;
-  /*width: 50% !important;*/
 }
 
-#menu material-content {
+/*content*/
+#menu .rcs-pane.list material-content,
+#menu .rcs-pane.list ion-content {
   padding-bottom: 10px;
+  margin-bottom: 75px;
 }
 
+/*footer*/
 #menu .page-footer {
-  height: 45px;
-  line-height: 35px;
+  min-height: 50px;
+  max-height: 50px;
+  margin-bottom: 10px;
+  margin-top:15px;
+  line-height: 40px;
   font-size: 22px;
+  position: absolute;
+  bottom: 0;
 }
 
 #menu .page-footer material-button {
@@ -78,10 +74,18 @@
   width: 20%;
 }
 
+/*rcs-menu-item*/
 #menu rcs-menu-item {
   height: 80px;
-  width: 95%;
-  margin-top: 15px;
+  width: 45%;
+  margin-top: 20px;
+  margin-left: 3%;
+}
+
+#menu rcs-menu-item.right {
+  position: absolute;
+  right: 0;
+  margin-right: 3%;
 }
 
 #menu .rcs-menu-item {
@@ -137,6 +141,19 @@
 
 #menu .rcs-menu-item.selected .content {
   margin-left: 7px;
+}
+
+/*info*/
+#menu .pane-header span {
+  margin-top: 3%;
+  margin-bottom: 2%;
+  width: 50%;
+}
+
+#menu .pane-header > material-button {
+  width: 50%;
+  height: 100%;
+  line-height: 30px;
 }
 
 #menu .material-tile-content {

@@ -438,7 +438,7 @@ function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT, RCS_REQUES
   var makeOrderGroupFilter = makeOrderGroup();
   var menuItemsRowsAll = null;
 
-  var pageRowLimit = 3;
+  var pageRowLimit = 4;
 
   // events
   $rootScope.$on(RCS_EVENT.orderingUpdate, updateOrdering);
@@ -542,7 +542,7 @@ function menuCtrl ($rootScope, $scope, $state, rcsSession, RCS_EVENT, RCS_REQUES
 
     // refresh page count
     $scope.currentPage = 1;
-    $scope.maxPage = Math.floor(menuItemsRowsAll.length / pageRowLimit);
+    $scope.maxPage = Math.ceil(menuItemsRowsAll.length / pageRowLimit);
 
     // load page
     loadPage();

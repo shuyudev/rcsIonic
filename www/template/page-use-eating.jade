@@ -1,19 +1,14 @@
-div(id="eating" flex layout="vertical" layout-fill)
+div(id="eating" layout="vertical" layout-fill)
 
   .pane-area(layout="horizontal" layout-align="center")
 
-    div(flex="5")
-    .rcs-pane.ordered.material-whiteframe-z3(flex="50" layout="vertical")
+    .rcs-pane.ordered.material-whiteframe-z3(layout="vertical")
 
       .pane-header(layout="horizontal")
-        div(flex="40" ng-click="clickRefresh()")
+        div(ng-click="clickRefresh()")
           span.colored [{{ordered.length}}]
           span 已点菜品
           span.fa.fa-refresh(ng-class="{'fa-spin':refreshing == true}")
-        div(flex)
-        material-button.material-button-raised.material-theme-light(
-          ng-click="clickGoToOrder()")
-          | 添加
 
       ion-content
         material-list
@@ -23,12 +18,11 @@ div(id="eating" flex layout="vertical" layout-fill)
               h2 <b>{{item.name}}</b>
             .material-tile-right x{{item.count}}
 
-    div(flex="5")
-    .rcs-pane.call.material-whiteframe-z3(flex="35" layout="vertical")
+    .rcs-pane.call.material-whiteframe-z3(layout="vertical")
       .pane-header(layout="horizontal")
         span 服务
 
-      div(layout="vertical" layout-align="space-around center" layout-fill)
+      div(layout="vertical" layout-align="center center" layout-fill)
         material-button.material-button-raised(ng-click="clickRequest('water', $event)"
           ng-disabled="justClicked['water'] == true || getRequestCd('water') != 0")
           h2(layout="vertical" layout-fill layout-align="center")
@@ -41,10 +35,13 @@ div(id="eating" flex layout="vertical" layout-fill)
             b.fa.fa-user
             span(ng-show="getRequestCd('call') == 0") 叫服务员
             span(ng-show="getRequestCd('call') != 0") (剩余{{getRequestCd('call')}}秒)
+        material-button.material-button-raised(ng-click="clickGoToOrder()"
+          ng-disabled="refreshing == true")
+          h2(layout="vertical" layout-fill layout-align="center")
+            b.fa.fa-cutlery
+            span 添加点菜
         material-button.material-button-raised(ng-click="clickPay()"
           ng-disabled="ordered.length == 0")
           h2(layout="vertical" layout-fill layout-align="center")
             b.fa.fa-cny
             span 自助结帐
-
-    div(flex="5")

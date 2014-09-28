@@ -1,4 +1,4 @@
-div(id="payment" flex layout="vertical" layout-fill)
+div(id="payment" layout="vertical" layout-fill)
   h2.text-center.title(ng-show="ordered == null") 准备结帐
 
   .text-center(ng-show="ordered == null")
@@ -9,14 +9,12 @@ div(id="payment" flex layout="vertical" layout-fill)
     p 您没有点选任何菜品，请返回点菜
 
   .pane-area(ng-show="ordered != null && ordered.length != 0" layout="horizontal" layout-align="center")
-    div(flex="5")
-    .rcs-pane.ordered.material-whiteframe-z3(flex="55" layout="vertical")
+    .rcs-pane.ordered.material-whiteframe-z3(layout="vertical")
 
       .pane-header(layout="horizontal")
-        span(flex="40" ng-click="clickRefresh()")
+        span.left
           span.colored [{{ordered.length}}]
           span 已点菜品
-        span(flex)
         span
           span 总价&nbsp;
           span.colored(ng-show="isPremium == false") {{grandTotal}}&nbsp;
@@ -29,28 +27,25 @@ div(id="payment" flex layout="vertical" layout-fill)
             .material-left {{item.type}}
             .material-tile-content
               h2 <b>{{item.name}}</b>
-            .material-tile-right(layout="horizontal" layout-align="space-between")
-              span(ng-show="isPremium == false") {{item.price}}元
-              span(ng-show="isPremium == true") {{item.premiumPrice}}元
+            .material-tile-right(layout="horizontal" layout-align="start")
+              span.left(ng-show="isPremium == false") {{item.price}}元
+              span.left(ng-show="isPremium == true") {{item.premiumPrice}}元
               span x{{item.count}}
 
-    div(flex="5")
-    .rcs-pane.pay.material-whiteframe-z3(flex="30" layout="vertical")
+    .rcs-pane.pay.material-whiteframe-z3(layout="vertical")
       .pane-header(layout="horizontal")
         span 支付
 
-      div(layout="vertical" layout-align="space-around center" layout-fill)
+      div(layout="vertical" layout-align="start center" layout-fill)
         material-checkbox(ng-model="isPremium" aria-label="我是会员" noink) 我是会员
 
         material-button.material-button-raised(ng-click="clickPay('cash', $event)"
           ng-disabled="justClicked['cash'] == true")
           h2(layout="vertical" layout-fill layout-align="center")
-            b.fa.fa-coffee
+            b.fa.fa-cny
             span 现金支付
         material-button.material-button-raised(ng-click="clickPay('card', $event)"
           ng-disabled="justClicked['card'] == true")
           h2(layout="vertical" layout-fill layout-align="center")
-            b.fa.fa-user
+            b.fa.fa-credit-card
             span 刷卡支付
-
-    div(flex="5")

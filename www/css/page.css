@@ -76,6 +76,17 @@
   width: 80%;
 }
 
+.page .pane-header {
+  font-size: 20px;
+  font-weight: bold;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #8A1717;
+  height: 52px;
+  padding-top: 5px;
+  min-height: 52px;
+  z-index: 10;
+}
+
 .page .material-toolbar-tools .return {
   background-color: #f8f4ee;
   height: 64px;

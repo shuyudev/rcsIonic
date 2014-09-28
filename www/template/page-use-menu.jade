@@ -1,4 +1,4 @@
-div(id="menu" flex layout="vertical" layout-fill)
+div(id="menu" layout="vertical" layout-fill)
 
   h2.text-center.title(ng-show="menuItems == null") 点餐
 
@@ -12,7 +12,7 @@ div(id="menu" flex layout="vertical" layout-fill)
 
   .pane-area(ng-show="menuItems != null && menuItems.length != 0" layout="horizontal" layout-align="center")
 
-    .rcs-pane.list.material-whiteframe-z3(flex="70" layout="vertical")
+    .rcs-pane.list.material-whiteframe-z3(layout="vertical")
 
       material-tabs(selected="selectedIndex")
         material-tab(
@@ -24,12 +24,9 @@ div(id="menu" flex layout="vertical" layout-fill)
             b {{menuType}}
               span(ng-if="selectedIndex==$index && maxPage > 1") ({{currentPage}}/{{maxPage}})
 
-      material-content
+      ion-content
         div(ng-repeat="menuItemsRow in menuItemsRows track by $index" layout="horizontal" layout-align="start")
-          div(flex="50" ng-repeat="menuItem in menuItemsRow" layout="vertical" layout-align="center center")
-            rcs-menu-item
-
-      div(flex)
+          rcs-menu-item(ng-repeat="menuItem in menuItemsRow track by $index" ng-class="{right:{{$index}} % 2 == 1}")
 
       .page-footer(ng-show="maxPage > 1" layout="horizontal" layout-fill layout-align="center")
         material-button.material-button-raised.material-theme-light(
@@ -39,10 +36,9 @@ div(id="menu" flex layout="vertical" layout-fill)
           ng-disabled="currentPage == maxPage" ng-click="clickPageNext()")
           i.fa.fa-chevron-right
 
-    .rcs-pane.info.material-whiteframe-z3(flex="30" layout="vertical")
+    .rcs-pane.info.material-whiteframe-z3(layout="vertical")
       .pane-header(layout="horizontal")
         span 准备下单({{ordering.length}})
-        div(flex)
         material-button.material-button-raised.material-theme-light(
           ng-click="clickConfirm($event)"
           ng-show="orderingGroup && orderingGroup.length != 0")
@@ -59,7 +55,7 @@ div(id="menu" flex layout="vertical" layout-fill)
                 i.fa.fa-plus
             .material-tile-content
               h2 {{ordering.name}}
-              div(layout="horizontal" layout-align="space-between")
+              div(layout="horizontal")
                 span.type {{ordering.type}}
                 b x{{ordering.count}}
             .material-tile-right
