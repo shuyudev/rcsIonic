@@ -364,6 +364,7 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
 
 function aboutCtrl ($scope, $state, $interval, rcsSession, TABLE_STATUS) {
   // scope fields
+  $scope.restaurantName = null;
   $scope.table = null;
   $scope.justClicked = false;
 
@@ -372,6 +373,15 @@ function aboutCtrl ($scope, $state, $interval, rcsSession, TABLE_STATUS) {
   $scope.clickStartOrder = clickStartOrder;
 
   // locals
+  var refreshInterval = null;
+
+  // events
+  $scope.$on("$destroy", function() {
+    if (refreshInterval) {
+      $interval.cancel(refreshInterval);
+    }
+  });
+
   // initialize
   initialize();
 
@@ -383,16 +393,28 @@ function aboutCtrl ($scope, $state, $interval, rcsSession, TABLE_STATUS) {
       return $state.go('page.manage.signin');
     }
 
+    $scope.restaurantName = $scope.table.Restaurant.RestaurantName;
+
     switch($scope.table.Status) {
       case TABLE_STATUS.ordering:
       case TABLE_STATUS.ordered:
         return $state.go('page.use.eating');
 
       case TABLE_STATUS.paying:
-        // TODO: $interval to check is pay complete
-        break;
       case TABLE_STATUS.paid:
+        // polling table table status, until it become 'empty'
+        if (!refreshInterval) {
+          refreshInterval = $interval(function() {
+            $scope.clickRefresh();
+          }, 1000*5);
+        }
+        break;
+
       case TABLE_STATUS.empty:
+        // stop polling table status, wating for eater to click 'StartOrder'
+        if (refreshInterval) {
+          $interval.cancel(refreshInterval);
+        }
         break;
     }
   }
