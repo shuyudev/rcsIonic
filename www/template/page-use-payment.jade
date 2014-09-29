@@ -21,16 +21,17 @@ div(id="payment" layout="vertical" layout-fill)
           span.colored(ng-show="isPremium == true") {{grandTotalPremium}}&nbsp;
           span 元
 
-      ion-content
-        material-list
-          material-item(ng-repeat="item in orderedGroup | orderBy:['type'] track by $index")
-            .material-left {{item.type}}
-            .material-tile-content
-              h2 <b>{{item.name}}</b>
-            .material-tile-right(layout="horizontal" layout-align="start")
-              span.left(ng-show="isPremium == false") {{item.price}}元
-              span.left(ng-show="isPremium == true") {{item.premiumPrice}}元
-              span x{{item.count}}
+      .scroll-container
+        ion-content
+          material-list
+            material-item(ng-repeat="item in orderedGroup | orderBy:['type'] track by $index")
+              .material-left {{item.type}}
+              .material-tile-content
+                h2 <b>{{item.name}}</b>
+              .material-tile-right(layout="horizontal" layout-align="start")
+                span.left(ng-show="isPremium == false") {{item.price}}元
+                span.left(ng-show="isPremium == true") {{item.premiumPrice}}元
+                span x{{item.count}}
 
     .rcs-pane.pay.material-whiteframe-z3(layout="vertical")
       .pane-header
