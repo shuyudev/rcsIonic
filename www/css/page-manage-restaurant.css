@@ -8,8 +8,9 @@
   height: 400px;
 }
 
-#restaurant .rcs-pane ion-content {
-  height: 70%;
+#restaurant .rcs-pane .scroll-container {
+  height: 73%;
+  margin-bottom: 5%;
 }
 
 #restaurant material-item:hover .material-tile-content,

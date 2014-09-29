@@ -11,15 +11,16 @@ div(id="restaurant" layout="vertical" layout-fill)
   .pane-area.text-unselectable(ng-show="restaurants != null && restaurants.length != 0" layout="horizontal" layout-align="center")
 
     .rcs-pane.material-whiteframe-z3(layout="vertical" layout-align="center")
-      ion-content(has-bouncing="true")
-        material-radio-group(ng-model="selectedIndexUi")
-          material-list(ng-repeat="restaurant in restaurants")
-            material-item(ng-click="clickRestaurant($index)")
-              .material-tile-left
-                material-radio-button(ng-class="{'material-checked':selectedIndex=={{$index}}}" value="{{$index}}" noink)
-              .material-tile-content(ng-class="{'selected':selectedIndex==$index}")
-                h2 {{restaurant.RestaurantName}}
-                h3 {{restaurant.Description}}
+      .scroll-container
+        ion-content(has-bouncing="true")
+          material-radio-group(ng-model="selectedIndexUi")
+            material-list(ng-repeat="restaurant in restaurants")
+              material-item(ng-click="clickRestaurant($index)")
+                .material-tile-left
+                  material-radio-button(ng-class="{'material-checked':selectedIndex=={{$index}}}" value="{{$index}}" noink)
+                .material-tile-content(ng-class="{'selected':selectedIndex==$index}")
+                  h2 {{restaurant.RestaurantName}}
+                  h3 {{restaurant.Description}}
       .action.text-center
         material-button.material-button-raised.material-theme-light(
           ng-disabled="ifDisableCickGoto() == true" ng-click="clickGoTo()") 继续

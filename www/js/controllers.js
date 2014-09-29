@@ -415,19 +415,23 @@ function aboutCtrl ($scope, $state, $interval, rcsSession, TABLE_STATUS) {
 
 function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, RCS_REQUEST_ERR) {
   // scope fields
+  $scope.currentOrderPage = null;
+  $scope.currentPage = null;
+  $scope.maxOrderPage = null;
+  $scope.maxPage = null;
   $scope.menuItems = null;
+  $scope.menuItemsRows = null;
+  $scope.menuTypes = null;
   $scope.ordering = null;
   $scope.orderingGroup = null;
-  $scope.menuTypes = null;
   $scope.selectedIndex = null;
-  $scope.currentPage = null;
-  $scope.maxPage = null;
-  $scope.menuItemsRows = null;
 
   // scope methods
   $scope.clickConfirm = clickConfirm;
   $scope.clickOrderingMinus = clickOrderingMinus;
   $scope.clickOrderingPlus = clickOrderingPlus;
+  $scope.clickOrderPageNext = clickOrderPageNext;
+  $scope.clickOrderPagePrevious = clickOrderPagePrevious;
   $scope.clickPageNext = clickPageNext;
   $scope.clickPagePrevious = clickPagePrevious;
   $scope.clickRefreshMenu = clickRefreshMenu;
@@ -437,8 +441,11 @@ function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, R
   var loadPage = loadPage;
   var makeOrderGroupFilter = makeOrderGroup();
   var menuItemsRowsAll = null;
+  var orderingGroupAll = null;
 
-  var pageRowLimit = Math.floor((($window.innerHeight -64)*.82 - 50 - 60) / (100));
+  var height = ($window.innerHeight -64) *.82 - 50 - 60;
+  var pageRowLimit = Math.floor(height / 100);
+  var pageOrderRowLimit = Math.floor(height / 80);
 
   // events
   $rootScope.$on(RCS_EVENT.orderingUpdate, updateOrdering);
@@ -502,10 +509,26 @@ function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, R
     loadPage();
   }
 
-
   function loadPage () {
     var start = ($scope.currentPage - 1) * pageRowLimit;
     $scope.menuItemsRows = menuItemsRowsAll.slice(start, start + pageRowLimit);
+  }
+
+  function clickOrderPageNext () {
+    if ($scope.currentOrderPage == $scope.maxOrderPage) return;
+    $scope.currentOrderPage++;
+    loadOrderPage();
+  }
+
+  function clickOrderPagePrevious () {
+    if ($scope.currentOrderPage == 1) return;
+    $scope.currentOrderPage--;
+    loadOrderPage();
+  }
+
+  function loadOrderPage () {
+    var start = ($scope.currentOrderPage - 1) * pageOrderRowLimit;
+    $scope.orderingGroup = orderingGroupAll.slice(start, start + pageOrderRowLimit);
   }
 
   function clickRefreshMenu () {
@@ -552,7 +575,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, R
     $scope.ordering = rcsSession.getOrdering();
 
     // group the order to show count
-    $scope.orderingGroup = makeOrderGroupFilter(
+    orderingGroupAll = makeOrderGroupFilter(
       $scope.ordering,
       $scope.menuItems);
 
@@ -566,6 +589,16 @@ function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, R
       }
     }
 
+    // refresh page count
+    $scope.maxOrderPage = Math.ceil(orderingGroupAll.length / pageOrderRowLimit);
+    if (!$scope.currentOrderPage) {
+      $scope.currentOrderPage = 1;
+    } else if ($scope.currentOrderPage > $scope.maxOrderPage) {
+      $scope.currentOrderPage = $scope.maxOrderPage;
+    }
+
+    // load page
+    loadOrderPage();
   }
 }
 

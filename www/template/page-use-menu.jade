@@ -24,23 +24,27 @@ div(id="menu" layout="vertical" layout-fill)
             b {{menuType}}
               span(ng-if="selectedIndex==$index && maxPage > 1") ({{currentPage}}/{{maxPage}})
 
-      material-content
-        .menu-row(ng-repeat="menuItemsRow in menuItemsRows track by $index" layout="horizontal" layout-align="start")
-          .menu-col(ng-repeat="menuItem in menuItemsRow track by $index" ng-class="{right:{{$index}} % 2 == 1}")
-            rcs-menu-item
+      .content-container
+        material-content
+          .menu-row(ng-repeat="menuItemsRow in menuItemsRows track by $index" layout="horizontal" layout-align="start")
+            .menu-col(ng-repeat="menuItem in menuItemsRow track by $index" ng-class="{right:{{$index}} % 2 == 1}")
+              rcs-menu-item
 
-      .page-footer.text-center(ng-show="maxPage > 1")
+      .page-footer.text-center
+        //- (ng-show="maxPage > 1")
         material-button.material-button-raised.material-theme-light(
-          ng-disabled="currentPage == 1" ng-click="clickPagePrevious()")
+          ng-disabled="currentPage <= 1" ng-click="clickPagePrevious()")
           i.fa.fa-chevron-left
         material-button.material-button-raised.material-theme-light(
-          ng-disabled="currentPage == maxPage" ng-click="clickPageNext()")
+          ng-disabled="currentPage >= maxPage" ng-click="clickPageNext()")
           i.fa.fa-chevron-right
 
     .rcs-pane.info.material-whiteframe-z3(layout="vertical")
       .pane-header
         .left
-          span 准备下单({{ordering.length}})
+          span.colored [{{ordering.length}}]
+          span 准备下单
+          span(ng-if="maxOrderPage > 1") ({{currentOrderPage}}/{{maxOrderPage}})
         .right
           material-button.material-button-raised.material-theme-light(
             ng-click="clickConfirm($event)"
@@ -48,21 +52,31 @@ div(id="menu" layout="vertical" layout-fill)
             | 确认
 
       //- ion-content(on-scroll-complete="safeApply()")
-      material-content
-        material-list
-          material-item(ng-repeat="ordering in orderingGroup | orderBy:['type'] track by $index")
-            .material-tile-left
-              //- material-button.material-button-raised(ng-click="clickOrderingMinus(ordering)")
-                i.fa.fa-minus
-              material-button.material-button-raised.material-theme-light(ng-click="clickOrderingPlus(ordering)")
-                i.fa.fa-plus
-            .material-tile-content
-              h2 {{ordering.name}}
-              div(layout="horizontal")
-                span.type {{ordering.type}}
-                b x{{ordering.count}}
-            .material-tile-right
-              material-button.material-button-raised(ng-click="clickOrderingMinus(ordering)")
-                i.fa.fa-minus
-              //- material-button.material-button-raised.material-theme-light(ng-click="clickOrderingPlus(ordering)")
-                i.fa.fa-plus
+      .content-container
+        material-content
+          material-list
+            material-item(ng-repeat="ordering in orderingGroup | orderBy:['type'] track by $index")
+              .material-tile-left
+                //- material-button.material-button-raised(ng-click="clickOrderingMinus(ordering)")
+                  i.fa.fa-minus
+                material-button.material-button-raised.material-theme-light(ng-click="clickOrderingPlus(ordering)")
+                  i.fa.fa-plus
+              .material-tile-content
+                h2 {{ordering.name}}
+                div(layout="horizontal")
+                  span.type {{ordering.type}}
+                  b x{{ordering.count}}
+              .material-tile-right
+                material-button.material-button-raised(ng-click="clickOrderingMinus(ordering)")
+                  i.fa.fa-minus
+                //- material-button.material-button-raised.material-theme-light(ng-click="clickOrderingPlus(ordering)")
+                  i.fa.fa-plus
+
+      .page-footer.text-center
+        //- (ng-show="maxOrderPage > 1")
+        material-button.material-button-raised.material-theme-light(
+          ng-disabled="currentOrderPage <= 1" ng-click="clickOrderPagePrevious()")
+          i.fa.fa-chevron-left
+        material-button.material-button-raised.material-theme-light(
+          ng-disabled="currentOrderPage >= maxOrderPage" ng-click="clickOrderPageNext()")
+          i.fa.fa-chevron-right

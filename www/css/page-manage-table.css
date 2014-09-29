@@ -12,10 +12,6 @@
   margin-left: 20px;
 }
 
-#table ion-content {
-  height: 85%;
-}
-
 #table .rcs-pane.list material-item:hover .material-tile-content,
 #table .rcs-pane.list .material-tile-content.selected {
   color: #8a1717;

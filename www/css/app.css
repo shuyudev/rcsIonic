@@ -15,6 +15,13 @@ body *
   width: 100%;
 }
 
+#rcs .scroll-container {
+  width: 100%;
+  max-height: 85%;
+  margin-bottom: 13%;
+  overflow-y: hidden;
+}
+
 #rcs .text-unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

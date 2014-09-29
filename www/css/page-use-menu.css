@@ -50,6 +50,15 @@
 }
 
 /*content*/
+#menu .rcs-pane > .content-container {
+  height: 80%;
+}
+
+#menu .rcs-pane.list > .content-container {
+  border-top: 2px solid #8A1717;
+  z-index: 20;
+}
+
 #menu .rcs-pane.list material-content,
 #menu .rcs-pane.list ion-content {
   padding-bottom: 10px;
@@ -65,15 +74,13 @@
   margin-top:15px;
   line-height: 40px;
   font-size: 22px;
-  position: absolute;
-  bottom: 0;
-  width: 95%;
+  position: relative;
 }
 
 #menu .page-footer material-button {
-  margin-left: 2%;
-  margin-right: 2%;
-  width: 20%;
+  margin-left: 8px;
+  margin-right: 8px;
+  width: 120px;
 }
 
 /*rcs-menu-item*/
@@ -167,7 +174,7 @@
 
 #menu .pane-header .right {
   float: right;
-  width: 50%;
+  width: 40%;
 }
 
 #menu .pane-header material-button {
