@@ -6,24 +6,29 @@ angular
 
 function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT, STORAGE_KEY) {
   var sessionService = {
+    handshake: handshake,
     downloadMenu: downloadMenu,
     refreshTable: refreshTable,
+    refreshPendingOrderRequest: refreshPendingOrderRequest,
+
     getMenuItems: getMenuItems,
     getOrdering: getOrdering,
     getSelectedRestaurant: getSelectedRestaurant,
     getSelectedTable: getSelectedTable,
     getSignedInUser: getSignedInUser,
-    handshake: handshake,
-    linkTable: linkTable,
-    increaseMenuItemSelection: increaseMenuItemSelection,
-    decreaseMenuItemSelection: decreaseMenuItemSelection,
-    selectRestaurant: selectRestaurant,
+    getRequestCd: getRequestCd,
+    getPendingOrderRequest: getPendingOrderRequest,
+
     signIn: signIn,
     signOut: signOut,
+    selectRestaurant: selectRestaurant,
     unselectRestaurant: unselectRestaurant,
+    linkTable: linkTable,
+
+    increaseMenuItemSelection: increaseMenuItemSelection,
+    decreaseMenuItemSelection: decreaseMenuItemSelection,
     requestOrder: requestOrder,
     requestWithCd: requestWithCd,
-    getRequestCd: getRequestCd,
     requestPay: requestPay
   }
 
@@ -37,6 +42,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
   var linkedTableToken = null;
   var linkedTableRestaurantId = null;
   var requestCd = {};
+  var pendingOrderRequest = null;
 
   // defines
   function handshake () {
@@ -258,6 +264,9 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
         // clear ordering data in session
         ordering = [];
 
+        // store this pending request to session
+        pendingOrderRequest = res.newRequest;
+
         // update table data in session
         if (res.setTable) {
           selectedTable = res.setTable;
@@ -322,6 +331,35 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
         successAction();
       })
       .error(errorAction);
+  }
+
+  function getPendingOrderRequest () {
+    return pendingOrderRequest;
+  }
+
+  function refreshPendingOrderRequest (successAction, errorAction) {
+    if (!angular.isFunction(successAction)) {
+      successAction = function () {};
+    }
+
+    if (!angular.isFunction(errorAction)) {
+      errorAction = function () {};
+    }
+
+    if (!pendingOrderRequest) {
+      return successAction();
+    }
+
+    rcsHttp.Request.get(
+      linkedTableRestaurantId, linkedTableId, linkedTableToken,
+      pendingOrderRequest.id)
+      .success(function (res) {
+        // update pending request data in session
+        pendingOrderRequest = res.Request;
+
+        successAction();
+      })
+      .errorAction(errorAction);
   }
 
   return sessionService;
@@ -443,6 +481,15 @@ function rcsHttp ($http, $log) {
           TableId: tableId,
           Token: token,
           Type: requestType
+        })
+        .error(errorAction);
+    },
+    get: function (restaurantId, tableId, token, requestId) {
+      return $http
+        .post(baseUrl + 'Request/get/' + requestId, {
+          RestaurantId: restaurantId,
+          TableId: tableId,
+          Token: token
         })
         .error(errorAction);
     }

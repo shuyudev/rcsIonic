@@ -8,7 +8,7 @@ angular
   .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
   .controller('aboutCtrl', ['$scope', '$state', '$interval', 'rcsSession', 'TABLE_STATUS', aboutCtrl])
   .controller('menuCtrl', ['$rootScope', '$scope', '$state', '$window', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', menuCtrl])
-  .controller('eatingCtrl', ['$scope', '$state', 'rcsSession', 'RCS_REQUEST_ERR', eatingCtrl])
+  .controller('eatingCtrl', ['$scope', '$state', '$interval', 'rcsSession', 'RCS_REQUEST_ERR', eatingCtrl])
   .controller('paymentCtrl', ['$scope', '$state', '$materialDialog', 'rcsSession', 'RCS_REQUEST_ERR', paymentCtrl]);
 
 function requestErrorAction (res, handler) {
@@ -128,7 +128,9 @@ function pageUseCtrl ($scope, $state, $interval, rcsSession) {
 
   function ifShowCall () {
     // for eating page, the main content would contain it
-    if ($state.current.name == 'page.use.eating') {
+    // for about page, it should be almost 'read-only'
+    if ($state.current.name == 'page.use.eating'
+      || $state.current.name == 'page.use.about') {
       return false;
     }
   }
@@ -141,7 +143,9 @@ function pageUseCtrl ($scope, $state, $interval, rcsSession) {
 
   function ifShowOrdered () {
     // for eating page, the main content would contain it
-    if ($state.current.name == 'page.use.eating') {
+    // for about page, it should be almost 'read-only'
+    if ($state.current.name == 'page.use.eating'
+      || $state.current.name == 'page.use.about') {
       return false;
     }
 
@@ -404,7 +408,7 @@ function aboutCtrl ($scope, $state, $interval, rcsSession, TABLE_STATUS) {
       case TABLE_STATUS.paid:
         // polling table table status, until it become 'empty'
         if (!refreshInterval) {
-          refreshInterval = $interval(function() {
+          refreshInterval = $interval(function () {
             $scope.clickRefresh();
           }, 1000*5);
         }
@@ -624,12 +628,13 @@ function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, R
   }
 }
 
-function eatingCtrl ($scope, $state, rcsSession, RCS_REQUEST_ERR) {
+function eatingCtrl ($scope, $state, $interval, rcsSession, RCS_REQUEST_ERR) {
   // scope fields
   $scope.menuItems = null;
   $scope.ordered = [];
   $scope.orderedGroup = [];
   $scope.refreshing = false;
+  $scope.pending = true;
   $scope.justClicked = {};
 
   // scope methods
@@ -638,15 +643,45 @@ function eatingCtrl ($scope, $state, rcsSession, RCS_REQUEST_ERR) {
   $scope.clickRequest = clickRequest;
   $scope.clickPay = clickPay;
   $scope.getRequestCd = getRequestCd;
+  $scope.ifDisableClickOrder = ifDisableClickOrder;
+  $scope.ifDisableClickPay = ifDisableClickPay;
 
   // locals
   var makeOrderGroupFilter = makeOrderGroup();
+  var refreshInterval = null;
 
   // events
+  $scope.$on("$destroy", function() {
+    if (refreshInterval) {
+      $interval.cancel(refreshInterval);
+    }
+  });
+
   // initialize
-  initializeOrdered();
   $scope.justClicked['water'] = false;
   $scope.justClicked['call'] = false;
+
+  if (!rcsSession.getPendingOrderRequest()) {
+    $scope.pending = false;
+    clickRefresh();
+  } else {
+    // polling until there is no pending ordering request
+    refreshInterval = $interval(function () {
+      rcsSession.refreshPendingOrderRequest(function success () {
+        var request = rcsSession.getPendingOrderRequest();
+
+        if (!request || request.Status == 'closed') {
+          if (refreshInterval) {
+            $interval.cancel(refreshInterval);
+          }
+
+          clickRefresh();
+        }
+
+      }, requestErrorAction);
+
+    }, 1000*5);
+  }
 
   // defines
   function initializeOrdered () {
@@ -657,6 +692,8 @@ function eatingCtrl ($scope, $state, rcsSession, RCS_REQUEST_ERR) {
   }
 
   function clickGoToOrder () {
+    if ($scope.ifDisableClickOrder()) return;
+
     $state.go('page.use.menu');
   }
 
@@ -667,6 +704,7 @@ function eatingCtrl ($scope, $state, rcsSession, RCS_REQUEST_ERR) {
     rcsSession.refreshTable(function success () {
       initializeOrdered();
       $scope.refreshing = false;
+      $scope.pending = false;
     }, requestErrorAction)
   }
 
@@ -684,13 +722,21 @@ function eatingCtrl ($scope, $state, rcsSession, RCS_REQUEST_ERR) {
   }
 
   function clickPay () {
-    if ($scope.ordered.length == 0) return;
+    if ($scope.ifDisableClickPay()) return;
 
     return $state.go('page.use.payment');
   }
 
   function getRequestCd (requestType) {
     return rcsSession.getRequestCd(requestType);
+  }
+
+  function ifDisableClickOrder (argument) {
+    return $scope.refreshing == true || $scope.pending == true;
+  }
+
+  function ifDisableClickPay () {
+    return $scope.ordered.length == 0 || $scope.refreshing == true || $scope.pending == true;
   }
 }
 
