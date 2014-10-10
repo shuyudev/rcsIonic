@@ -57,10 +57,10 @@
   padding-right: 50px;
 }
 
+#dialog-isPremium h3 div {
+  border-bottom: 2px solid transparent;
+}
+
 #dialog-isPremium .phone {
   border-bottom: 2px solid #8A1717;
-  font-size: 22px;
-  height: 30px;
-  margin-bottom: 15px;
-  margin-top: 15px;
 }

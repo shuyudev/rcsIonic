@@ -1,9 +1,9 @@
 material-dialog.width-md(id="dialog-isPremium")
   .dialog-content
-    h3.text-center 请输入您的手机号
     .text-center.full-width
-      .phone
-        b(ng-show="cellPhone") {{cellPhone}}
+      h3
+        div(ng-hide="cellPhone") 请输入您的手机号
+        div.phone(ng-show="cellPhone") {{cellPhone}}
       rcs-number-input(ng-model="cellPhone")
 
   .dialog-actions

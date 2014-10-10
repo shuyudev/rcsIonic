@@ -435,6 +435,7 @@ function aboutCtrl ($scope, $state, $interval, rcsSession, TABLE_STATUS) {
   }
 
   function clickStartOrder () {
+    rcsSession.clearOrdering();
     return $state.go('page.use.menu');
   }
 }

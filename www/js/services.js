@@ -29,7 +29,8 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
     decreaseMenuItemSelection: decreaseMenuItemSelection,
     requestOrder: requestOrder,
     requestWithCd: requestWithCd,
-    requestPay: requestPay
+    requestPay: requestPay,
+    clearOrdering: clearOrdering
   }
 
   // locals
@@ -360,6 +361,10 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
         successAction();
       })
       .errorAction(errorAction);
+  }
+
+  function clearOrdering () {
+    ordering = [];
   }
 
   return sessionService;
