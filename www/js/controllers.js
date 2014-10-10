@@ -748,10 +748,12 @@ function paymentCtrl ($scope, $state, $materialDialog, rcsSession, RCS_REQUEST_E
   $scope.grandTotal = 0;
   $scope.grandTotalPremium = 0;
   $scope.isPremium = false;
+  $scope.cellPhone = null;
   $scope.justClicked = {};
 
   // scope methods
   $scope.clickPay = clickPay;
+  $scope.clickIsPremium = clickIsPremium;
 
   // locals
   var makeOrderGroupFilter = makeOrderGroup();
@@ -806,35 +808,15 @@ function paymentCtrl ($scope, $state, $materialDialog, rcsSession, RCS_REQUEST_E
           // scope fields
           $scope.shouldPay = shouldPay;
           $scope.willPay = 0;
-          $scope.numberRows = [
-            [1, 2, 3],
-            [4, 5, 6],
-            [7, 8, 9]]
 
           // scope methods
-          $scope.clickBackspace = clickBackspace;
-          $scope.clickClear = clickClear;
           $scope.clickNeedChange = clickNeedChange;
           $scope.clickNoNeed = clickNoNeed;
-          $scope.clickNumber = clickNumber;
           $scope.ifValidPay = ifValidPay;
 
           // locals
-          var willPayText = '';
 
           // defines
-          function clickBackspace () {
-            if (willPayText == '') return;
-
-            willPayText = willPayText.substring(0, willPayText.length - 1);
-            $scope.willPay = parseInt(willPayText);
-          }
-
-          function clickClear () {
-            willPayText = '';
-            $scope.willPay = parseInt(willPayText);
-          }
-
           function clickNeedChange () {
             if (!$scope.ifValidPay()) return;
 
@@ -847,11 +829,6 @@ function paymentCtrl ($scope, $state, $materialDialog, rcsSession, RCS_REQUEST_E
 
             rcsSession.requestPay(isPremium, payType, $scope.shouldPay, successAction, errorAction);
             $hideDialog();
-          }
-
-          function clickNumber (number) {
-            willPayText = willPayText + number;
-            $scope.willPay = parseInt(willPayText);
           }
 
           function ifValidPay () {
@@ -869,5 +846,40 @@ function paymentCtrl ($scope, $state, $materialDialog, rcsSession, RCS_REQUEST_E
     } else {
       return rcsSession.requestPay($scope.isPremium, payType, shouldPay, successAction, errorAction);
     }
+  }
+
+  function clickIsPremium (event) {
+    var paymentScope = $scope;
+
+    $materialDialog({
+      templateUrl: 'template/dialog-isPremium.html',
+      clickOutsideToClose: true,
+      escapeToClose: true,
+      targetEvent: event,
+      controller: ['$scope', '$hideDialog', function($scope, $hideDialog) {
+        // scope fields
+        $scope.cellPhone = null;
+
+        // scope methods
+        $scope.clickConfirm = clickConfirm;
+        $scope.ifValidPhone = ifValidPhone;
+
+        // locals
+
+        // defines
+        function clickConfirm () {
+          if (!$scope.ifValidPhone()) return;
+          paymentScope.isPremium = true;
+          paymentScope.cellPhone = $scope.cellPhone;
+          $hideDialog();
+        }
+
+        function ifValidPhone () {
+          if ($scope.cellPhone && $scope.cellPhone.toString().length == 11) return true;
+
+          return false;
+        }
+      }]
+    });
   }
 }

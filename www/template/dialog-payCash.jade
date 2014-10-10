@@ -3,17 +3,8 @@ material-dialog.width-md(id="dialog-payCash")
     h3.text-center 您需要找零吗？如需要，请输入准备支付金额
     .text-center.full-width
 
-      .input(layout="vertical" layout-align="center")
-        .numberRow(layout="horizontal" layout-align="center" ng-repeat="numberRow in numberRows")
-          material-button.material-button-fab(ng-repeat="number in numberRow" ng-click="clickNumber(number)")
-            b {{number}}
-        .numberRow(layout="horizontal" layout-align="center")
-          material-button.material-button-fab(ng-click="clickClear()")
-            i.fa.fa-remove
-          material-button.material-button-fab(ng-click="clickNumber(0)")
-            b 0
-          material-button.material-button-fab(ng-click="clickBackspace()")
-            i.fa.fa-arrow-left
+      .input
+        rcs-number-input(ng-model="willPay")
 
       material-list
         material-item

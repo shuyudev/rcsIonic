@@ -1,0 +1,12 @@
+material-dialog.width-md(id="dialog-isPremium")
+  .dialog-content
+    h3.text-center 请输入您的手机号
+    .text-center.full-width
+      .phone
+        b(ng-show="cellPhone") {{cellPhone}}
+      rcs-number-input(ng-model="cellPhone")
+
+  .dialog-actions
+    .text-center
+      material-button.material-button-raised.material-theme-light(
+        ng-disabled="ifValidPhone() == false" ng-click="clickConfirm()") 确认
