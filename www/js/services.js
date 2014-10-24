@@ -311,7 +311,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
     return requestCd[requestType] ? requestCd[requestType] : 0;
   }
 
-  function requestPay (isPremium, payType, payAmount, successAction, errorAction) {
+  function requestPay (isPremium, cellPhone, payType, payAmount, successAction, errorAction) {
     if (!angular.isFunction(successAction)) {
       successAction = function () {};
     }
@@ -322,7 +322,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
 
     rcsHttp.Request.createPay(
       linkedTableRestaurantId, linkedTableId, linkedTableToken,
-      isPremium, payType, payAmount)
+      isPremium, payType, payAmount, cellPhone)
       .success(function (res) {
         // update table data in session
         if (res.setTable) {
@@ -466,7 +466,7 @@ function rcsHttp ($http, $log) {
         })
         .error(errorAction);
     },
-    createPay: function (restaurantId, tableId, token, isPremium, payType, payAmount) {
+    createPay: function (restaurantId, tableId, token, isPremium, payType, payAmount, cellPhone) {
       return $http
         .post(baseUrl + 'Request/create', {
           RestaurantId: restaurantId,
@@ -475,7 +475,8 @@ function rcsHttp ($http, $log) {
           Type: 'pay',
           IsPremium: isPremium,
           PayType: payType,
-          PayAmount: payAmount
+          PayAmount: payAmount,
+          CellPhone: cellPhone
         })
         .error(errorAction);
     },

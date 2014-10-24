@@ -785,6 +785,7 @@ function paymentCtrl ($scope, $state, $materialDialog, rcsSession, RCS_REQUEST_E
     if ($scope.justClicked[payType]) return;
 
     $scope.justClicked[payType] = true;
+    var cellPhone = $scope.cellPhone;
 
     var successAction = function () {
       $state.go('page.use.about');
@@ -821,14 +822,14 @@ function paymentCtrl ($scope, $state, $materialDialog, rcsSession, RCS_REQUEST_E
           function clickNeedChange () {
             if (!$scope.ifValidPay()) return;
 
-            rcsSession.requestPay(isPremium, payType, $scope.willPay, successAction, errorAction);
+            rcsSession.requestPay(isPremium, cellPhone, payType, $scope.willPay, successAction, errorAction);
             $hideDialog();
           }
 
           function clickNoNeed () {
             if ($scope.ifValidPay()) return;
 
-            rcsSession.requestPay(isPremium, payType, $scope.shouldPay, successAction, errorAction);
+            rcsSession.requestPay(isPremium, cellPhone, payType, $scope.shouldPay, successAction, errorAction);
             $hideDialog();
           }
 
@@ -845,7 +846,7 @@ function paymentCtrl ($scope, $state, $materialDialog, rcsSession, RCS_REQUEST_E
 
       $scope.justClicked[payType] = false;
     } else {
-      return rcsSession.requestPay($scope.isPremium, payType, shouldPay, successAction, errorAction);
+      return rcsSession.requestPay($scope.isPremium, cellPhone, payType, shouldPay, successAction, errorAction);
     }
   }
 
