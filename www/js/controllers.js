@@ -8,7 +8,7 @@ angular
   .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
   .controller('aboutCtrl', ['$scope', '$state', '$interval', 'rcsSession', 'TABLE_STATUS', aboutCtrl])
   .controller('menuCtrl', ['$rootScope', '$scope', '$state', '$window', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', menuCtrl])
-  .controller('eatingCtrl', ['$scope', '$state', '$interval', 'rcsSession', 'RCS_REQUEST_ERR', eatingCtrl])
+  .controller('eatingCtrl', ['$scope', '$state', '$interval', '$timeout', 'rcsSession', 'rcsBrightness', 'RCS_REQUEST_ERR', eatingCtrl])
   .controller('paymentCtrl', ['$scope', '$state', '$materialDialog', 'rcsSession', 'RCS_REQUEST_ERR', paymentCtrl]);
 
 function requestErrorAction (res, handler) {
@@ -629,7 +629,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, R
   }
 }
 
-function eatingCtrl ($scope, $state, $interval, rcsSession, RCS_REQUEST_ERR) {
+function eatingCtrl ($scope, $state, $interval, $timeout, rcsSession, rcsBrightness, RCS_REQUEST_ERR) {
   // scope fields
   $scope.menuItems = null;
   $scope.ordered = [];
@@ -642,6 +642,7 @@ function eatingCtrl ($scope, $state, $interval, rcsSession, RCS_REQUEST_ERR) {
   $scope.clickGoToOrder = clickGoToOrder;
   $scope.clickRefresh = clickRefresh;
   $scope.clickRequest = clickRequest;
+  $scope.clickPage = clickPage;
   $scope.clickPay = clickPay;
   $scope.getRequestCd = getRequestCd;
   $scope.ifDisableClickOrder = ifDisableClickOrder;
@@ -650,6 +651,7 @@ function eatingCtrl ($scope, $state, $interval, rcsSession, RCS_REQUEST_ERR) {
   // locals
   var makeOrderGroupFilter = makeOrderGroup();
   var refreshInterval = null;
+  var dimTimeout = null;
 
   // events
   $scope.$on("$destroy", function() {
@@ -684,12 +686,26 @@ function eatingCtrl ($scope, $state, $interval, rcsSession, RCS_REQUEST_ERR) {
     }, 1000*5);
   }
 
+  dim();
+
   // defines
   function initializeOrdered () {
     $scope.ordered = rcsSession.getSelectedTable().OrderItems ? rcsSession.getSelectedTable().OrderItems : [];
 
     // group the order to show count
     $scope.orderedGroup = makeOrderGroupFilter($scope.ordered, rcsSession.getMenuItems());
+  }
+
+  function dim () {
+    var delay = 5000;
+
+    if (dimTimeout) {
+      $timeout.cancel(dimTimeout);
+    }
+
+    dimTimeout = $timeout(function () {
+      rcsBrightness.setBrightness(0);
+    }, delay);
   }
 
   function clickGoToOrder () {
@@ -720,6 +736,12 @@ function eatingCtrl ($scope, $state, $interval, rcsSession, RCS_REQUEST_ERR) {
     }
 
     return rcsSession.requestWithCd(requestType, successAction, requestErrorAction);
+  }
+
+  function clickPage () {
+    rcsBrightness.setBrightness(-1, function () {
+      dim();
+    });
   }
 
   function clickPay () {

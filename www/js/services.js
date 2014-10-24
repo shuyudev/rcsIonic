@@ -1,5 +1,6 @@
 angular
   .module('rcs')
+  .factory('rcsBrightness', [rcsBrightness])
   .factory('rcsLocalstorage', ['$window', rcsLocalstorage])
   .factory('rcsHttp', ['$http', '$log', rcsHttp])
   .factory('rcsSession', ['$rootScope', '$interval', 'rcsLocalstorage', 'rcsHttp', 'RCS_EVENT', 'STORAGE_KEY', rcsSession]);
@@ -360,7 +361,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
 
         successAction();
       })
-      .errorAction(errorAction);
+      .error(errorAction);
   }
 
   function clearOrdering () {
@@ -520,6 +521,32 @@ function rcsLocalstorage ($window) {
     },
     getObject: function(key) {
       return JSON.parse($window.localStorage[key] || '{}');
+    }
+  }
+}
+
+function rcsBrightness () {
+  var brightness = null;
+
+  return {
+    initialize: function (cordova) {
+      if (cordova && cordova.require) {
+        brightness = cordova.require("cordova.plugin.Brightness.Brightness");
+      }
+    },
+    getBrightness: function (successAction, errorAction) {
+      if (!brightness) return;
+      brightness.getBrightness(successAction, errorAction);
+    },
+    setBrightness: function (value, successAction, errorAction) {
+      // value = -1: using system setting
+      // 0 < value < 1: using app setting, 0 for 0% light, 1 for 100% light
+      if (!brightness) return;
+      brightness.setBrightness(value, successAction, errorAction);
+    },
+    setKeepScreenOn: function (value, successAction, errorAction) {
+      if (!brightness) return;
+      brightness.setKeepScreenOn(value, successAction, errorAction);
     }
   }
 }

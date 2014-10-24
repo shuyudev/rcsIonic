@@ -10,7 +10,7 @@ angular.module('rcs', [
   '$httpProvider',
   config
 ])
-.run(['$rootScope', '$state', '$stateParams', '$ionicPlatform', run]);
+.run(['$rootScope', '$state', '$stateParams', '$ionicPlatform', 'rcsBrightness', run]);
 
 function config ($urlRouterProvider, $stateProvider, $httpProvider) {
   // to make "credentialed" requests that are cognizant of HTTP Cookies and HTTP Authentication information
@@ -88,16 +88,20 @@ function config ($urlRouterProvider, $stateProvider, $httpProvider) {
     });
 }
 
-function run ($rootScope, $state, $stateParams, $ionicPlatform) {
+function run ($rootScope, $state, $stateParams, $ionicPlatform, rcsBrightness) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
+
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+
+    rcsBrightness.initialize(window.cordova);
+    rcsBrightness.setKeepScreenOn(true);
   });
 
   // remember the previous state for nav purpose
