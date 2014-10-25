@@ -21,9 +21,7 @@ function rcsMenuItem (rcsSession) {
 
     // defines
     function clickMenuItem () {
-      if ($scope.menuItem.selected == false) {
-        rcsSession.increaseMenuItemSelection($scope.menuItem.id);
-      }
+      rcsSession.increaseMenuItemSelection($scope.menuItem.id);
     }
   }
 }
