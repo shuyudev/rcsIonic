@@ -46,7 +46,8 @@
   color: #8A1717;
 }
 
-#dialog-payCash .dialog-actions material-button {
+#dialog-payCash .dialog-actions material-button,
+#dialog-chooseFlavor .dialog-actions material-button {
   width: 40%;
   margin-left: 3%;
   margin-right: 3%;
@@ -63,4 +64,23 @@
 
 #dialog-isPremium .phone {
   border-bottom: 2px solid #8A1717;
+}
+
+#dialog-chooseFlavor .dialog-content {
+  overflow: hidden;
+}
+
+#dialog-chooseFlavor h3 {
+  margin-bottom: 2px;
+}
+
+#dialog-chooseFlavor material-radio-button {
+  margin: 0px;
+  margin-left: 10px;
+  height: 40px;
+  font-size: 20px;
+}
+
+#dialog-chooseFlavor .dialog-actions {
+  margin-top: 10px;
 }

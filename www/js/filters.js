@@ -15,32 +15,45 @@ function makeOrderGroup () {
     var tempOrderGroup = [];
 
     for (var i = orderItems.length - 1; i >= 0; i--) {
-      var itemId = orderItems[i];
+      var itemId = orderItems[i].toString(); // in format list 28.4, 17.10, 36
+      var menuItemId = parseInt(itemId.split('.')[0]); // --> 28, 17, 36
+      var flavorId = parseInt(itemId.split('.')[1]) // --> 4, 10, NaN
 
-      if (tempOrderGroup[itemId]) {
-        tempOrderGroup[itemId].count++;
-      } else {
-        for (var j = menuItems.length - 1; j >= 0; j--) {
-          if (menuItems[j].id == itemId) {
+      for (var j = menuItems.length - 1; j >= 0; j--) {
+        if (menuItems[j].id == menuItemId) {
+          var menuItem = menuItems[j];
+          var flavor = undefined;
+
+          if (flavorId > 0 && menuItem.Flavor && angular.isArray(menuItem.Flavor) && menuItem.Flavor.length >= flavorId) {
+            flavor = menuItem.Flavor[flavorId - 1];
+          } else {
+              itemId = menuItemId + ".0";
+          }
+
+          if (tempOrderGroup[itemId]) {
+            tempOrderGroup[itemId].count++;
+          } else {
             tempOrderGroup[itemId] = {
-              id: menuItems[j].id,
-              name: menuItems[j].Name,
-              type: menuItems[j].Type,
-              price: menuItems[j].Price,
-              premiumPrice: menuItems[j].PremiumPrice,
-              alias: menuItems[j].Alias,
+              id: itemId,
+              name: menuItem.Name,
+              type: menuItem.Type,
+              price: menuItem.Price,
+              premiumPrice: menuItem.PremiumPrice,
+              alias: menuItem.Alias,
+              flavor: flavor,
               count: 1
             };
-            break;
           }
+
+          break;
         }
       }
     }
 
     var orderGroup = [];
-    for (var i = tempOrderGroup.length - 1; i >= 0; i--) {
-      if (angular.isDefined(tempOrderGroup[i])) {
-        orderGroup.push(tempOrderGroup[i]);
+    for (groupIndex in tempOrderGroup) {
+      if (angular.isDefined(tempOrderGroup[groupIndex])) {
+        orderGroup.push(tempOrderGroup[groupIndex]);
       }
     }
 

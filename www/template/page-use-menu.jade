@@ -68,6 +68,7 @@ div(id="menu" layout="vertical" layout-fill)
                   i.fa.fa-plus
               .material-tile-content
                 h2 {{ordering.name}}
+                  span(ng-show="ordering.flavor") &nbsp;({{ordering.flavor}})
                 div(layout="horizontal")
                   span.type {{ordering.type}}
                   b x{{ordering.count}}

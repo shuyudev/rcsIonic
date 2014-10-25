@@ -28,6 +28,7 @@ div(id="payment" layout="vertical" layout-fill)
               .material-left {{item.type}}
               .material-tile-content
                 h2 <b>{{item.name}}</b>
+                  span(ng-show="item.flavor") &nbsp;({{item.flavor}})
               .material-tile-right(layout="horizontal" layout-align="start")
                 span.left(ng-show="isPremium == false") {{item.price}}元
                 span.left(ng-show="isPremium == true") {{item.premiumPrice}}元

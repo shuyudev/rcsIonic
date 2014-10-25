@@ -22,6 +22,7 @@ div(id="eating" layout="vertical" layout-fill ng-click="clickPage()")
               .material-left {{item.type}}
               .material-tile-content
                 h2 <b>{{item.name}}</b>
+                  span(ng-show="item.flavor") &nbsp;({{item.flavor}})
               .material-tile-right x{{item.count}}
 
     .rcs-pane.call.material-whiteframe-z3(layout="vertical")

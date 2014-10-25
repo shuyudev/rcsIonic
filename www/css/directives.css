@@ -17,6 +17,11 @@
   margin-left: 15px;
 }
 
+.rcs-menu-item .content span.flavor {
+  font-size: 0.75em;
+  font-weight: normal;
+}
+
 .rcs-menu-item .selected .content {
   margin-left: 7px;
 }

@@ -189,8 +189,9 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
     successAction();
   }
 
-  function increaseMenuItemSelection (menuItemId) {
-    ordering.push(menuItemId);
+  function increaseMenuItemSelection (itemId) {
+    // itemId should be a string in format "20.0", "20.1" or "20.10"
+    ordering.push(itemId);
     $rootScope.$emit(RCS_EVENT.orderingUpdate);
   }
 

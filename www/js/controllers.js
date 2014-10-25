@@ -618,10 +618,14 @@ function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, R
     // mark if menuItem is selected
     for (var i = 0 ; i < $scope.menuItems.length; i++) {
       var menuItem = $scope.menuItems[i];
-      if ($scope.ordering.indexOf(menuItem.id) != -1) {
-        menuItem.selected = true;
-      } else {
-        menuItem.selected = false;
+
+      menuItem.selected = false;
+
+      for (var j = $scope.ordering.length - 1; j >= 0; j--) {
+        if (menuItem.id == parseInt($scope.ordering[j].split('.')[0])) {
+          menuItem.selected = true;
+          break;
+        }
       }
     }
 
