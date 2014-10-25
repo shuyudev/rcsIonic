@@ -123,6 +123,11 @@
   line-height: 35px;
 }
 
+#menu .pane-header material-button .fa {
+  font-size: 22px;
+  margin-left: 10px;
+}
+
 #menu .material-tile-content {
   font-size: 18px;
   margin-left: 8px;

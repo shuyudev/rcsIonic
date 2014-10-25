@@ -47,9 +47,12 @@ div(id="menu" layout="vertical" layout-fill)
           span(ng-if="maxOrderPage > 1") ({{currentOrderPage}}/{{maxOrderPage}})
         .right
           material-button.material-button-raised.material-theme-light(
+            ng-disabled="justClickedConfirm == true"
             ng-click="clickConfirm($event)"
             ng-show="orderingGroup && orderingGroup.length != 0")
-            | 确认
+            span(ng-show="justClickedConfirm == false") 确认
+            span(ng-show="justClickedConfirm == true") 请稍候
+              i.fa.fa-spin.fa-spinner
 
       //- ion-content(on-scroll-complete="safeApply()")
       .content-container
@@ -59,7 +62,9 @@ div(id="menu" layout="vertical" layout-fill)
               .material-tile-left
                 //- material-button.material-button-raised(ng-click="clickOrderingMinus(ordering)")
                   i.fa.fa-minus
-                material-button.material-button-raised.material-theme-light(ng-click="clickOrderingPlus(ordering)")
+                material-button.material-button-raised.material-theme-light(
+                  ng-disabled="justClickedConfirm == true"
+                  ng-click="clickOrderingPlus(ordering)")
                   i.fa.fa-plus
               .material-tile-content
                 h2 {{ordering.name}}
@@ -67,7 +72,9 @@ div(id="menu" layout="vertical" layout-fill)
                   span.type {{ordering.type}}
                   b x{{ordering.count}}
               .material-tile-right
-                material-button.material-button-raised(ng-click="clickOrderingMinus(ordering)")
+                material-button.material-button-raised(
+                  ng-disabled="justClickedConfirm == true"
+                  ng-click="clickOrderingMinus(ordering)")
                   i.fa.fa-minus
                 //- material-button.material-button-raised.material-theme-light(ng-click="clickOrderingPlus(ordering)")
                   i.fa.fa-plus

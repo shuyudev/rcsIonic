@@ -6,6 +6,7 @@
   material-button.material-button-raised(
     noink
     ng-class=menuItemClass
+    ng-disabled="justClickedConfirm == true"
     ng-click="clickMenuItem()")
     .content(layout="vertical" layout-fill layout-align="start start")
       b(flex="100") {{menuItem.Name}}

@@ -444,6 +444,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, R
   // scope fields
   $scope.currentOrderPage = null;
   $scope.currentPage = null;
+  $scope.justClickedConfirm = false;
   $scope.maxOrderPage = null;
   $scope.maxPage = null;
   $scope.menuItems = null;
@@ -501,9 +502,15 @@ function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, R
   }
 
   function clickConfirm (event) {
+    if ($scope.justClickedConfirm) return;
+
+    $scope.justClickedConfirm = true;
+
     rcsSession.requestOrder(function success () {
+      $scope.justClickedConfirm = false;
       $state.go('page.use.about');
     }, function error (res) {
+      $scope.justClickedConfirm = false;
       requestErrorAction(res, function () {
         switch (res.status) {
           case RCS_REQUEST_ERR.rcsPendingOrder:
@@ -517,10 +524,12 @@ function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, R
   }
 
   function clickOrderingMinus (ordering) {
+    if ($scope.justClickedConfirm) return;
     rcsSession.decreaseMenuItemSelection(ordering.id);
   }
 
   function clickOrderingPlus (ordering) {
+    if ($scope.justClickedConfirm) return;
     rcsSession.increaseMenuItemSelection(ordering.id);
   }
 

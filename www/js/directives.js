@@ -21,6 +21,7 @@ function rcsMenuItem (rcsSession) {
 
     // defines
     function clickMenuItem () {
+      if ($scope.justClickedConfirm) return;
       rcsSession.increaseMenuItemSelection($scope.menuItem.id);
     }
   }
