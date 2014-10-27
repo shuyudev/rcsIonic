@@ -102,6 +102,7 @@ function run ($rootScope, $state, $stateParams, $ionicPlatform, rcsBrightness) {
 
     rcsBrightness.initialize(window.cordova);
     rcsBrightness.setKeepScreenOn(true);
+    rcsBrightness.autoDim();
   });
 
   // remember the previous state for nav purpose

@@ -1,6 +1,6 @@
 angular
   .module('rcs')
-  .factory('rcsBrightness', [rcsBrightness])
+  .factory('rcsBrightness', ['$timeout', rcsBrightness])
   .factory('rcsLocalstorage', ['$window', rcsLocalstorage])
   .factory('rcsHttp', ['$http', '$log', rcsHttp])
   .factory('rcsSession', ['$rootScope', '$interval', 'rcsLocalstorage', 'rcsHttp', 'RCS_EVENT', 'STORAGE_KEY', rcsSession]);
@@ -534,8 +534,9 @@ function rcsLocalstorage ($window) {
   }
 }
 
-function rcsBrightness () {
+function rcsBrightness ($timeout) {
   var brightness = null;
+  var dimTimeout = null;
 
   return {
     initialize: function (cordova) {
@@ -556,6 +557,23 @@ function rcsBrightness () {
     setKeepScreenOn: function (value, successAction, errorAction) {
       if (!brightness) return;
       brightness.setKeepScreenOn(value, successAction, errorAction);
+    },
+    autoDim: function () {
+      if (!brightness) return;
+
+      if (dimTimeout) {
+        $timeout.cancel(dimTimeout);
+        dimTimeout = null;
+      }
+
+      brightness.setBrightness(-1, function () {
+        if (!dimTimeout) {
+          dimTimeout = $timeout(function () {
+            brightness.setBrightness(0);
+            dimTimeout = null;
+          }, 20*1000);
+        }
+      });
     }
   }
 }

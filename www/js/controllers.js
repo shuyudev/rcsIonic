@@ -1,5 +1,6 @@
 angular
   .module('rcs')
+  .controller('appCtrl', ['$scope', 'rcsBrightness', appCtrl])
   .controller('pageCtrl', ['$scope', '$state', '$materialDialog', pageCtrl])
   .controller('pageManageCtrl', ['$scope', '$state', 'rcsSession', pageManageCtrl])
   .controller('pageUseCtrl', ['$scope', '$state', '$interval', 'rcsSession', pageUseCtrl])
@@ -8,13 +9,23 @@ angular
   .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
   .controller('aboutCtrl', ['$scope', '$state', '$interval', 'rcsSession', 'TABLE_STATUS', aboutCtrl])
   .controller('menuCtrl', ['$rootScope', '$scope', '$state', '$window', '$materialDialog', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', menuCtrl])
-  .controller('eatingCtrl', ['$scope', '$state', '$interval', '$timeout', 'rcsSession', 'rcsBrightness', 'RCS_REQUEST_ERR', eatingCtrl])
+  .controller('eatingCtrl', ['$scope', '$state', '$interval', 'rcsSession', 'RCS_REQUEST_ERR', eatingCtrl])
   .controller('paymentCtrl', ['$scope', '$state', '$materialDialog', 'rcsSession', 'RCS_REQUEST_ERR', paymentCtrl]);
 
 function requestErrorAction (res, handler) {
   // when the error is not defined, or when there is no handler, or when it is not handled
   if (!res.status || !angular.isFunction(handler) || !handler()) {
     alert('request failed');
+  }
+}
+
+function appCtrl ($scope, rcsBrightness) {
+  // scope methods
+  $scope.clickPage = clickPage;
+
+  // defines
+  function clickPage () {
+    rcsBrightness.autoDim(3);
   }
 }
 
@@ -698,7 +709,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, $materialDialog, rcsSess
   }
 }
 
-function eatingCtrl ($scope, $state, $interval, $timeout, rcsSession, rcsBrightness, RCS_REQUEST_ERR) {
+function eatingCtrl ($scope, $state, $interval, rcsSession, RCS_REQUEST_ERR) {
   // scope fields
   $scope.menuItems = null;
   $scope.ordered = [];
@@ -711,7 +722,6 @@ function eatingCtrl ($scope, $state, $interval, $timeout, rcsSession, rcsBrightn
   $scope.clickGoToOrder = clickGoToOrder;
   $scope.clickRefresh = clickRefresh;
   $scope.clickRequest = clickRequest;
-  $scope.clickPage = clickPage;
   $scope.clickPay = clickPay;
   $scope.getRequestCd = getRequestCd;
   $scope.ifDisableClickOrder = ifDisableClickOrder;
@@ -720,7 +730,6 @@ function eatingCtrl ($scope, $state, $interval, $timeout, rcsSession, rcsBrightn
   // locals
   var makeOrderGroupFilter = makeOrderGroup();
   var refreshInterval = null;
-  var dimTimeout = null;
 
   // events
   $scope.$on("$destroy", function() {
@@ -755,26 +764,12 @@ function eatingCtrl ($scope, $state, $interval, $timeout, rcsSession, rcsBrightn
     }, 1000*5);
   }
 
-  dim();
-
   // defines
   function initializeOrdered () {
     $scope.ordered = rcsSession.getSelectedTable().OrderItems ? rcsSession.getSelectedTable().OrderItems : [];
 
     // group the order to show count
     $scope.orderedGroup = makeOrderGroupFilter($scope.ordered, rcsSession.getMenuItems());
-  }
-
-  function dim () {
-    var delay = 5000;
-
-    if (dimTimeout) {
-      $timeout.cancel(dimTimeout);
-    }
-
-    dimTimeout = $timeout(function () {
-      rcsBrightness.setBrightness(0);
-    }, delay);
   }
 
   function clickGoToOrder () {
@@ -805,12 +800,6 @@ function eatingCtrl ($scope, $state, $interval, $timeout, rcsSession, rcsBrightn
     }
 
     return rcsSession.requestWithCd(requestType, successAction, requestErrorAction);
-  }
-
-  function clickPage () {
-    rcsBrightness.setBrightness(-1, function () {
-      dim();
-    });
   }
 
   function clickPay () {
