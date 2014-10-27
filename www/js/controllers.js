@@ -7,7 +7,7 @@ angular
   .controller('restaurantCtrl', ['$scope', '$state', 'rcsHttp', 'rcsSession', restaurantCtrl])
   .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
   .controller('aboutCtrl', ['$scope', '$state', '$interval', 'rcsSession', 'TABLE_STATUS', aboutCtrl])
-  .controller('menuCtrl', ['$rootScope', '$scope', '$state', '$window', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', menuCtrl])
+  .controller('menuCtrl', ['$rootScope', '$scope', '$state', '$window', '$materialDialog', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', menuCtrl])
   .controller('eatingCtrl', ['$scope', '$state', '$interval', '$timeout', 'rcsSession', 'rcsBrightness', 'RCS_REQUEST_ERR', eatingCtrl])
   .controller('paymentCtrl', ['$scope', '$state', '$materialDialog', 'rcsSession', 'RCS_REQUEST_ERR', paymentCtrl]);
 
@@ -440,7 +440,7 @@ function aboutCtrl ($scope, $state, $interval, rcsSession, TABLE_STATUS) {
   }
 }
 
-function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, RCS_REQUEST_ERR) {
+function menuCtrl ($rootScope, $scope, $state, $window, $materialDialog, rcsSession, RCS_EVENT, RCS_REQUEST_ERR) {
   // scope fields
   $scope.currentOrderPage = null;
   $scope.currentPage = null;
@@ -448,6 +448,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, R
   $scope.maxOrderPage = null;
   $scope.maxPage = null;
   $scope.menuItems = null;
+  $scope.flavorRequirements = null;
   $scope.menuItemsRows = null;
   $scope.menuTypes = null;
   $scope.ordering = null;
@@ -484,6 +485,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, R
   // defines
   function initializeMenu () {
     $scope.menuItems = rcsSession.getMenuItems();
+    $scope.flavorRequirements = rcsSession.getFlavorRequirements();
     $scope.menuTypes = [];
 
     if (!$scope.menuItems) return;
@@ -506,21 +508,75 @@ function menuCtrl ($rootScope, $scope, $state, $window, rcsSession, RCS_EVENT, R
 
     $scope.justClickedConfirm = true;
 
-    rcsSession.requestOrder(function success () {
-      $scope.justClickedConfirm = false;
-      $state.go('page.use.about');
-    }, function error (res) {
-      $scope.justClickedConfirm = false;
-      requestErrorAction(res, function () {
-        switch (res.status) {
-          case RCS_REQUEST_ERR.rcsPendingOrder:
-            $scope.simpleDialog(1, null, event);
-            return true;
-          default:
-            return false;
-        }
+    function submit (flavorRequirements) {
+      rcsSession.requestOrder(
+        flavorRequirements,
+        function success () {
+          $scope.justClickedConfirm = false;
+          $state.go('page.use.about');
+        }, function error (res) {
+          $scope.justClickedConfirm = false;
+          requestErrorAction(res, function () {
+            switch (res.status) {
+              case RCS_REQUEST_ERR.rcsPendingOrder:
+                $scope.simpleDialog(1, null, event);
+                return true;
+              default:
+                return false;
+            }
+          });
       });
-    });
+    }
+
+    var flavorRequirements = $scope.flavorRequirements;
+    if (!flavorRequirements || !angular.isArray(flavorRequirements) || flavorRequirements.length == 0) {
+        submit(undefined); // 'undefined' for no flavor requirement
+    } else {
+      var menuCtrlScope = $scope;
+
+      $materialDialog({
+        templateUrl: 'template/dialog-checkFlavorRequirement.html',
+        clickOutsideToClose: true,
+        escapeToClose: true,
+        targetEvent: event,
+        controller: ['$scope', '$hideDialog', function($scope, $hideDialog) {
+          // scope fields
+          $scope.requirementSelections = [];
+
+          // scope methods
+          $scope.clickDone = clickDone;
+          $scope.clickCancel = clickCancel;
+
+          // locals
+
+          // initialize
+          for (var i = 0; i < menuCtrlScope.flavorRequirements.length; i++) {
+            $scope.requirementSelections[i] = {
+              name: menuCtrlScope.flavorRequirements[i],
+              selected: false
+            };
+          }
+
+          // defines
+          function clickDone () {
+            var selectedRequirements = [];
+            for (var i = 0; i < $scope.requirementSelections.length; i++) {
+              var selection = $scope.requirementSelections[i];
+              if (selection.selected == true) {
+                selectedRequirements.push(selection.name);
+              }
+            }
+            submit(selectedRequirements);
+            $hideDialog();
+          }
+
+          function clickCancel () {
+            menuCtrlScope.justClickedConfirm = false;
+            $hideDialog();
+          }
+        }]
+      });
+    }
   }
 
   function clickOrderingMinus (ordering) {

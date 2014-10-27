@@ -47,7 +47,8 @@
 }
 
 #dialog-payCash .dialog-actions material-button,
-#dialog-chooseFlavor .dialog-actions material-button {
+#dialog-chooseFlavor .dialog-actions material-button,
+#dialog-checkFlavorRequirement .dialog-actions material-button {
   width: 40%;
   margin-left: 3%;
   margin-right: 3%;
@@ -66,21 +67,46 @@
   border-bottom: 2px solid #8A1717;
 }
 
-#dialog-chooseFlavor .dialog-content {
+#dialog-chooseFlavor .dialog-content,
+#dialog-checkFlavorRequirement .dialog-content {
   overflow: hidden;
+  min-width: 300px;
+  padding-left: 25px;
+  padding-right: 25px;
 }
 
-#dialog-chooseFlavor h3 {
+#dialog-chooseFlavor h3,
+#dialog-checkFlavorRequirement h3 {
   margin-bottom: 2px;
 }
 
 #dialog-chooseFlavor material-radio-button {
   margin: 0px;
+  margin-bottom: 5px;
   margin-left: 10px;
   height: 40px;
-  font-size: 20px;
+  font-size: 22px;
 }
 
-#dialog-chooseFlavor .dialog-actions {
+#dialog-chooseFlavor .dialog-actions,
+#dialog-checkFlavorRequirement .dialog-actions {
   margin-top: 10px;
+}
+
+#dialog-checkFlavorRequirement material-checkbox .material-container,
+#dialog-checkFlavorRequirement material-checkbox .material-icon,
+#dialog-checkFlavorRequirement material-checkbox.material-checked .material-icon {
+  height: 24px;
+  width: 24px;
+}
+
+#dialog-checkFlavorRequirement material-checkbox.material-checked .material-icon:after {
+  height: 16px;
+  width: 9px;
+  left: 6px;
+}
+
+#dialog-checkFlavorRequirement material-checkbox .material-label {
+  font-size: 22px;
+  margin-bottom: 5px;
 }

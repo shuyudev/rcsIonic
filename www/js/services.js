@@ -13,6 +13,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
     refreshPendingOrderRequest: refreshPendingOrderRequest,
 
     getMenuItems: getMenuItems,
+    getFlavorRequirements: getFlavorRequirements,
     getOrdering: getOrdering,
     getSelectedRestaurant: getSelectedRestaurant,
     getSelectedTable: getSelectedTable,
@@ -37,6 +38,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
   // locals
   var ordering = [];
   var menuItems = null;
+  var flavorRequirements = null;
   var signedInUser = null;
   var selectedRestaurant = null;
   var selectedTable = null;
@@ -59,6 +61,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
         .success(function (res) {
           selectedTable = res.Table;
           menuItems = res.Menu;
+          flavorRequirements = res.FlavorRequirements;
         })
         .error(function () {
           // clear session & storage
@@ -167,6 +170,10 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
     return angular.copy(menuItems);
   }
 
+  function getFlavorRequirements () {
+    return angular.copy(flavorRequirements);
+  }
+
   function getOrdering () {
     return angular.copy(ordering);
   }
@@ -253,7 +260,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
     successAction();
   }
 
-  function requestOrder (successAction, errorAction) {
+  function requestOrder (orderFlavor, successAction, errorAction) {
     if (!angular.isFunction(successAction)) {
       successAction = function () {};
     }
@@ -262,7 +269,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
       errorAction = function () {};
     }
 
-    rcsHttp.Request.createOrder(linkedTableRestaurantId, linkedTableId, linkedTableToken, ordering)
+    rcsHttp.Request.createOrder(linkedTableRestaurantId, linkedTableId, linkedTableToken, ordering, orderFlavor)
       .success(function (res) {
         // clear ordering data in session
         ordering = [];
@@ -457,14 +464,15 @@ function rcsHttp ($http, $log) {
   }
 
   httpService.Request = {
-    createOrder: function (restaurantId, tableId, token, orderItems) {
+    createOrder: function (restaurantId, tableId, token, orderItems, flavorRequirements) {
       return $http
         .post(baseUrl + 'Request/create', {
           RestaurantId: restaurantId,
           TableId: tableId,
           Token: token,
           Type: 'order',
-          OrderItems: orderItems
+          OrderItems: orderItems,
+          FlavorRequirements: flavorRequirements
         })
         .error(errorAction);
     },
