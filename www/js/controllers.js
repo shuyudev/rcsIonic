@@ -519,9 +519,9 @@ function menuCtrl ($rootScope, $scope, $state, $window, $materialDialog, rcsSess
 
     $scope.justClickedConfirm = true;
 
-    function submit (flavorRequirements) {
+    function submit (orderFlavor) {
       rcsSession.requestOrder(
-        flavorRequirements,
+        orderFlavor,
         function success () {
           $scope.justClickedConfirm = false;
           $state.go('page.use.about');
