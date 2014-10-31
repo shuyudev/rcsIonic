@@ -49,15 +49,6 @@
   margin-top: -5px;
 }
 
-#menu .tabs-header-items-container {
-  margin-right: 35px;
-}
-
-#menu .tab-paginator.active.next {
-  position: absolute;
-  left: 95%;
-}
-
 /*content*/
 #menu .rcs-pane > .content-container {
   height: 80%;
@@ -124,7 +115,7 @@
 
 #menu .pane-header .right {
   float: right;
-  width: 40%;
+  width: 80px
 }
 
 #menu .pane-header material-button {

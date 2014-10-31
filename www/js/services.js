@@ -2,7 +2,7 @@ angular
   .module('rcs')
   .factory('rcsBrightness', ['$timeout', rcsBrightness])
   .factory('rcsLocalstorage', ['$window', rcsLocalstorage])
-  .factory('rcsHttp', ['$http', '$log', rcsHttp])
+  .factory('rcsHttp', ['$http', '$log', '$state', rcsHttp])
   .factory('rcsSession', ['$rootScope', '$interval', 'rcsLocalstorage', 'rcsHttp', 'RCS_EVENT', 'STORAGE_KEY', rcsSession]);
 
 function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT, STORAGE_KEY) {
@@ -108,6 +108,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
     rcsHttp.Restaurant.downloadMenu(linkedTableRestaurantId, linkedTableId, linkedTableToken)
       .success(function (res) {
         var menuItems = res.Menu;
+        flavorRequirements = res.FlavorRequirements;
 
         successAction();
       })
@@ -128,6 +129,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
         // save to session
         selectedTable = res.Table;
         menuItems = res.Menu;
+        flavorRequirements = res.FlavorRequirements;
 
         successAction();
       })
@@ -154,6 +156,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
           .success(function (res) {
             selectedTable = res.Table;
             menuItems = res.Menu;
+            flavorRequirements = res.FlavorRequirements;
             // save to storage
             rcsLocalstorage.set(STORAGE_KEY.tableId, linkedTableId);
             rcsLocalstorage.set(STORAGE_KEY.tableToken, linkedTableToken);
@@ -379,7 +382,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
   return sessionService;
 }
 
-function rcsHttp ($http, $log) {
+function rcsHttp ($http, $log, $state) {
   var baseUrl = 'http://nodeserver3.cloudapp.net:1337/';
   // var baseUrl = 'http://localhost:1337/';
   var httpService = {};
@@ -389,7 +392,9 @@ function rcsHttp ($http, $log) {
     // alert(data || 'request failed');
     if (status == 403) {
       // $rootScope.$emit(RCS_EVENT.forbidden);
-      // $state.go('page.signin');
+      // $state.go('page.manage.signin');
+    } else {
+      // $state.go('page.use.about');
     }
   }
 

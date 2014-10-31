@@ -15,15 +15,14 @@ div(id="eating" layout="vertical" layout-fill)
         h2 请等待餐厅完成点菜下单...
         i.fa.fa-3x.fa-spinner.fa-spin
 
-      .scroll-container(ng-show="pending == false")
-        ion-content
-          material-list
-            material-item(ng-repeat="item in orderedGroup | orderBy:['type'] track by $index")
-              .material-left {{item.type}}
-              .material-tile-content
-                h2 <b>{{item.name}}</b>
-                  span(ng-show="item.flavor") &nbsp;({{item.flavor}})
-              .material-tile-right x{{item.count}}
+      ion-content
+        material-list
+          material-item(ng-repeat="item in orderedGroup | orderBy:['type'] track by $index")
+            .material-left {{item.type}}
+            .material-tile-content
+              h2 <b>{{item.name}}</b>
+                span(ng-show="item.flavor") &nbsp;({{item.flavor}})
+            .material-tile-right x{{item.count}}
 
     .rcs-pane.call.material-whiteframe-z3(layout="vertical")
       .pane-header

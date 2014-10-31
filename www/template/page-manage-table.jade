@@ -14,15 +14,14 @@ div(id="table" layout="vertical" layout-fill)
     .rcs-pane.list.material-whiteframe-z3(layout="vertical")
       .pane-header(ng-click="clickRefreshTable()") 选择餐桌进行关联
         i.fa.fa-refresh(ng-class="{'fa-spin':refreshing == true}")
-      .scroll-container
-        ion-content(has-bouncing="true")
-          material-radio-group(ng-model="selectedIndexUi")
-            material-list(ng-repeat="table in tables | filter:ifNotLinked")
-              material-item(ng-click="clickTable($index, table)")
-                .material-tile-left
-                  material-radio-button(ng-class="{'material-checked':selectedIndex=={{$index}}}" value="{{$index}}" noink)
-                .material-tile-content(ng-class="{'selected':selectedIndex==$index}")
-                  h2 {{table.TableName}} ({{table.TableType}})
+      ion-content
+        material-radio-group(ng-model="selectedIndexUi")
+          material-list(ng-repeat="table in tables | filter:ifNotLinked")
+            material-item(ng-click="clickTable($index, table)")
+              .material-tile-left
+                material-radio-button(ng-class="{'material-checked':selectedIndex=={{$index}}}" value="{{$index}}" noink)
+              .material-tile-content(ng-class="{'selected':selectedIndex==$index}")
+                h2 {{table.TableName}} ({{table.TableType}})
 
     .rcs-pane.info.material-whiteframe-z3(layout="vertical")
       .pane-header 关联信息

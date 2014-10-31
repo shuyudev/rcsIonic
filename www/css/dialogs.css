@@ -7,6 +7,11 @@
   padding-bottom: 0px;
 }
 
+#rcs material-dialog ion-content {
+  display: flex;
+  min-height: 200px;
+}
+
 #rcs .dialog-actions > .text-center {
   width: 100%;
 }
@@ -73,7 +78,6 @@
   min-width: 300px;
   padding-left: 25px;
   padding-right: 25px;
-  height: 350px;
 }
 
 #dialog-chooseFlavor h3,

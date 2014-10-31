@@ -1,12 +1,11 @@
 material-dialog.width-md(id="dialog-checkFlavorRequirement")
   .dialog-content.height-md
     h3 是否有忌口?
-    .scroll-container
-      ion-content
-        material-checkbox(
-          ng-repeat="requirement in requirementSelections"
-          ng-model="requirement.selected" aria-label="{{requirement.name}}")
-          | {{requirement.name}}
+    ion-content
+      material-checkbox(
+        ng-repeat="requirement in requirementSelections"
+        ng-model="requirement.selected" aria-label="{{requirement.name}}")
+        | {{requirement.name}}
 
   .dialog-actions
     .text-center
