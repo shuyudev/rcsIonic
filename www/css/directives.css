@@ -59,7 +59,8 @@
   border-left: 8px solid #8A1717;
 }
 
-.rcs-menu-item .selected b {
+.rcs-menu-item .selected b,
+.rcs-menu-item .selected .fa {
   color: #8A1717;
 }
 

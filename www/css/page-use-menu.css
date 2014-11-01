@@ -1,26 +1,29 @@
 #menu .rcs-pane.list {
-  width: 65%;
+  /*width: 65%;*/
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 #menu .rcs-pane.info {
-  width: 35%;
+  width: 300px;
   padding-top: 5px;
   margin-left: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 /*tab*/
-#menu material-tabs .material-ink-ripple {
-  color: #fff;
-}
-
 #menu material-tabs {
   border-bottom: 1px solid #8A1717;
   z-index: 10;
 }
 
+#menu material-tabs .material-ink-ripple {
+  color: #fff;
+}
+
 #menu material-tab {
   background-color: #fff;
-  /*border-right: 3px solid #f1f1f1;*/
 }
 
 #menu .tabs-header {
@@ -47,6 +50,33 @@
   background: #8A1717;
   position: absolute;
   margin-top: -5px;
+}
+
+#menu .header material-button .fa.fa-star {
+  color: #8A1717;
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 40px;
+  margin-bottom: 8px;
+}
+
+#menu .header > .fa,
+#menu .header material-button .fa.fa-star-o {
+  color: #818181;
+  font-size: 24px;
+  margin-right: 8px;
+  margin-left: 8px;
+  line-height: 48px;
+}
+
+#menu .header material-button.types {
+  font-size: 20px;
+  color: #818181;
+  font-weight: bold;
+}
+
+#menu .header material-button.types span {
+  vertical-align: -webkit-baseline-middle;
 }
 
 /*content*/

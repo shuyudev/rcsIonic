@@ -8,8 +8,8 @@ angular
   .controller('restaurantCtrl', ['$scope', '$state', 'rcsHttp', 'rcsSession', restaurantCtrl])
   .controller('tableCtrl', ['$scope', '$state', '$cordovaDevice', '$materialDialog', 'rcsHttp', 'rcsSession', tableCtrl])
   .controller('aboutCtrl', ['$scope', '$state', '$interval', 'rcsSession', 'TABLE_STATUS', aboutCtrl])
-  .controller('menuCtrl', ['$rootScope', '$scope', '$state', '$window', '$materialDialog', 'rcsSession', 'RCS_EVENT', 'RCS_REQUEST_ERR', menuCtrl])
-  .controller('eatingCtrl', ['$scope', '$state', '$interval', 'rcsSession', 'RCS_REQUEST_ERR', eatingCtrl])
+  .controller('menuCtrl', ['$rootScope', '$scope', '$state', '$window', '$timeout', '$materialDialog', 'rcsSession', 'makeOrderGroupFilter', 'makeArrayTextFilter', 'RCS_EVENT', 'RCS_REQUEST_ERR', menuCtrl])
+  .controller('eatingCtrl', ['$scope', '$state', '$interval', 'rcsSession', 'makeOrderGroupFilter', 'RCS_REQUEST_ERR', eatingCtrl])
   .controller('paymentCtrl', ['$scope', '$state', '$materialDialog', 'rcsSession', 'RCS_REQUEST_ERR', paymentCtrl]);
 
 function requestErrorAction (res, handler) {
@@ -451,7 +451,7 @@ function aboutCtrl ($scope, $state, $interval, rcsSession, TABLE_STATUS) {
   }
 }
 
-function menuCtrl ($rootScope, $scope, $state, $window, $materialDialog, rcsSession, RCS_EVENT, RCS_REQUEST_ERR) {
+function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialog, rcsSession, makeOrderGroupFilter, makeArrayTextFilter, RCS_EVENT, RCS_REQUEST_ERR) {
   // scope fields
   $scope.currentOrderPage = null;
   $scope.currentPage = null;
@@ -465,6 +465,9 @@ function menuCtrl ($rootScope, $scope, $state, $window, $materialDialog, rcsSess
   $scope.ordering = null;
   $scope.orderingGroup = null;
   $scope.selectedIndex = null;
+  $scope.hasStar = false;
+  $scope.showStar = false;
+  $scope.loadingStar = true;
 
   // scope methods
   $scope.clickConfirm = clickConfirm;
@@ -475,11 +478,12 @@ function menuCtrl ($rootScope, $scope, $state, $window, $materialDialog, rcsSess
   $scope.clickPageNext = clickPageNext;
   $scope.clickPagePrevious = clickPagePrevious;
   $scope.clickRefreshMenu = clickRefreshMenu;
+  $scope.clickToggleStar = clickToggleStar;
   $scope.onTabSelected = onTabSelected;
 
   // locals
+  var refreshRows = refreshRows;
   var loadPage = loadPage;
-  var makeOrderGroupFilter = makeOrderGroup();
   var menuItemsRowsAll = null;
   var orderingGroupAll = null;
 
@@ -511,7 +515,27 @@ function menuCtrl ($rootScope, $scope, $state, $window, $materialDialog, rcsSess
     updateOrdering();
 
     $scope.selectedIndex = 0;
-    onTabSelected($scope.selectedIndex);
+
+    var hasStar = false;
+    for (var i = 0; i < $scope.menuItems.length; i++) {
+      if ($scope.menuItems[i].IsRecommended == true) {
+        hasStar = true;
+        break;
+      }
+    };
+
+    if (!hasStar) {
+      $scope.loadingStar = false;
+      refreshRows();
+    } else {
+      // delay the switch to start, to let the tabs be initialized first
+      $timeout(function () {
+        $scope.hasStar = true;
+        $scope.showStar = true;
+        $scope.loadingStar = false;
+        refreshRows();
+      }, 1000)
+    }
   }
 
   function clickConfirm (event) {
@@ -642,7 +666,10 @@ function menuCtrl ($rootScope, $scope, $state, $window, $materialDialog, rcsSess
 
   function onTabSelected (index) {
     $scope.selectedIndex = index;
+    refreshRows();
+  }
 
+  function refreshRows () {
     // refresh menuItemsRowsAll
     var row = 0;
     var rowItemLimit = 2;
@@ -655,8 +682,15 @@ function menuCtrl ($rootScope, $scope, $state, $window, $materialDialog, rcsSess
       }
 
       var menuItem = $scope.menuItems[i];
-      if (menuItem.Type != $scope.menuTypes[$scope.selectedIndex]) {
-        continue;
+
+      if ($scope.showStar) {
+        if (!menuItem.IsRecommended) {
+          continue;
+        }
+      } else {
+        if (menuItem.Type != $scope.menuTypes[$scope.selectedIndex]) {
+          continue;
+        }
       }
 
       menuItemsRowsAll[row].push(menuItem);
@@ -672,6 +706,11 @@ function menuCtrl ($rootScope, $scope, $state, $window, $materialDialog, rcsSess
 
     // load page
     loadPage();
+  }
+
+  function clickToggleStar (toShow) {
+    $scope.showStar = toShow;
+    refreshRows();
   }
 
   function updateOrdering () {
@@ -709,7 +748,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, $materialDialog, rcsSess
   }
 }
 
-function eatingCtrl ($scope, $state, $interval, rcsSession, RCS_REQUEST_ERR) {
+function eatingCtrl ($scope, $state, $interval, rcsSession, makeOrderGroupFilter, RCS_REQUEST_ERR) {
   // scope fields
   $scope.menuItems = null;
   $scope.ordered = [];
@@ -728,7 +767,6 @@ function eatingCtrl ($scope, $state, $interval, rcsSession, RCS_REQUEST_ERR) {
   $scope.ifDisableClickPay = ifDisableClickPay;
 
   // locals
-  var makeOrderGroupFilter = makeOrderGroup();
   var refreshInterval = null;
 
   // events

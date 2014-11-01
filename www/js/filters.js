@@ -1,6 +1,7 @@
 angular
   .module('rcs')
-  .filter('makeOrderGroup', makeOrderGroup);
+  .filter('makeOrderGroup', makeOrderGroup)
+  .filter('makeArrayText', makeArrayText);
 
 function makeOrderGroup () {
   return function (orderItems, menuItems) {
@@ -58,5 +59,21 @@ function makeOrderGroup () {
     }
 
     return orderGroup;
+  }
+}
+
+function makeArrayText () {
+  return function (array) {
+    if (!array || !angular.isArray(array) || array.length == 0) {
+      return '(无)';
+    }
+
+    var text = '';
+    for (var i = 0 ; i < array.length; i++) {
+      if (i != 0) text += '/';
+      text += array[i];
+    }
+
+    return text;
   }
 }

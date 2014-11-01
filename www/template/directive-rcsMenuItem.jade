@@ -9,7 +9,9 @@
     ng-disabled="justClickedConfirm == true"
     ng-click="clickMenuItem()")
     .content(layout="vertical" layout-fill layout-align="start start")
-      b(flex="100") {{menuItem.Name}}
+      span(flex="100")
+        i.fa.fa-star(ng-show="menuItem.IsRecommended == true")
+        b {{menuItem.Name}}
         span.flavor(ng-show="menuItem.Flavor") &nbsp;(正常/{{getFlavorText()}})
       .price
         .normal
