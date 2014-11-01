@@ -1,7 +1,10 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 
-node_modules/
-platforms/
+node_modules/*
+platforms/*
+!platforms/android
+platforms/android/*
+!platforms/android/AndroidManifest.xml
 
 *.suo
