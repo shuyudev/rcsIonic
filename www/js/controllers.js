@@ -794,6 +794,8 @@ function eatingCtrl ($scope, $state, $interval, rcsSession, makeOrderGroupFilter
             $interval.cancel(refreshInterval);
           }
 
+          $scope.simpleDialog(3, null, null);
+
           clickRefresh();
         }
 

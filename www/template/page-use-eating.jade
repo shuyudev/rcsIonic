@@ -7,7 +7,7 @@ div(id="eating" layout="vertical" layout-fill)
       .pane-header
         div(ng-click="clickRefresh()")
           span.colored [{{ordered.length}}]
-          span 已点菜品
+          span 已下单菜品
           span.fa.fa-refresh(ng-class="{'fa-spin':refreshing == true}" ng-hide="pending == true")
 
       .text-center(ng-show="pending == true")

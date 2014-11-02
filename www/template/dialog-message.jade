@@ -4,6 +4,7 @@ material-dialog.width-md(id="dialog-message")
       span(ng-switch-when="0") 登录验证失败
       span(ng-switch-when="1") 请稍等亲, 餐厅正在处理您上次提交的点菜
       span(ng-switch-when="2") 餐厅服务员将前来为您服务
+      span(ng-switch-when="3") 菜品已成功下单！请耐心等待 ^_^
 
   .dialog-actions(layout="horizontal" layout-align="space-around")
     material-button.material-button-raised.material-theme-light(flex="100" ng-click="clickDismiss()")
@@ -11,3 +12,4 @@ material-dialog.width-md(id="dialog-message")
         span(ng-switch-when="0") 重新登录
         span(ng-switch-when="1") 好吧, 那一会儿再说
         span(ng-switch-when="2") 好的
+        span(ng-switch-when="3") 好的
