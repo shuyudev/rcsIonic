@@ -15,31 +15,26 @@ div(id="menu" layout="vertical" layout-fill)
     .rcs-pane.list.material-whiteframe-z3(flex layout="vertical")
 
       .header(layout="horizontal")
-        i.fa.fa-spinner(ng-show="loadingStar==true" ng-class="{'fa-spin':loadingStar==true}")
-        material-button(ng-click="clickToggleStar(true)" ng-show="hasStar==true")
-          i.fa.fa-star(ng-show="showStar==true")
-            span 推荐
-            span(ng-if="maxPage > 1") ({{currentPage}}/{{maxPage}})
-          i.fa.fa-star-o(ng-show="!showStar")
-        material-button.types(flex ng-show="showStar==true" ng-click="clickToggleStar(false)")
-          span {{menuTypes | makeArrayText}}
-        material-tabs(selected="selectedIndex" ng-show="!showStar")
+        material-tabs(selected="selectedIndex")
           material-tab(
             ng-repeat="menuType in menuTypes track by $index"
             ng-class="{active:selectedIndex=={{$index}}}"
             on-select="onTabSelected($index)"
             disabled="false")
             material-tab-label
-              b {{menuType}}
+              span(ng-show="menuType == star")
+                i.fa.fa-star
+                b 推荐
+              b(ng-show="menuType != star") {{menuType}}
                 span(ng-if="selectedIndex==$index && maxPage > 1") ({{currentPage}}/{{maxPage}})
 
       .content-container
-        material-content(ng-show="loadingStar==false")
+        material-content
           .menu-row(ng-repeat="menuItemsRow in menuItemsRows track by $index" layout="horizontal" layout-align="start")
             .menu-col(ng-repeat="menuItem in menuItemsRow track by $index" ng-class="{right:{{$index}} % 2 == 1}")
               rcs-menu-item
 
-      .page-footer.text-center(ng-show="loadingStar==false")
+      .page-footer.text-center
         //- (ng-show="maxPage > 1")
         material-button.material-button-raised.material-theme-light(
           ng-disabled="currentPage <= 1" ng-click="clickPagePrevious()")

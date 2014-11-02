@@ -465,9 +465,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialo
   $scope.ordering = null;
   $scope.orderingGroup = null;
   $scope.selectedIndex = null;
-  $scope.hasStar = false;
-  $scope.showStar = false;
-  $scope.loadingStar = true;
+  $scope.star = '_star';
 
   // scope methods
   $scope.clickConfirm = clickConfirm;
@@ -505,6 +503,13 @@ function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialo
 
     if (!$scope.menuItems) return;
 
+    for (var i = 0; i < $scope.menuItems.length; i++) {
+      if ($scope.menuItems[i].IsRecommended == true) {
+        $scope.menuTypes.push($scope.star);
+        break;
+      }
+    };
+
     for (var i = 0 ; i < $scope.menuItems.length; i++) {
       var type = $scope.menuItems[i].Type;
       if ($scope.menuTypes.indexOf(type) == -1) {
@@ -512,30 +517,10 @@ function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialo
       }
     }
 
-    updateOrdering();
-
     $scope.selectedIndex = 0;
+    refreshRows();
 
-    var hasStar = false;
-    for (var i = 0; i < $scope.menuItems.length; i++) {
-      if ($scope.menuItems[i].IsRecommended == true) {
-        hasStar = true;
-        break;
-      }
-    };
-
-    if (!hasStar) {
-      $scope.loadingStar = false;
-      refreshRows();
-    } else {
-      // delay the switch to start, to let the tabs be initialized first
-      $timeout(function () {
-        $scope.hasStar = true;
-        $scope.showStar = true;
-        $scope.loadingStar = false;
-        refreshRows();
-      }, 1000)
-    }
+    updateOrdering();
   }
 
   function clickConfirm (event) {
@@ -683,7 +668,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialo
 
       var menuItem = $scope.menuItems[i];
 
-      if ($scope.showStar) {
+      if ($scope.menuTypes[$scope.selectedIndex] == $scope.star) {
         if (!menuItem.IsRecommended) {
           continue;
         }
