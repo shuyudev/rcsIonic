@@ -383,7 +383,7 @@ function rcsSession ($rootScope, $interval, rcsLocalstorage, rcsHttp, RCS_EVENT,
 }
 
 function rcsHttp ($http, $log, $state) {
-  var baseUrl = 'http://nodeserver3.cloudapp.net:1337/';
+  var baseUrl = 'http://rcsserver.cloudapp.net:1337/';
   // var baseUrl = 'http://localhost:1337/';
   var httpService = {};
 
