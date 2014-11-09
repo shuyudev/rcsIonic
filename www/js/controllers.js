@@ -463,6 +463,8 @@ function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialo
   $scope.menuItemsRows = null;
   $scope.menuTypes = null;
   $scope.ordering = null;
+  $scope.orderingGroupAll = null;
+  $scope.menuItemsRowsAll = null;
   $scope.orderingGroup = null;
   $scope.selectedIndex = null;
   $scope.star = '_star';
@@ -482,8 +484,6 @@ function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialo
   // locals
   var refreshRows = refreshRows;
   var loadPage = loadPage;
-  var menuItemsRowsAll = null;
-  var orderingGroupAll = null;
 
   var height = ($window.innerHeight -64) *.82 - 50 - 60;
   var pageRowLimit = Math.floor(height / 100);
@@ -623,7 +623,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialo
 
   function loadPage () {
     var start = ($scope.currentPage - 1) * pageRowLimit;
-    $scope.menuItemsRows = menuItemsRowsAll.slice(start, start + pageRowLimit);
+    $scope.menuItemsRows = $scope.menuItemsRowsAll.slice(start, start + pageRowLimit);
   }
 
   function clickOrderPageNext () {
@@ -640,7 +640,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialo
 
   function loadOrderPage () {
     var start = ($scope.currentOrderPage - 1) * pageOrderRowLimit;
-    $scope.orderingGroup = orderingGroupAll.slice(start, start + pageOrderRowLimit);
+    $scope.orderingGroup = $scope.orderingGroupAll.slice(start, start + pageOrderRowLimit);
   }
 
   function clickRefreshMenu () {
@@ -655,15 +655,15 @@ function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialo
   }
 
   function refreshRows () {
-    // refresh menuItemsRowsAll
+    // refresh $scope.menuItemsRowsAll
     var row = 0;
     var rowItemLimit = 2;
     var rowItemCount = 0;
 
-    menuItemsRowsAll = [];
+    $scope.menuItemsRowsAll = [];
     for (var i = $scope.menuItems.length - 1; i >= 0; i--) {
-      if (!menuItemsRowsAll[row]) {
-        menuItemsRowsAll[row] = [];
+      if (!$scope.menuItemsRowsAll[row]) {
+        $scope.menuItemsRowsAll[row] = [];
       }
 
       var menuItem = $scope.menuItems[i];
@@ -678,7 +678,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialo
         }
       }
 
-      menuItemsRowsAll[row].push(menuItem);
+      $scope.menuItemsRowsAll[row].push(menuItem);
       if (++rowItemCount == rowItemLimit) {
         row++;
         rowItemCount = 0;
@@ -687,7 +687,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialo
 
     // refresh page count
     $scope.currentPage = 1;
-    $scope.maxPage = Math.ceil(menuItemsRowsAll.length / pageRowLimit);
+    $scope.maxPage = Math.ceil($scope.menuItemsRowsAll.length / pageRowLimit);
 
     // load page
     loadPage();
@@ -702,7 +702,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialo
     $scope.ordering = rcsSession.getOrdering();
 
     // group the order to show count
-    orderingGroupAll = makeOrderGroupFilter(
+    $scope.orderingGroupAll = makeOrderGroupFilter(
       $scope.ordering,
       $scope.menuItems);
 
@@ -721,7 +721,7 @@ function menuCtrl ($rootScope, $scope, $state, $window, $timeout, $materialDialo
     }
 
     // refresh page count
-    $scope.maxOrderPage = Math.ceil(orderingGroupAll.length / pageOrderRowLimit);
+    $scope.maxOrderPage = Math.ceil($scope.orderingGroupAll.length / pageOrderRowLimit);
     if (!$scope.currentOrderPage) {
       $scope.currentOrderPage = 1;
     } else if ($scope.currentOrderPage > $scope.maxOrderPage) {

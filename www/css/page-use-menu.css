@@ -81,7 +81,10 @@
 
 /*content*/
 #menu .rcs-pane > .content-container {
-  height: 80%;
+  height: 100%;
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 #menu .rcs-pane.list > .content-container {
@@ -89,11 +92,18 @@
   z-index: 20;
 }
 
+#menu .rcs-pane.list > .content-container > ion-content {
+  margin-top: 5px;
+}
+
 #menu .rcs-pane.list material-content,
-#menu .rcs-pane.list ion-content {
+#menu .rcs-pane ion-content {
   padding-bottom: 10px;
-  display: table;
   width: 100%;
+}
+
+#menu .rcs-pane.list material-content {
+  display: table;
 }
 
 /*footer*/
