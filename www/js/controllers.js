@@ -198,14 +198,15 @@ function signInCtrl ($scope, $state, $timeout, rcsSession, RCS_REQUEST_ERR) {
         $scope.signIn.email,
         $scope.signIn.password,
         function success () {
+          $scope.signingIn = false;
           clickGoToRestaurants();
         },
         function error (res, status) {
+          $scope.signingIn = false;
           requestErrorAction(res, function () {
             switch (res.status) {
               case RCS_REQUEST_ERR.rcsSignInFail:
                 $scope.simpleDialog(0, null, event);
-                $scope.signingIn = false;
                 return true;
               default:
                 return false;
@@ -294,7 +295,11 @@ function tableCtrl ($scope, $state, $cordovaDevice, $materialDialog, rcsHttp, rc
     $scope.deviceModel = $cordovaDevice.getModel();
     $scope.deviceSystemVersion = $cordovaDevice.getVersion();
     $scope.deviceId = $cordovaDevice.getUUID();
-  } catch (ex) { }
+  } catch (ex) { 
+    $scope.deviceModel = "<Test device>";
+    $scope.deviceSystemVersion = "<Test device>";
+    $scope.deviceId = "<Test device>";
+  }
 
   // scope methods
   $scope.clickLink = clickLink;

@@ -1,0 +1,36 @@
+{
+    "com.ionic.keyboard": {
+        "source": {
+            "type": "local",
+            "path": "C:\\Users\\shuyucao\\.plugman\\cache\\com.ionic.keyboard\\1.0.3\\package"
+        }
+    },
+    "cordova.plugin.Brightness": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/fiscal-cliff/phonegap-plugin-brightness.git",
+            "subdir": "."
+        }
+    },
+    "org.apache.cordova.console": {
+        "source": {
+            "type": "local",
+            "path": "C:\\Users\\shuyucao\\.plugman\\cache\\org.apache.cordova.console\\0.2.10\\package"
+        }
+    },
+    "org.apache.cordova.device": {
+        "source": {
+            "type": "local",
+            "path": "C:\\Users\\shuyucao\\.plugman\\cache\\org.apache.cordova.device\\0.2.11\\package"
+        }
+    },
+    "cordova-plugin-whitelist": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/apache/cordova-plugin-whitelist",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    }
+}

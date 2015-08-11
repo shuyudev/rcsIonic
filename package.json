@@ -14,5 +14,14 @@
     "gulp-jade": "^0.8.0",
     "gulp-util": "^2.2.14",
     "shelljs": "^0.3.0"
-  }
+  },
+  "cordovaPlugins": [
+    {
+      "locator": "https://github.com/apache/cordova-plugin-whitelist",
+      "id": "cordova-plugin-whitelist"
+    }
+  ],
+  "cordovaPlatforms": [
+    "android"
+  ]
 }
